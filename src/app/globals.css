@@ -1,26 +1,205 @@
 @import "tailwindcss";
 
+/* ===== Design System ===== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Colors */
+  --sea: #3a8fbf;
+  --seal: #e8f4fb;
+  --seam: #b8ddf0;
+  --sead: #1a6a9a;
+  --bark: #2c2018;
+  --sand: #f7f4ef;
+  --gr: #3b6d11;
+  --grl: #eaf3de;
+  --bg: #fff;
+  --t1: #1c1c1a;
+  --t2: #6a6560;
+  --border: rgba(0, 0, 0, 0.1);
+  --border2: rgba(0, 0, 0, 0.18);
+
+  /* Typography */
+  --mincho: "Shippori Mincho", serif;
+  --num: "Cormorant Garamond", serif;
+  --gothic: "Zen Kaku Gothic New", sans-serif;
+
+  /* Radii */
+  --r-md: 8px;
+  --r-lg: 12px;
+
+  /* Layout */
+  --hdr-h: 56px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@media (min-width: 768px) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --hdr-h: 60px;
   }
 }
 
+@media (min-width: 1024px) {
+  :root {
+    --hdr-h: 64px;
+  }
+}
+
+/* ===== Reset & Base ===== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--hdr-h);
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--gothic);
+  color: var(--t1);
+  background: var(--bg);
+  line-height: 1.8;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+/* ===== Typography Helpers ===== */
+.mincho {
+  font-family: var(--mincho);
+}
+
+.num {
+  font-family: var(--num);
+}
+
+/* ===== Scrollbar ===== */
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--seam) transparent;
+}
+
+/* Webkit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--seam);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sea);
+}
+
+/* ===== Scroll Animation Classes ===== */
+.anim-up,
+.anim-in,
+.anim-scale,
+.anim-right {
+  opacity: 0;
+  transition: opacity 0.7s ease, transform 0.7s ease;
+  will-change: opacity, transform;
+}
+
+.anim-up {
+  transform: translateY(32px);
+}
+
+.anim-in {
+  /* fade only, no transform */
+}
+
+.anim-scale {
+  transform: scale(0.92);
+}
+
+.anim-right {
+  transform: translateX(-32px);
+}
+
+.anim-up.vis,
+.anim-in.vis,
+.anim-scale.vis,
+.anim-right.vis {
+  opacity: 1;
+  transform: none;
+}
+
+/* ===== Container ===== */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-inline: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-inline: 40px;
+  }
+}
+
+/* ===== Section Spacing ===== */
+.section {
+  padding-block: 64px;
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding-block: 80px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section {
+    padding-block: 100px;
+  }
+}
+
+/* ===== Backdrop Filter Compat ===== */
+.backdrop-blur {
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
 }
