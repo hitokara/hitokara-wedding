@@ -11,14 +11,32 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const article = getArticleBySlug(slug);
+  const title = article?.title ?? slug;
+  const description = article?.excerpt
+    ? `${article.excerpt} | 横浜・鎌倉のウェディングプロデュース ヒトカラウェディングのジャーナル。`
+    : `${title} - 横浜・鎌倉の結婚式に関する記事。ヒトカラウェディングジャーナル。`;
   return {
-    title: `${article?.title ?? slug} | JOURNAL | ヒトカラウェディング`,
+    title,
+    description,
+    alternates: {
+      canonical: `https://hitokara-wedding.com/journal/${slug}`,
+    },
   };
 }
 
 export default async function JournalArticlePage({ params }: Props) {
   const { slug } = await params;
   const article = getArticleBySlug(slug);
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "TOP", item: "https://hitokara-wedding.com" },
+      { "@type": "ListItem", position: 2, name: "Journal", item: "https://hitokara-wedding.com/journal" },
+      { "@type": "ListItem", position: 3, name: article?.title ?? slug, item: `https://hitokara-wedding.com/journal/${slug}` },
+    ],
+  };
   const related = ARTICLES.filter((a) => a.slug !== slug).slice(0, 3);
 
   const title = article?.title ?? "記事タイトル";
@@ -29,14 +47,18 @@ export default async function JournalArticlePage({ params }: Props) {
 
   return (
     <div className={s.layoutWrap}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <div className={s.jMain}>
-        <div className={s.breadcrumb}>
+        <nav className={s.breadcrumb} aria-label="パンくずリスト">
           <Link href="/" className={s.bcLink}>TOP</Link>
           <span className={s.bcSep}>/</span>
           <Link href="/journal" className={s.bcLink}>Journal</Link>
           <span className={s.bcSep}>/</span>
           <span>{title}</span>
-        </div>
+        </nav>
 
         <article className={s.article}>
           <AnimateOnScroll animation="slideRight">
