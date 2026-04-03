@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./Footer.module.css";
 
 const FOOTER_NAV = [
@@ -15,7 +16,15 @@ export default function Footer() {
       <div className={styles.inner}>
         <div className={styles.top}>
           <div className={styles.logo}>
-            <Link href="/">ヒトカラウェディング</Link>
+            <Link href="/">
+              <Image
+                src="/logo-footer.jpg"
+                alt="ヒトカラウェディング"
+                width={180}
+                height={36}
+                style={{ height: '26px', width: 'auto', opacity: 0.7 }}
+              />
+            </Link>
           </div>
           <nav className={styles.nav}>
             {FOOTER_NAV.map((item) => (

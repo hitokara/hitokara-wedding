@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./Header.module.css";
 
 const NAV_ITEMS = [
@@ -39,7 +40,16 @@ export default function Header() {
       <div className={styles.inner}>
         {/* Logo */}
         <div className={styles.logo}>
-          <Link href="/">ヒトカラウェディング</Link>
+          <Link href="/">
+            <Image
+              src="/logo-header.jpg"
+              alt="ヒトカラウェディング"
+              width={200}
+              height={40}
+              priority
+              style={{ height: '32px', width: 'auto' }}
+            />
+          </Link>
         </div>
 
         {/* Desktop Nav */}
@@ -72,7 +82,7 @@ export default function Header() {
 
         {/* Hamburger (mobile) */}
         <button
-          className={`${styles.hamburger} ${drawerOpen ? styles.open : ""}`}
+          className={`${styles.hamburger} ${drawerOpen ? styles.hamburgerOpen : ""}`}
           onClick={toggleDrawer}
           aria-label="メニュー"
           aria-expanded={drawerOpen}
@@ -84,7 +94,7 @@ export default function Header() {
       </div>
 
       {/* Mobile Drawer */}
-      <div className={`${styles.drawer} ${drawerOpen ? styles.open : ""}`}>
+      <div className={`${styles.drawer} ${drawerOpen ? styles.drawerOpen : ""}`}>
         {NAV_ITEMS.map((item) => (
           <Link
             key={item.label}
