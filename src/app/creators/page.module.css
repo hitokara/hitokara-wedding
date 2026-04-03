@@ -5,11 +5,11 @@
 /* ===== Page Header ===== */
 .pageHdr { padding: 32px 20px 16px; background: var(--sand); }
 .pageHdrRow { display: flex; justify-content: space-between; align-items: flex-start; }
-.pageEye { font-size: 9px; letter-spacing: .22em; text-transform: uppercase; color: var(--sea); display: block; margin-bottom: 6px; }
+.pageEye { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--sea); display: block; margin-bottom: 6px; }
 .pageH1 { font-family: var(--mincho); font-size: 24px; font-weight: 400; line-height: 1.45; letter-spacing: .06em; color: var(--bark); margin-bottom: 4px; }
 .pageH1 em { font-style: normal; color: var(--sead); }
 .totalCount { font-family: var(--num); font-size: 32px; font-style: italic; font-weight: 300; color: rgba(58,143,191,.25); }
-.totalLabel { font-size: 9px; letter-spacing: .15em; color: var(--t2); text-align: right; }
+.totalLabel { font-size: 11px; letter-spacing: .15em; color: var(--t2); text-align: right; }
 
 /* ===== Filter Bar ===== */
 .filterBar {
@@ -21,7 +21,7 @@
 .filterBar::-webkit-scrollbar { display: none; }
 .fBtn {
   height: 28px; padding: 0 14px; border: 0.5px solid var(--border2); border-radius: 14px;
-  background: none; font-size: 11px; color: var(--t2); cursor: pointer;
+  background: none; font-size: 12px; color: var(--t2); cursor: pointer;
   white-space: nowrap; flex-shrink: 0; font-family: var(--gothic); transition: all .15s;
 }
 .fBtnOn { background: var(--sea); color: #fff; border-color: var(--sea); }
@@ -42,7 +42,7 @@
 .crCardImgBg { width: 100%; height: 100%; background-size: cover; background-position: center; }
 .crCardGrad { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,.32)); }
 .crCardCat {
-  position: absolute; bottom: 8px; left: 8px; font-size: 9px;
+  position: absolute; bottom: 8px; left: 8px; font-size: 11px;
   letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.85);
 }
 .crCardFav {
@@ -54,11 +54,11 @@
 }
 .crCardFavOn { background: rgba(255,255,255,.85); color: #e05c5c; }
 .crCardBody { padding: 8px 10px 10px; }
-.crCardRole { font-size: 9px; color: var(--t2); letter-spacing: .06em; margin-bottom: 2px; }
-.crCardName { font-family: var(--mincho); font-size: 12px; color: var(--t1); margin-bottom: 4px; }
+.crCardRole { font-size: 12px; color: var(--t2); letter-spacing: .06em; margin-bottom: 2px; }
+.crCardName { font-family: var(--mincho); font-size: 13px; color: var(--t1); margin-bottom: 4px; }
 .crCardPrice { font-family: var(--num); font-size: 13px; color: var(--sead); font-style: italic; margin-bottom: 4px; }
 .crCardTags { display: flex; flex-wrap: wrap; gap: 3px; }
-.crCardTag { font-size: 8px; padding: 1px 5px; border-radius: 6px; background: rgba(58,143,191,.08); color: var(--sead); }
+.crCardTag { font-size: 11px; padding: 1px 5px; border-radius: 6px; background: rgba(58,143,191,.08); color: var(--sead); }
 
 /* ===== Right Panel (PC) ===== */
 .rightPanel { display: none; }
@@ -71,7 +71,7 @@
   display: flex; align-items: center; justify-content: center; margin-bottom: 4px; font-size: 20px; color: var(--sea);
 }
 .panelEmptyT { font-family: var(--mincho); font-size: 14px; color: var(--t1); margin-bottom: 4px; }
-.panelEmptyD { font-size: 12px; color: var(--t2); line-height: 1.7; }
+.panelEmptyD { font-size: 13px; color: var(--t2); line-height: 1.7; }
 
 /* ===== Modal / Detail Shared ===== */
 .modalOverlay {
@@ -96,7 +96,7 @@
 .modalImgWrap { width: 100%; height: 44vw; min-height: 180px; max-height: 280px; position: relative; overflow: hidden; flex-shrink: 0; }
 .modalImgBg { width: 100%; height: 100%; background-size: cover; background-position: center; }
 .modalImgGrad { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.4), transparent 55%); }
-.modalCatBadge { position: absolute; bottom: 12px; left: 14px; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.9); z-index: 2; }
+.modalCatBadge { position: absolute; bottom: 12px; left: 14px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.9); z-index: 2; }
 .modalFavBtn {
   position: absolute; top: 10px; right: 10px; width: 30px; height: 30px;
   border-radius: 50%; border: none; background: rgba(255,255,255,.2);
@@ -106,14 +106,14 @@
 .modalFavBtnOn { background: rgba(255,255,255,.85); }
 .modalBody { padding: 16px 18px; overflow-y: auto; flex: 1; }
 .modalName { font-family: var(--mincho); font-size: 22px; font-weight: 400; color: var(--t1); letter-spacing: .06em; margin-bottom: 2px; }
-.modalRole { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--sead); margin-bottom: 10px; }
+.modalRole { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--sead); margin-bottom: 10px; }
 .modalTags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
-.modalTag { font-size: 10px; padding: 2px 8px; border-radius: 8px; background: var(--seal); color: var(--sead); }
+.modalTag { font-size: 11px; padding: 2px 8px; border-radius: 8px; background: var(--seal); color: var(--sead); }
 .modalPriceRow { display: flex; align-items: baseline; gap: 4px; margin-bottom: 14px; padding: 10px 12px; background: var(--seal); border-radius: 8px; }
-.modalPriceLbl { font-size: 10px; color: var(--t2); }
+.modalPriceLbl { font-size: 12px; color: var(--t2); }
 .modalPriceVal { font-family: var(--num); font-size: 24px; color: var(--sead); font-style: italic; }
-.modalPriceUnit { font-size: 10px; color: var(--t2); }
-.modalSecLbl { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--sea); margin-bottom: 8px; display: block; }
+.modalPriceUnit { font-size: 12px; color: var(--t2); }
+.modalSecLbl { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--sea); margin-bottom: 8px; display: block; }
 .modalProfile { font-size: 13px; color: var(--t2); line-height: 1.9; margin-bottom: 16px; }
 .modalWorks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 14px; }
 .modalWork { aspect-ratio: 1; border-radius: 6px; overflow: hidden; }
@@ -121,11 +121,11 @@
 .modalBtns { display: flex; flex-direction: column; gap: 8px; padding: 16px 18px; }
 .modalBtnMain {
   height: 48px; border-radius: 24px; border: none; background: var(--sea); color: #fff;
-  font-size: 13px; font-family: var(--gothic); display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+  font-size: 14px; font-family: var(--gothic); display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
 }
 .modalBtnSim {
   height: 42px; border-radius: 21px; border: 0.5px solid var(--border2); background: none;
-  color: var(--t1); font-size: 12px; font-family: var(--gothic); cursor: pointer;
+  color: var(--t1); font-size: 13px; font-family: var(--gothic); cursor: pointer;
   display: flex; align-items: center; justify-content: center; text-align: center;
 }
 .pip { width: 7px; height: 7px; background: #7ee8a2; border-radius: 50%; flex-shrink: 0; display: block; }

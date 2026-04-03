@@ -32,7 +32,7 @@
 }
 
 .navLink {
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 0.06em;
   color: var(--t2);
   transition: color 0.2s;

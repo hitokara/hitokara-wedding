@@ -31,7 +31,7 @@
   z-index: 1;
 }
 .cpHeroEyebrow {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: .28em;
   text-transform: uppercase;
   color: rgba(255,255,255,.35);
@@ -52,7 +52,7 @@
   color: var(--sea);
 }
 .cpHeroLead {
-  font-size: 13px;
+  font-size: 14px;
   color: rgba(255,255,255,.5);
   line-height: 2.0;
   letter-spacing: .04em;
@@ -82,7 +82,7 @@
   min-width: 140px;
 }
 .cpStatDesc {
-  font-size: 11px;
+  font-size: 12px;
   color: rgba(255,255,255,.45);
   line-height: 1.8;
 }
@@ -153,7 +153,7 @@
   overflow: hidden;
 }
 .cpBrandImgLabel {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: .2em;
   text-transform: uppercase;
   color: rgba(255,255,255,.4);
@@ -163,7 +163,7 @@
   background: var(--bg);
 }
 .cpBrandEyebrow {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: .28em;
   text-transform: uppercase;
   color: var(--sea);
@@ -181,7 +181,7 @@
 }
 .cpBrandH em { font-style: normal; color: var(--sead); }
 .cpBrandP {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--t2);
   line-height: 2.2;
   margin-bottom: 18px;
@@ -205,7 +205,7 @@
 
 /* ===== Section Common ===== */
 .secEye {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: .22em;
   text-transform: uppercase;
   color: var(--sea);
@@ -260,7 +260,7 @@
   line-height: 1.4;
 }
 .cpProbD {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--t2);
   line-height: 1.9;
 }
@@ -311,7 +311,7 @@
   min-width: 48px;
 }
 .cpValLabel {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: .18em;
   text-transform: uppercase;
   color: var(--sea);
@@ -326,7 +326,7 @@
   letter-spacing: .04em;
 }
 .cpValD {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--t2);
   line-height: 1.9;
 }
@@ -377,7 +377,7 @@
   margin-bottom: 6px;
 }
 .cpPiD {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--t2);
   line-height: 1.85;
 }
@@ -423,7 +423,7 @@
   letter-spacing: .04em;
 }
 .cpMsgBody {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--t2);
   line-height: 2.0;
   margin-bottom: 20px;
@@ -453,7 +453,7 @@
   margin-bottom: 2px;
 }
 .cpMsgTitle {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--t2);
 }
 
@@ -476,7 +476,7 @@
   text-align: center;
 }
 .cpCtaEye {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: .22em;
   text-transform: uppercase;
   color: rgba(255,255,255,.4);
@@ -492,7 +492,7 @@
   margin-bottom: 10px;
 }
 .cpCtaSub {
-  font-size: 12px;
+  font-size: 13px;
   color: rgba(255,255,255,.5);
   line-height: 1.85;
   margin-bottom: 28px;

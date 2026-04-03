@@ -4,7 +4,7 @@
 
 /* ===== Page Header ===== */
 .pageHdr { padding: 32px 20px 16px; background: var(--sand); position: sticky; top: 0; z-index: 20; flex-shrink: 0; }
-.pageEye { font-size: 9px; letter-spacing: .22em; text-transform: uppercase; color: var(--sea); display: block; margin-bottom: 6px; }
+.pageEye { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--sea); display: block; margin-bottom: 6px; }
 .pageH1 { font-family: var(--mincho); font-size: 24px; font-weight: 400; line-height: 1.45; letter-spacing: .06em; color: var(--bark); margin-bottom: 4px; }
 .pageH1 em { font-style: normal; color: var(--sead); }
 
@@ -18,7 +18,7 @@
 .filterBar::-webkit-scrollbar { display: none; }
 .fBtn {
   height: 28px; padding: 0 14px; border: 0.5px solid var(--border2); border-radius: 14px;
-  background: none; font-size: 11px; color: var(--t2); cursor: pointer;
+  background: none; font-size: 12px; color: var(--t2); cursor: pointer;
   white-space: nowrap; flex-shrink: 0; font-family: var(--gothic); transition: all .15s;
 }
 .fBtnOn { background: var(--sea); color: #fff; border-color: var(--sea); }
@@ -33,10 +33,10 @@
   width: 100%; aspect-ratio: 16/9; border-radius: 10px; overflow: hidden;
   margin-bottom: 10px; background: var(--seam);
 }
-.featCat { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--sea); margin-bottom: 4px; }
+.featCat { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--sea); margin-bottom: 4px; }
 .featTitle { font-family: var(--mincho); font-size: 17px; font-weight: 400; color: var(--t1); line-height: 1.6; letter-spacing: .04em; margin-bottom: 6px; }
-.featExcerpt { font-size: 12px; color: var(--t2); line-height: 1.8; margin-bottom: 8px; }
-.featMeta { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--t2); }
+.featExcerpt { font-size: 13px; color: var(--t2); line-height: 1.8; margin-bottom: 8px; }
+.featMeta { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--t2); }
 .featAuthorAv {
   width: 22px; height: 22px; border-radius: 50%; background: var(--seam);
   display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--sead);
@@ -55,37 +55,37 @@
   transition: transform .65s cubic-bezier(.16,.84,.44,1);
 }
 .artCard:hover .artImgInner { transform: scale(1.05); }
-.artCat { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--sea); margin-bottom: 3px; }
+.artCat { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--sea); margin-bottom: 3px; }
 .artTitle { font-family: var(--mincho); font-size: 13px; font-weight: 400; color: var(--t1); line-height: 1.55; letter-spacing: .03em; margin-bottom: 4px; }
-.artMeta { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--t2); }
+.artMeta { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--t2); }
 .artSep { width: 2px; height: 2px; border-radius: 50%; background: var(--seam); }
 
 /* ===== Sidebar ===== */
 .sidebar { background: var(--bg); border-top: 0.5px solid var(--border); padding: 24px 20px 40px; }
 .sideSection { margin-bottom: 28px; }
 .sideLbl {
-  font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--sea);
+  font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--sea);
   margin-bottom: 12px; padding-bottom: 8px; border-bottom: 0.5px solid var(--seam);
 }
 .sideCats { display: flex; flex-direction: column; }
 .sideCat {
   display: flex; justify-content: space-between; align-items: center;
   padding: 9px 0; border-bottom: 0.5px solid var(--border);
-  font-size: 12px; color: var(--t2); cursor: pointer;
+  font-size: 13px; color: var(--t2); cursor: pointer;
 }
 .sideCat:hover { color: var(--sea); }
 .sideCatCount { font-family: var(--num); font-size: 14px; color: rgba(58,143,191,.3); font-style: italic; }
 .sideRecent { display: flex; flex-direction: column; gap: 12px; }
 .sideArt { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
 .sideArtImg { width: 52px; height: 40px; border-radius: 6px; flex-shrink: 0; background: var(--seam); }
-.sideArtCat { font-size: 9px; color: var(--sea); margin-bottom: 2px; letter-spacing: .1em; text-transform: uppercase; }
-.sideArtTitle { font-family: var(--mincho); font-size: 11px; font-weight: 400; color: var(--t1); line-height: 1.6; }
+.sideArtCat { font-size: 11px; color: var(--sea); margin-bottom: 2px; letter-spacing: .1em; text-transform: uppercase; }
+.sideArtTitle { font-family: var(--mincho); font-size: 13px; font-weight: 400; color: var(--t1); line-height: 1.6; }
 .sideCta { background: var(--seal); border-radius: 12px; padding: 16px; border: 0.5px solid var(--seam); }
-.sideCtaLbl { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--sea); margin-bottom: 6px; }
+.sideCtaLbl { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--sea); margin-bottom: 6px; }
 .sideCtaH { font-family: var(--mincho); font-size: 14px; color: var(--sead); margin-bottom: 8px; line-height: 1.6; }
 .sideCtaBtn {
   display: block; width: 100%; background: var(--sea); color: #fff; border: none;
-  padding: 10px; border-radius: 20px; font-size: 11px; cursor: pointer;
+  padding: 10px; border-radius: 20px; font-size: 13px; cursor: pointer;
   font-family: var(--gothic); text-align: center;
 }
 

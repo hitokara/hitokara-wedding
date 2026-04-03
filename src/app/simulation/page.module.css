@@ -9,21 +9,21 @@
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   position: sticky; top: var(--hdr-h); z-index: 10; flex-shrink: 0;
 }
-.totalLabel { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--sead); flex-shrink: 0; }
+.totalLabel { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--sead); flex-shrink: 0; }
 .totalAmountWrap { display: flex; align-items: baseline; gap: 4px; flex: 1; }
 .totalNum { font-family: var(--num); font-size: 32px; color: var(--sead); font-style: italic; font-weight: 300; line-height: 1; }
-.totalUnit { font-size: 11px; color: var(--sead); }
+.totalUnit { font-size: 12px; color: var(--sead); }
 .totalCta { flex-shrink: 0; }
 .tctaLine {
   height: 36px; border-radius: 18px; padding: 0 14px; border: none; background: var(--sea); color: #fff;
-  font-size: 11px; font-family: var(--gothic); display: flex; align-items: center; gap: 5px; cursor: pointer; white-space: nowrap;
+  font-size: 12px; font-family: var(--gothic); display: flex; align-items: center; gap: 5px; cursor: pointer; white-space: nowrap;
 }
 .pip { width: 7px; height: 7px; background: #7ee8a2; border-radius: 50%; flex-shrink: 0; display: block; }
 
 /* ===== SP Breakdown Toggle ===== */
 .breakdownToggle {
   width: 100%; padding: 8px 20px; background: var(--seal); border: none;
-  font-size: 10px; color: var(--sead); font-family: var(--gothic);
+  font-size: 12px; color: var(--sead); font-family: var(--gothic);
   display: flex; align-items: center; justify-content: space-between; cursor: pointer;
   border-bottom: 0.5px solid var(--seam);
 }
@@ -35,10 +35,10 @@
 }
 .breakdownPanelOpen { max-height: 400px; }
 .breakdownInner { padding: 8px 20px 12px; }
-.bkItem { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 0.5px solid rgba(184,221,240,.3); font-size: 11px; }
+.bkItem { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 0.5px solid rgba(184,221,240,.3); font-size: 13px; }
 .bkLabel { color: var(--t2); flex: 1; }
 .bkPrice { color: var(--t1); min-width: 60px; text-align: right; white-space: nowrap; }
-.bkPricePending { color: var(--t2); font-size: 10px; }
+.bkPricePending { color: var(--t2); font-size: 11px; }
 
 /* ===== SP Main Scroll ===== */
 .simMain { padding: 20px 20px 60px; overflow-y: auto; }
@@ -50,7 +50,7 @@
 /* ===== Guest Slider ===== */
 .guestsBlock { margin-bottom: 24px; }
 .gTop { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.gLabel { font-size: 13px; font-family: var(--mincho); color: var(--t1); }
+.gLabel { font-size: 14px; font-family: var(--mincho); color: var(--t1); }
 .gValWrap { display: flex; align-items: baseline; gap: 3px; }
 .gVal { font-family: var(--num); font-size: 28px; color: var(--sead); font-style: italic; font-weight: 300; }
 .gUnit { font-size: 12px; color: var(--t2); }
@@ -70,7 +70,7 @@
 .accIdx { font-family: var(--num); font-size: 13px; font-weight: 300; font-style: italic; color: rgba(58,143,191,.3); min-width: 20px; }
 .accLabel { font-family: var(--mincho); font-size: 14px; font-weight: 400; color: var(--t1); flex: 1; letter-spacing: .04em; }
 .accPrice { font-size: 12px; color: var(--t1); min-width: 72px; text-align: right; margin-right: 6px; white-space: nowrap; }
-.accPricePending { color: var(--t2); font-size: 10px; }
+.accPricePending { color: var(--t2); font-size: 11px; }
 .accChev { width: 14px; height: 14px; flex-shrink: 0; color: var(--t2); transition: transform .2s; }
 .accChevOpen { transform: rotate(180deg); }
 .accBody { padding: 4px 0 16px 28px; }
@@ -85,14 +85,14 @@
 .optDot { width: 6px; height: 6px; border-radius: 50%; background: var(--sea); display: none; }
 .optOn .optDot { display: block; }
 .optInfo { flex: 1; min-width: 0; }
-.optName { font-size: 11px; color: var(--t1); line-height: 1.4; }
-.optDesc { font-size: 10px; color: var(--t2); margin-top: 2px; line-height: 1.45; }
-.optPrice { font-size: 10px; color: var(--t1); min-width: 64px; text-align: right; padding-top: 2px; flex-shrink: 0; }
+.optName { font-size: 13px; color: var(--t1); line-height: 1.4; }
+.optDesc { font-size: 12px; color: var(--t2); margin-top: 2px; line-height: 1.45; }
+.optPrice { font-size: 13px; color: var(--t1); min-width: 64px; text-align: right; padding-top: 2px; flex-shrink: 0; }
 .optPricePP { color: var(--sead); }
 
 /* ===== Creator Picker ===== */
 .crPicker { padding: 8px 0 8px 28px; }
-.crPickerLabel { font-size: 10px; letter-spacing: .12em; color: var(--sea); margin-bottom: 8px; text-transform: uppercase; }
+.crPickerLabel { font-size: 11px; letter-spacing: .12em; color: var(--sea); margin-bottom: 8px; text-transform: uppercase; }
 .crPickerGrid { display: flex; flex-direction: column; gap: 6px; }
 .crPickerCard {
   padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border);
@@ -101,7 +101,7 @@
 .crPickerCard:hover { border-color: var(--seam); }
 .crPickerCardOn { border-color: var(--sea); background: var(--seal); }
 .crPickerName { font-family: var(--mincho); font-size: 13px; color: var(--t1); margin-bottom: 2px; }
-.crPickerRole { font-size: 9px; color: var(--t2); letter-spacing: .08em; margin-bottom: 4px; }
+.crPickerRole { font-size: 12px; color: var(--t2); letter-spacing: .08em; margin-bottom: 4px; }
 .crPickerPrice { font-family: var(--num); font-size: 14px; color: var(--sead); font-style: italic; }
 
 /* ===== PC Layout ===== */
@@ -120,15 +120,15 @@
 
   /* Right panel inner */
   .rightInner { padding: 28px 28px 20px; background: var(--bg); border-bottom: 0.5px solid var(--border); flex-shrink: 0; }
-  .rightLabel { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--t2); margin-bottom: 10px; display: block; }
+  .rightLabel { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--t2); margin-bottom: 10px; display: block; }
   .rightAmountRow { display: flex; align-items: baseline; gap: 6px; margin-bottom: 6px; }
   .rightAmount { font-family: var(--num); font-size: 44px; color: var(--t1); font-style: italic; font-weight: 300; line-height: 1; }
   .rightUnit { font-size: 13px; color: var(--t2); }
-  .rightNote { font-size: 11px; color: var(--t2); margin-bottom: 16px; line-height: 1.6; }
+  .rightNote { font-size: 12px; color: var(--t2); margin-bottom: 16px; line-height: 1.6; }
   .rightBarWrap { height: 3px; background: var(--seam); border-radius: 2px; overflow: hidden; }
   .rightBar { height: 100%; background: var(--sea); border-radius: 2px; transition: width .3s; }
   .rightBkLbl {
-    font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--t2);
+    font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--t2);
     padding: 14px 28px 10px; border-bottom: 0.5px solid var(--border); flex-shrink: 0;
   }
   .rightBreakdown { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: var(--seam) transparent; }
@@ -137,7 +137,7 @@
   .rbItem { display: flex; align-items: center; justify-content: space-between; padding: 10px 28px; border-bottom: 0.5px solid var(--border); font-size: 13px; }
   .rbLabel { color: var(--t1); flex: 1; }
   .rbPrice { color: var(--t1); min-width: 76px; text-align: right; white-space: nowrap; }
-  .rbPricePending { color: var(--t2); font-size: 11px; }
+  .rbPricePending { color: var(--t2); font-size: 12px; }
   .rightCtas {
     padding: 18px 28px 22px; background: var(--bg); border-top: 0.5px solid var(--border);
     display: flex; flex-direction: column; gap: 8px; flex-shrink: 0;
@@ -149,15 +149,15 @@
   }
   .rCtaConsult {
     width: 100%; background: var(--bark); color: #f5ece0; border: none; padding: 12px;
-    border-radius: 22px; font-size: 12px; letter-spacing: .06em; cursor: pointer; font-family: var(--gothic);
+    border-radius: 22px; font-size: 13px; letter-spacing: .06em; cursor: pointer; font-family: var(--gothic);
     display: flex; align-items: center; justify-content: center; text-align: center;
   }
   .rCtaPdf {
     width: 100%; background: var(--sand); color: var(--t2); border: none; padding: 10px;
-    border-radius: 22px; font-size: 11px; cursor: pointer; font-family: var(--gothic);
+    border-radius: 22px; font-size: 12px; cursor: pointer; font-family: var(--gothic);
     display: flex; align-items: center; justify-content: center; text-align: center;
   }
-  .rDisclaimer { font-size: 10px; color: var(--t2); line-height: 1.6; margin-top: 10px; padding: 0 4px; }
+  .rDisclaimer { font-size: 11px; color: var(--t2); line-height: 1.6; margin-top: 10px; padding: 0 4px; }
 }
 @media (min-width: 768px) and (max-width: 1023px) {
   .simMain { padding: 24px 32px 60px; }

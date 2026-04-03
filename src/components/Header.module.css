@@ -44,7 +44,7 @@
 }
 
 .navLink {
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 0.08em;
   color: var(--t2);
   transition: color 0.2s;
@@ -68,7 +68,7 @@
   justify-content: center;
   height: 36px;
   padding-inline: 16px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   border: 1px solid var(--sea);
   color: var(--sea);
@@ -86,7 +86,7 @@
   justify-content: center;
   height: 36px;
   padding-inline: 16px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   background: var(--sea);
   color: #fff;
@@ -217,6 +217,6 @@
   }
 
   .navLink {
-    font-size: 13px;
+    font-size: 14px;
   }
 }
