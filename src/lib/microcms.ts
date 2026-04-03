@@ -1,16 +1,12 @@
-/**
- * microCMS client setup
- *
- * Usage:
- *   import { client } from '@/lib/microcms';
- *   const data = await client.get({ endpoint: 'creators' });
- *
- * Requires env vars:
- *   MICROCMS_SERVICE_DOMAIN
- *   MICROCMS_API_KEY
- */
+import { createClient } from "microcms-js-sdk";
 
-// ---------- Types ----------
+// ---------- Client ----------
+export const client = createClient({
+  serviceDomain: process.env.MICROCMS_SERVICE_DOMAIN || "",
+  apiKey: process.env.MICROCMS_API_KEY || "",
+});
+
+// ---------- Common Types ----------
 export interface MicroCMSImage {
   url: string;
   height: number;
@@ -25,61 +21,160 @@ export interface MicroCMSContent {
   revisedAt: string;
 }
 
-export interface Creator extends MicroCMSContent {
+// ---------- Category (relation) ----------
+export interface CMSCategory extends MicroCMSContent {
   name: string;
-  role: string;
-  image?: MicroCMSImage;
+}
+
+// ---------- Creator ----------
+export interface CMSCreator extends MicroCMSContent {
+  name: string;
+  role?: string;
+  category?: CMSCategory;       // リレーション（単一）
+  price?: number;
+  tags?: string[];
   profile?: string;
-  slug: string;
+  images?: MicroCMSImage[];
+  works?: MicroCMSImage[];
 }
 
-export interface JournalArticle extends MicroCMSContent {
+// ---------- Journal Article ----------
+export interface CMSArticle extends MicroCMSContent {
   title: string;
-  slug: string;
-  body: string;
+  slug?: string;
+  category?: CMSCategory;       // リレーション（単一）
+  body: string;                 // リッチエディタ HTML
+  excerpt?: string;
   thumbnail?: MicroCMSImage;
-  category?: string[];
+  author?: string;
+  date?: string;
 }
 
-export interface Venue extends MicroCMSContent {
+// ---------- Venue ----------
+export interface CMSVenue extends MicroCMSContent {
   name: string;
-  area: string;
+  area?: string;
   image?: MicroCMSImage;
   capacity?: string;
+  description?: string;
 }
 
-// ---------- Client placeholder ----------
-// The actual client will be initialized when microcms-js-sdk is configured.
-// For now, export a placeholder that throws if called without env vars.
-
-function getServiceDomain(): string {
-  const domain = process.env.MICROCMS_SERVICE_DOMAIN;
-  if (!domain) {
-    throw new Error("MICROCMS_SERVICE_DOMAIN is not set");
-  }
-  return domain;
+// ---------- News ----------
+export interface CMSNews extends MicroCMSContent {
+  title: string;
+  body: string;
+  date?: string;
 }
 
-function getApiKey(): string {
-  const key = process.env.MICROCMS_API_KEY;
-  if (!key) {
-    throw new Error("MICROCMS_API_KEY is not set");
-  }
-  return key;
-}
-
-export const microCMSConfig = {
-  get serviceDomain() {
-    return getServiceDomain();
-  },
-  get apiKey() {
-    return getApiKey();
-  },
+// ---------- API Response ----------
+type ListResponse<T> = {
+  contents: T[];
+  totalCount: number;
+  offset: number;
+  limit: number;
 };
 
-// TODO: Initialize the actual client:
-// import { createClient } from 'microcms-js-sdk';
-// export const client = createClient({
-//   serviceDomain: microCMSConfig.serviceDomain,
-//   apiKey: microCMSConfig.apiKey,
-// });
+// ---------- Safe fetch wrapper ----------
+// microCMS がまだデータ0件 or API未設定でもクラッシュしない
+async function safeFetch<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
+  try {
+    return await fn();
+  } catch (e) {
+    console.warn("[microCMS]", e instanceof Error ? e.message : e);
+    return fallback;
+  }
+}
+
+const EMPTY_LIST = { contents: [], totalCount: 0, offset: 0, limit: 0 };
+
+// ---------- Creators ----------
+export async function getCreators(params?: {
+  limit?: number;
+  offset?: number;
+  filters?: string;
+}) {
+  return safeFetch(
+    () =>
+      client.get<ListResponse<CMSCreator>>({
+        endpoint: "creators",
+        queries: {
+          limit: params?.limit ?? 100,
+          offset: params?.offset ?? 0,
+          filters: params?.filters,
+          orders: "-publishedAt",
+        },
+      }),
+    EMPTY_LIST as ListResponse<CMSCreator>
+  );
+}
+
+export async function getCreatorById(id: string) {
+  return safeFetch(
+    () => client.get<CMSCreator>({ endpoint: "creators", contentId: id }),
+    null as CMSCreator | null
+  );
+}
+
+// ---------- Articles ----------
+export async function getArticles(params?: {
+  limit?: number;
+  offset?: number;
+  filters?: string;
+}) {
+  return safeFetch(
+    () =>
+      client.get<ListResponse<CMSArticle>>({
+        endpoint: "articles",
+        queries: {
+          limit: params?.limit ?? 20,
+          offset: params?.offset ?? 0,
+          filters: params?.filters,
+          orders: "-publishedAt",
+        },
+      }),
+    EMPTY_LIST as ListResponse<CMSArticle>
+  );
+}
+
+export async function getArticleBySlug(slug: string) {
+  const res = await safeFetch(
+    () =>
+      client.get<ListResponse<CMSArticle>>({
+        endpoint: "articles",
+        queries: { filters: `slug[equals]${slug}`, limit: 1 },
+      }),
+    EMPTY_LIST as ListResponse<CMSArticle>
+  );
+  return res.contents[0] ?? null;
+}
+
+export async function getArticleById(id: string) {
+  return safeFetch(
+    () => client.get<CMSArticle>({ endpoint: "articles", contentId: id }),
+    null as CMSArticle | null
+  );
+}
+
+// ---------- Venues ----------
+export async function getVenues(params?: { limit?: number }) {
+  return safeFetch(
+    () =>
+      client.get<ListResponse<CMSVenue>>({
+        endpoint: "venues",
+        queries: { limit: params?.limit ?? 50 },
+      }),
+    EMPTY_LIST as ListResponse<CMSVenue>
+  );
+}
+
+// ---------- News ----------
+export async function getNews(params?: { limit?: number }) {
+  return safeFetch(
+    () =>
+      client.get<ListResponse<CMSNews>>({
+        endpoint: "news",
+        queries: { limit: params?.limit ?? 10, orders: "-publishedAt" },
+      }),
+    EMPTY_LIST as ListResponse<CMSNews>
+  );
+}
