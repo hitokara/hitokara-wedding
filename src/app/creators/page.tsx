@@ -106,7 +106,7 @@ export default function CreatorsPage() {
             <div className={s.pageHdrRow}>
               <div>
                 <span className={s.pageEye}>Meet our creators</span>
-                <h1 className={s.pageH1}>クリエイターを<br /><em>「人」で選ぶ</em></h1>
+                <h1 className={s.pageH1}>横浜・鎌倉の<br />ウェディング<em>クリエイター</em></h1>
               </div>
               <div style={{ textAlign: "right", paddingTop: 8 }}>
                 <div className={s.totalCount}>{filtered.length}</div>

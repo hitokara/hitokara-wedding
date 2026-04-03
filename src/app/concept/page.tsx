@@ -5,7 +5,12 @@ import s from "./page.module.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "CONCEPT | ヒトカラウェディング",
+  title: "コンセプト - 人から選ぶ、持ち込み自由・適正価格のウェディング",
+  description:
+    "ヒトカラウェディングのコンセプト。横浜・鎌倉エリアで、式場ではなく「人（クリエイター）」から選ぶ新しいウェディングスタイル。持ち込み自由・適正価格・透明な見積もりで、ふたりらしい結婚式をプロデュースします。鶴岡八幡宮・鎌倉宮での神前式にも対応。",
+  alternates: {
+    canonical: "https://hitokara-wedding.com/concept",
+  },
 };
 
 const PROBLEMS = [
@@ -26,11 +31,51 @@ const PROMISES = [
   { num: "03", t: "すべて持込可能", d: "料理・装花・映像・衣装、すべて外部からの持込に対応しています。" },
 ];
 
+const FAQ_ITEMS = [
+  {
+    q: "横浜・鎌倉で持ち込み自由の結婚式はできますか？",
+    a: "はい、ヒトカラウェディングでは横浜・鎌倉エリアのすべての提携会場で持ち込みが自由です。カメラマン、映像、ヘアメイク、装花、衣装など、すべてのクリエイターやアイテムを外部から持ち込むことができます。持ち込み料は一切かかりません。",
+  },
+  {
+    q: "ヒトカラウェディングの結婚式の費用相場は？",
+    a: "ゲスト人数やプラン内容によりますが、40名規模で約200万〜350万円が目安です。サイト内の見積もりシミュレーターでリアルタイムに概算を確認でき、表示された金額がそのまま最終金額になります。追加費用が後から発生することはありません。",
+  },
+  {
+    q: "鶴岡八幡宮で結婚式を挙げられますか？",
+    a: "はい、鶴岡八幡宮での神前式に対応しています。鎌倉宮をはじめ、鎌倉エリアの神社・寺院での挙式プランをご用意しており、挙式後の披露宴会場への手配もトータルでサポートします。",
+  },
+  {
+    q: "フリーランスのカメラマンやヘアメイクを指名できますか？",
+    a: "ヒトカラウェディングでは、すべてのクリエイター（プランナー・カメラマン・ヘアメイク・映像・司会・フラワー）の顔写真・作品・料金をサイト上で公開しています。気になるクリエイターを事前に確認し、直接指名して依頼できます。",
+  },
+  {
+    q: "結婚式の見積もりはどうやって確認できますか？",
+    a: "サイト内の見積もりシミュレーターで、ゲスト人数・会場・各クリエイターを選ぶだけでリアルタイムに合計金額を試算できます。会員登録不要・無料でご利用いただけます。詳しくはLINEからお気軽にご相談ください。",
+  },
+];
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ_ITEMS.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.a,
+    },
+  })),
+};
+
 export default function ConceptPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       {/* Hero */}
-      <section className={s.cpHero}>
+      <section className={s.cpHero} aria-label="コンセプト">
         <div className={s.cpHeroBg}>98<br />1.8</div>
         <div className={s.cpHeroContent}>
           <AnimateOnScroll animation="slideRight">
@@ -38,14 +83,14 @@ export default function ConceptPage() {
           </AnimateOnScroll>
           <AnimateOnScroll animation="fadeUp" delay={80}>
             <h1 className={s.cpHeroH1}>
-              人から選べる、<br /><em>ふたりらしい</em><br />結婚式をつくる。
+              横浜・鎌倉で、<br />持ち込み自由・適正価格の<br /><em>ふたりらしい結婚式</em>をつくる。
             </h1>
           </AnimateOnScroll>
           <AnimateOnScroll animation="fadeUp" delay={160}>
             <p className={s.cpHeroLead}>
               情報のわかりにくさ、価格の不透明さ、選択肢の少なさ。<br />
               ヒトカラウェディングは、そうした不安を減らし、<br />
-              ちゃんと納得して選べる結婚式を増やすために生まれました。
+              横浜・鎌倉エリアでちゃんと納得して選べる結婚式を増やすために生まれました。
             </p>
           </AnimateOnScroll>
         </div>
@@ -70,7 +115,7 @@ export default function ConceptPage() {
       </section>
 
       {/* Brand Story */}
-      <section className={s.cpBrand}>
+      <section className={s.cpBrand} aria-label="ブランドストーリー">
         <div className={s.cpBrandImg}>
           <span className={s.cpBrandImgLabel}>PHOTO AREA</span>
         </div>
@@ -195,6 +240,36 @@ export default function ConceptPage() {
             </div>
           </AnimateOnScroll>
         </div>
+      </section>
+
+      {/* FAQ */}
+      <section className={s.cpProb} aria-label="よくある質問">
+        <div className={s.cpProbHead}>
+          <AnimateOnScroll animation="slideRight">
+            <span className={s.secEye}>FAQ</span>
+          </AnimateOnScroll>
+          <AnimateOnScroll animation="fadeUp" delay={80}>
+            <h2 className={s.secH2}>よくある<em>ご質問</em>。</h2>
+          </AnimateOnScroll>
+        </div>
+        <div className={s.cpProbGrid}>
+          {FAQ_ITEMS.map((item, i) => (
+            <AnimateOnScroll key={i} animation="fadeUp" delay={80 + i * 80}>
+              <div className={s.cpProbItem}>
+                <div className={s.cpProbNum}>Q</div>
+                <div>
+                  <div className={s.cpProbT}>{item.q}</div>
+                  <div className={s.cpProbD}>{item.a}</div>
+                </div>
+              </div>
+            </AnimateOnScroll>
+          ))}
+        </div>
+        <AnimateOnScroll animation="fadeUp" delay={160}>
+          <div style={{ textAlign: "center", marginTop: 32 }}>
+            <Link href="/simulation" className={s.cpCtaSubBtn}>見積もりシミュレーターを試す</Link>
+          </div>
+        </AnimateOnScroll>
       </section>
 
       {/* CTA */}

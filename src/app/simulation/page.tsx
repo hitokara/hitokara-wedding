@@ -183,7 +183,7 @@ export default function SimulationPage() {
 
       {/* SP: Main Scrollable */}
       <div className={s.simMain}>
-        <h1 className={s.pageH1}>見積もり<em>シミュレーター</em></h1>
+        <h1 className={s.pageH1}>結婚式費用の<em>見積もりシミュレーター</em></h1>
         <div className={s.guestsBlock}>
           <div className={s.gTop}>
             <div className={s.gLabel}>ゲスト人数</div>
@@ -207,7 +207,7 @@ export default function SimulationPage() {
 
       {/* PC: Left Column */}
       <div className={s.simLeft}>
-        <h1 className={s.pageH1}>見積もり<em>シミュレーター</em></h1>
+        <h1 className={s.pageH1}>結婚式費用の<em>見積もりシミュレーター</em></h1>
         <div className={s.guestsBlock}>
           <div className={s.gTop}>
             <div className={s.gLabel}>ゲスト人数</div>

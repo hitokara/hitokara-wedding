@@ -6,7 +6,12 @@ import s from "./page.module.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "JOURNAL | ヒトカラウェディング",
+  title: "ジャーナル - 結婚式準備のヒントと横浜・鎌倉の会場情報",
+  description:
+    "横浜・鎌倉エリアの結婚式に関するジャーナル。会場レポート、クリエイター紹介、費用・見積もりのノウハウ、持ち込み自由のウェディングスタイルなど、ふたりらしい結婚式づくりのヒントをお届けします。",
+  alternates: {
+    canonical: "https://hitokara-wedding.com/journal",
+  },
 };
 
 const SIDE_CATS = [
@@ -31,7 +36,7 @@ export default function JournalPage() {
             <span className={s.pageEye}>Journal</span>
           </AnimateOnScroll>
           <AnimateOnScroll animation="fadeUp" delay={80}>
-            <h1 className={s.pageH1}>結婚式の<em>ヒント</em>と物語</h1>
+            <h1 className={s.pageH1}>横浜・鎌倉の結婚式<em>ジャーナル</em></h1>
           </AnimateOnScroll>
         </div>
 

@@ -1,8 +1,18 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { CREATORS_LIST } from "@/lib/creators";
 import { ARTICLES } from "@/lib/articles";
 import s from "./page.module.css";
+
+export const metadata: Metadata = {
+  title: "横浜・鎌倉で、ふたりらしい結婚式を | ヒトカラウェディング",
+  description:
+    "横浜・鎌倉エリアで、クリエイターを自分で選べるウェディングプロデュース。持ち込み自由・適正価格の結婚式。カメラマン・プランナー・ヘアメイクを顔と実績で指名。鶴岡八幡宮・鎌倉宮での神前式にも対応。見積もりシミュレーターで費用をリアルタイム試算。",
+  alternates: {
+    canonical: "https://hitokara-wedding.com",
+  },
+};
 
 const VALUES = [
   { num: "Value 01", title: "人で選ぶ", desc: "顔・想い・料金を確認してから指名できる。だから安心して任せられます。" },
@@ -48,7 +58,7 @@ export default function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className={s.hero}>
+      <section className={s.hero} aria-label="ヒトカラウェディング - 横浜・鎌倉のウェディングプロデュース">
         <div className={s.heroImgArea}>
           <div className={s.heroImg} />
           <div className={s.heroOverlay} />
@@ -60,14 +70,14 @@ export default function HomePage() {
           </AnimateOnScroll>
           <AnimateOnScroll animation="fadeUp" delay={80}>
             <h1 className={s.heroH1}>
-              ふたりらしい<br /><em>結婚式</em>を、<br />人から選ぶ。
+              横浜・鎌倉で<br /><em>ふたりらしい結婚式</em>を、<br />人から選ぶ。
             </h1>
           </AnimateOnScroll>
           <AnimateOnScroll animation="fadeUp" delay={160}>
             <p className={s.heroSub}>
-              プランナー・カメラマン・ヘアメイク&hellip;<br />
-              すべてのクリエイターを顔で選べる。<br />
-              持込自由・明朗会計のウェディングブランド。
+              ウェディングプランナー・カメラマン・ヘアメイク&hellip;<br />
+              すべてのクリエイターを顔と実績で選べる。<br />
+              持ち込み自由・適正価格のウェディングプロデュース。
             </p>
           </AnimateOnScroll>
           <AnimateOnScroll animation="fadeUp" delay={240}>
@@ -87,7 +97,7 @@ export default function HomePage() {
       </section>
 
       {/* Values */}
-      <section className={s.valSec}>
+      <section className={s.valSec} aria-label="ヒトカラウェディングの特徴">
         <AnimateOnScroll animation="slideRight">
           <span className={s.secEye}>Our Values</span>
         </AnimateOnScroll>
@@ -115,7 +125,7 @@ export default function HomePage() {
       </div>
 
       {/* Creator Track */}
-      <section className={s.crSec}>
+      <section className={s.crSec} aria-label="クリエイター紹介">
         <div className={s.crHdr}>
           <div>
             <AnimateOnScroll animation="slideRight">
@@ -146,7 +156,7 @@ export default function HomePage() {
       </section>
 
       {/* How It Works */}
-      <section className={s.howSec}>
+      <section className={s.howSec} aria-label="ご利用の流れ">
         <AnimateOnScroll animation="slideRight">
           <span className={s.secEye}>How it works</span>
         </AnimateOnScroll>
@@ -169,7 +179,7 @@ export default function HomePage() {
       </section>
 
       {/* Venues */}
-      <section className={s.venuesSec} id="venues">
+      <section className={s.venuesSec} id="venues" aria-label="横浜・鎌倉の結婚式会場">
         <AnimateOnScroll animation="slideRight">
           <span className={s.secEye}>Venues</span>
         </AnimateOnScroll>
@@ -194,7 +204,7 @@ export default function HomePage() {
       </section>
 
       {/* Journal */}
-      <section className={s.jSec}>
+      <section className={s.jSec} aria-label="ジャーナル - 結婚式のヒント">
         <AnimateOnScroll animation="slideRight">
           <span className={s.secEye}>Journal</span>
         </AnimateOnScroll>
@@ -220,7 +230,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className={s.ctaSec}>
+      <section className={s.ctaSec} aria-label="無料相談">
         <div className={s.ctaEye}>Free consultation</div>
         <AnimateOnScroll animation="fadeUp">
           <h2 className={s.ctaH}>まず、話してみませんか。</h2>
