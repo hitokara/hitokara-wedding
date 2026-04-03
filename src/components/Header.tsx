@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import styles from "./Header.module.css";
 
@@ -8,7 +8,6 @@ const NAV_ITEMS = [
   { href: "/", label: "TOP" },
   { href: "/concept", label: "CONCEPT" },
   { href: "/creators", label: "CREATORS" },
-  { href: "#venues", label: "VENUES" },
   { href: "/simulation", label: "SIMULATION" },
   { href: "/journal", label: "JOURNAL" },
 ] as const;
@@ -23,6 +22,17 @@ export default function Header() {
   const closeDrawer = useCallback(() => {
     setDrawerOpen(false);
   }, []);
+
+  useEffect(() => {
+    if (drawerOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [drawerOpen]);
 
   return (
     <header className={styles.header}>

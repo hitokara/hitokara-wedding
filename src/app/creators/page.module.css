@@ -126,6 +126,7 @@
 .modalBtnSim {
   height: 42px; border-radius: 21px; border: 0.5px solid var(--border2); background: none;
   color: var(--t1); font-size: 12px; font-family: var(--gothic); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; text-align: center;
 }
 .pip { width: 7px; height: 7px; background: #7ee8a2; border-radius: 50%; flex-shrink: 0; display: block; }
 

@@ -12,6 +12,10 @@ export interface CategoryItem {
   price: number;
   unit?: string;
   note?: string;
+  /** If 1, this option enables creator nomination */
+  nom?: 1;
+  /** Creator category key for nomination (matches Creator.cat) */
+  ck?: string;
 }
 
 export interface CategoryGroup {
@@ -59,12 +63,16 @@ export const PLANNERS: CategoryItem[] = [
   { id: "planner-b", label: "プロデュース会社", price: 450000 },
 ];
 
-/** Creator options */
+/** Creator options (with nomination support) */
 export const CREATORS: CategoryItem[] = [
-  { id: "photo", label: "フォトグラファー", price: 200000 },
-  { id: "video", label: "ビデオグラファー", price: 250000 },
-  { id: "mc", label: "司会者", price: 100000 },
-  { id: "hair", label: "ヘアメイク", price: 80000 },
+  { id: "photo-std", label: "フォトグラファー（おまかせ）", price: 200000, note: "スタイル希望に合わせて手配" },
+  { id: "photo-nom", label: "クリエイター指名", price: 0, nom: 1, ck: "photo", note: "気になるカメラマンを直接指名" },
+  { id: "video-std", label: "ビデオグラファー（おまかせ）", price: 250000, note: "スタイル希望に合わせて手配" },
+  { id: "video-nom", label: "クリエイター指名", price: 0, nom: 1, ck: "movie", note: "気になる映像クリエイターを直接指名" },
+  { id: "mc-std", label: "司会者（おまかせ）", price: 100000, note: "経験豊富な司会者を手配" },
+  { id: "mc-nom", label: "クリエイター指名", price: 0, nom: 1, ck: "mc", note: "気になる司会者を直接指名" },
+  { id: "hair-std", label: "ヘアメイク（おまかせ）", price: 80000, note: "スタイル希望に合わせて手配" },
+  { id: "hair-nom", label: "クリエイター指名", price: 0, nom: 1, ck: "hair", note: "気になるヘアメイクを直接指名" },
 ];
 
 /** Flower / decoration main options */

@@ -90,6 +90,20 @@
 .optPrice { font-size: 10px; color: var(--t1); min-width: 64px; text-align: right; padding-top: 2px; flex-shrink: 0; }
 .optPricePP { color: var(--sead); }
 
+/* ===== Creator Picker ===== */
+.crPicker { padding: 8px 0 8px 28px; }
+.crPickerLabel { font-size: 10px; letter-spacing: .12em; color: var(--sea); margin-bottom: 8px; text-transform: uppercase; }
+.crPickerGrid { display: flex; flex-direction: column; gap: 6px; }
+.crPickerCard {
+  padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--bg); cursor: pointer; transition: border-color .15s, background .15s;
+}
+.crPickerCard:hover { border-color: var(--seam); }
+.crPickerCardOn { border-color: var(--sea); background: var(--seal); }
+.crPickerName { font-family: var(--mincho); font-size: 13px; color: var(--t1); margin-bottom: 2px; }
+.crPickerRole { font-size: 9px; color: var(--t2); letter-spacing: .08em; margin-bottom: 4px; }
+.crPickerPrice { font-family: var(--num); font-size: 14px; color: var(--sead); font-style: italic; }
+
 /* ===== PC Layout ===== */
 @media (min-width: 1024px) {
   .simWrap { flex-direction: row; height: calc(100vh - var(--hdr-h)); min-height: 400px; overflow: hidden; }
@@ -136,10 +150,12 @@
   .rCtaConsult {
     width: 100%; background: var(--bark); color: #f5ece0; border: none; padding: 12px;
     border-radius: 22px; font-size: 12px; letter-spacing: .06em; cursor: pointer; font-family: var(--gothic);
+    display: flex; align-items: center; justify-content: center; text-align: center;
   }
   .rCtaPdf {
     width: 100%; background: var(--sand); color: var(--t2); border: none; padding: 10px;
     border-radius: 22px; font-size: 11px; cursor: pointer; font-family: var(--gothic);
+    display: flex; align-items: center; justify-content: center; text-align: center;
   }
   .rDisclaimer { font-size: 10px; color: var(--t2); line-height: 1.6; margin-top: 10px; padding: 0 4px; }
 }

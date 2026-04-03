@@ -528,6 +528,11 @@
   font-size: 13px;
   font-family: var(--gothic);
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 28px;
 }
 .pip {
   width: 7px;

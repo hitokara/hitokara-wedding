@@ -126,6 +126,10 @@
   color: var(--t1);
   font-family: var(--gothic);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 .heroSimLink {
   font-size: 11px;
@@ -606,6 +610,10 @@
   font-size: 13px;
   font-family: var(--gothic);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 @media (min-width: 768px) {

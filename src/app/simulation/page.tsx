@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { CATS, PLANNERS, CREATORS, FLOWER_MAIN, fmtP } from "@/lib/simulation";
+import { CREATORS_LIST } from "@/lib/creators";
 import type { CategoryItem } from "@/lib/simulation";
 import s from "./page.module.css";
 
@@ -10,20 +11,24 @@ interface AccData {
   id: string;
   idx: string;
   title: string;
-  items: { id: string; label: string; price: number; unit?: string; note?: string }[];
+  items: CategoryItem[];
 }
 
-function buildAccordionData(guests: number): AccData[] {
+function buildAccordionData(): AccData[] {
+  const hairItems = CREATORS.filter((c) => c.ck === "hair" || c.id === "hair-std");
+  const mcItems = CREATORS.filter((c) => c.ck === "mc" || c.id === "mc-std");
+  const photoItems = CREATORS.filter((c) => c.ck === "photo" || c.id === "photo-std");
+  const videoItems = CREATORS.filter((c) => c.ck === "movie" || c.id === "video-std");
   return [
     { id: "planner", idx: "01", title: "プランニング", items: PLANNERS },
     { id: "venue", idx: "02", title: "会場", items: CATS[0].items },
     { id: "food", idx: "03", title: "料理・飲物", items: CATS[1].items },
     { id: "dress", idx: "04", title: "衣装", items: CATS[2].items },
     { id: "flower", idx: "05", title: "装花", items: FLOWER_MAIN },
-    { id: "hair", idx: "06", title: "ヘアメイク", items: [CREATORS[3]] },
-    { id: "mc", idx: "07", title: "司会", items: [CREATORS[2]] },
-    { id: "photo", idx: "08", title: "写真", items: [CREATORS[0]] },
-    { id: "video", idx: "09", title: "映像", items: [CREATORS[1]] },
+    { id: "hair", idx: "06", title: "ヘアメイク", items: hairItems },
+    { id: "mc", idx: "07", title: "司会", items: mcItems },
+    { id: "photo", idx: "08", title: "写真", items: photoItems },
+    { id: "video", idx: "09", title: "映像", items: videoItems },
   ];
 }
 
@@ -48,11 +53,15 @@ function AccordionSection({
   guests,
   selections,
   onSelect,
+  creatorNoms,
+  onCreatorNom,
 }: {
   data: AccData[];
   guests: number;
   selections: Record<string, string>;
   onSelect: (catId: string, itemId: string) => void;
+  creatorNoms: Record<string, string>;
+  onCreatorNom: (catId: string, creatorId: string) => void;
 }) {
   const [openCats, setOpenCats] = useState<Set<string>>(new Set());
 
@@ -71,7 +80,16 @@ function AccordionSection({
         const isOpen = openCats.has(cat.id);
         const sel = selections[cat.id];
         const selItem = cat.items.find((it) => it.id === sel);
-        const price = selItem ? (selItem.unit === "\u4eba" ? selItem.price * guests : selItem.price) : 0;
+        // For nomination items, use the nominated creator's price
+        let price = 0;
+        if (selItem) {
+          if (selItem.nom === 1 && creatorNoms[cat.id]) {
+            const nominated = CREATORS_LIST.find((c) => c.id === creatorNoms[cat.id]);
+            price = nominated?.price ?? 0;
+          } else {
+            price = selItem.unit === "\u4eba" ? selItem.price * guests : selItem.price;
+          }
+        }
 
         return (
           <div key={cat.id} className={s.accItem}>
@@ -88,25 +106,37 @@ function AccordionSection({
                 <div className={s.optList}>
                   {cat.items.map((item) => {
                     const on = sel === item.id;
-                    const displayPrice = item.unit === "\u4eba"
-                      ? `\u00a5${fmtP(item.price)}/\u4eba`
-                      : `\u00a5${fmtP(item.price)}`;
+                    const displayPrice = item.nom === 1
+                      ? "\u6307\u540d"
+                      : item.unit === "\u4eba"
+                        ? `\u00a5${fmtP(item.price)}/\u4eba`
+                        : `\u00a5${fmtP(item.price)}`;
                     return (
-                      <div
-                        key={item.id}
-                        className={`${s.opt} ${on ? s.optOn : ""}`}
-                        onClick={() => onSelect(cat.id, item.id)}
-                      >
-                        <div className={s.optRadio}>
-                          <div className={s.optDot} />
+                      <div key={item.id}>
+                        <div
+                          className={`${s.opt} ${on ? s.optOn : ""}`}
+                          onClick={() => onSelect(cat.id, item.id)}
+                        >
+                          <div className={s.optRadio}>
+                            <div className={s.optDot} />
+                          </div>
+                          <div className={s.optInfo}>
+                            <div className={s.optName}>{item.label}</div>
+                            {item.note && <div className={s.optDesc}>{item.note}</div>}
+                          </div>
+                          <div className={`${s.optPrice} ${item.nom === 1 ? s.optPricePP : item.unit === "\u4eba" ? s.optPricePP : ""}`}>
+                            {displayPrice}
+                          </div>
                         </div>
-                        <div className={s.optInfo}>
-                          <div className={s.optName}>{item.label}</div>
-                          {item.note && <div className={s.optDesc}>{item.note}</div>}
-                        </div>
-                        <div className={`${s.optPrice} ${item.unit === "\u4eba" ? s.optPricePP : ""}`}>
-                          {displayPrice}
-                        </div>
+                        {/* Creator picker when nomination is selected */}
+                        {on && item.nom === 1 && item.ck && (
+                          <CreatorPicker
+                            catKey={item.ck}
+                            catId={cat.id}
+                            selectedCreatorId={creatorNoms[cat.id] || ""}
+                            onPick={onCreatorNom}
+                          />
+                        )}
                       </div>
                     );
                   })}
@@ -120,25 +150,75 @@ function AccordionSection({
   );
 }
 
+function CreatorPicker({
+  catKey,
+  catId,
+  selectedCreatorId,
+  onPick,
+}: {
+  catKey: string;
+  catId: string;
+  selectedCreatorId: string;
+  onPick: (catId: string, creatorId: string) => void;
+}) {
+  const creators = CREATORS_LIST.filter((c) => c.cat === catKey);
+  if (creators.length === 0) return null;
+
+  return (
+    <div className={s.crPicker}>
+      <div className={s.crPickerLabel}>クリエイターを選択</div>
+      <div className={s.crPickerGrid}>
+        {creators.map((cr) => {
+          const on = selectedCreatorId === cr.id;
+          return (
+            <div
+              key={cr.id}
+              className={`${s.crPickerCard} ${on ? s.crPickerCardOn : ""}`}
+              onClick={() => onPick(catId, cr.id)}
+            >
+              <div className={s.crPickerName}>{cr.name}</div>
+              <div className={s.crPickerRole}>{cr.catLabel}</div>
+              <div className={s.crPickerPrice}>&yen;{cr.price.toLocaleString()}</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function SimulationPage() {
   const [guests, setGuests] = useState(40);
   const [selections, setSelections] = useState<Record<string, string>>({});
+  const [creatorNoms, setCreatorNoms] = useState<Record<string, string>>({});
   const [breakdownOpen, setBreakdownOpen] = useState(false);
 
-  const accData = useMemo(() => buildAccordionData(guests), [guests]);
+  const accData = useMemo(() => buildAccordionData(), []);
 
   const onSelect = useCallback((catId: string, itemId: string) => {
     setSelections((prev) => ({ ...prev, [catId]: itemId }));
+  }, []);
+
+  const onCreatorNom = useCallback((catId: string, creatorId: string) => {
+    setCreatorNoms((prev) => ({ ...prev, [catId]: creatorId }));
   }, []);
 
   const breakdown = useMemo(() => {
     return accData.map((cat) => {
       const sel = selections[cat.id];
       const item = cat.items.find((it) => it.id === sel);
-      const price = item ? (item.unit === "\u4eba" ? item.price * guests : item.price) : 0;
+      let price = 0;
+      if (item) {
+        if (item.nom === 1 && creatorNoms[cat.id]) {
+          const nominated = CREATORS_LIST.find((c) => c.id === creatorNoms[cat.id]);
+          price = nominated?.price ?? 0;
+        } else {
+          price = item.unit === "\u4eba" ? item.price * guests : item.price;
+        }
+      }
       return { id: cat.id, title: cat.title, price, selected: !!sel };
     });
-  }, [accData, selections, guests]);
+  }, [accData, selections, guests, creatorNoms]);
 
   const total = useMemo(() => breakdown.reduce((sum, b) => sum + b.price, 0), [breakdown]);
   const maxBudget = 5000000;
@@ -202,7 +282,7 @@ export default function SimulationPage() {
             onChange={(e) => setGuests(Number(e.target.value))}
           />
         </div>
-        <AccordionSection data={accData} guests={guests} selections={selections} onSelect={onSelect} />
+        <AccordionSection data={accData} guests={guests} selections={selections} onSelect={onSelect} creatorNoms={creatorNoms} onCreatorNom={onCreatorNom} />
       </div>
 
       {/* PC: Left Column */}
@@ -227,7 +307,7 @@ export default function SimulationPage() {
             style={{ width: "100%", marginBottom: 16 }}
           />
         </div>
-        <AccordionSection data={accData} guests={guests} selections={selections} onSelect={onSelect} />
+        <AccordionSection data={accData} guests={guests} selections={selections} onSelect={onSelect} creatorNoms={creatorNoms} onCreatorNom={onCreatorNom} />
       </div>
 
       {/* PC: Right Column */}
