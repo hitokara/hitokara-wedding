@@ -1,0 +1,148 @@
+/* ===== Layout ===== */
+.simWrap { display: flex; flex-direction: column; min-height: calc(100vh - var(--hdr-h)); }
+.pageH1 { font-family: var(--mincho); font-size: 24px; font-weight: 400; line-height: 1.45; letter-spacing: .06em; color: var(--bark); margin-bottom: 20px; }
+.pageH1 em { font-style: normal; color: var(--sead); }
+
+/* ===== SP Total Bar ===== */
+.totalBar {
+  background: var(--seal); border-bottom: 0.5px solid var(--seam); padding: 12px 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  position: sticky; top: var(--hdr-h); z-index: 10; flex-shrink: 0;
+}
+.totalLabel { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--sead); flex-shrink: 0; }
+.totalAmountWrap { display: flex; align-items: baseline; gap: 4px; flex: 1; }
+.totalNum { font-family: var(--num); font-size: 32px; color: var(--sead); font-style: italic; font-weight: 300; line-height: 1; }
+.totalUnit { font-size: 11px; color: var(--sead); }
+.totalCta { flex-shrink: 0; }
+.tctaLine {
+  height: 36px; border-radius: 18px; padding: 0 14px; border: none; background: var(--sea); color: #fff;
+  font-size: 11px; font-family: var(--gothic); display: flex; align-items: center; gap: 5px; cursor: pointer; white-space: nowrap;
+}
+.pip { width: 7px; height: 7px; background: #7ee8a2; border-radius: 50%; flex-shrink: 0; display: block; }
+
+/* ===== SP Breakdown Toggle ===== */
+.breakdownToggle {
+  width: 100%; padding: 8px 20px; background: var(--seal); border: none;
+  font-size: 10px; color: var(--sead); font-family: var(--gothic);
+  display: flex; align-items: center; justify-content: space-between; cursor: pointer;
+  border-bottom: 0.5px solid var(--seam);
+}
+.breakdownToggle svg { transition: transform .2s; }
+.breakdownToggleOpen svg { transform: rotate(180deg); }
+.breakdownPanel {
+  background: var(--seal); border-bottom: 0.5px solid var(--seam);
+  overflow: hidden; max-height: 0; transition: max-height .3s ease;
+}
+.breakdownPanelOpen { max-height: 400px; }
+.breakdownInner { padding: 8px 20px 12px; }
+.bkItem { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 0.5px solid rgba(184,221,240,.3); font-size: 11px; }
+.bkLabel { color: var(--t2); flex: 1; }
+.bkPrice { color: var(--t1); min-width: 60px; text-align: right; white-space: nowrap; }
+.bkPricePending { color: var(--t2); font-size: 10px; }
+
+/* ===== SP Main Scroll ===== */
+.simMain { padding: 20px 20px 60px; overflow-y: auto; }
+
+/* ===== PC-only columns ===== */
+.simLeft { display: none; }
+.simRight { display: none; }
+
+/* ===== Guest Slider ===== */
+.guestsBlock { margin-bottom: 24px; }
+.gTop { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.gLabel { font-size: 13px; font-family: var(--mincho); color: var(--t1); }
+.gValWrap { display: flex; align-items: baseline; gap: 3px; }
+.gVal { font-family: var(--num); font-size: 28px; color: var(--sead); font-style: italic; font-weight: 300; }
+.gUnit { font-size: 12px; color: var(--t2); }
+.rangeInput {
+  width: 100%; height: 4px; appearance: none; -webkit-appearance: none;
+  background: var(--seam); border-radius: 2px; outline: none; border: none; cursor: pointer; display: block;
+}
+.rangeInput::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--sea); border: 3px solid #fff; box-shadow: 0 0 0 1px var(--seam); cursor: pointer;
+}
+
+/* ===== Accordion ===== */
+.accRoot { display: flex; flex-direction: column; }
+.accItem { border-bottom: 0.5px solid var(--border); }
+.accHdr { display: flex; align-items: center; gap: 10px; padding: 14px 0; cursor: pointer; user-select: none; }
+.accIdx { font-family: var(--num); font-size: 13px; font-weight: 300; font-style: italic; color: rgba(58,143,191,.3); min-width: 20px; }
+.accLabel { font-family: var(--mincho); font-size: 14px; font-weight: 400; color: var(--t1); flex: 1; letter-spacing: .04em; }
+.accPrice { font-size: 12px; color: var(--t1); min-width: 72px; text-align: right; margin-right: 6px; white-space: nowrap; }
+.accPricePending { color: var(--t2); font-size: 10px; }
+.accChev { width: 14px; height: 14px; flex-shrink: 0; color: var(--t2); transition: transform .2s; }
+.accChevOpen { transform: rotate(180deg); }
+.accBody { padding: 4px 0 16px 28px; }
+.optList { display: flex; flex-direction: column; gap: 5px; }
+.opt { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; background: var(--bg); }
+.optOn { background: var(--seal); }
+.optRadio {
+  width: 15px; height: 15px; border-radius: 50%; border: 1.5px solid var(--border2);
+  flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center;
+}
+.optOn .optRadio { border-color: var(--sea); }
+.optDot { width: 6px; height: 6px; border-radius: 50%; background: var(--sea); display: none; }
+.optOn .optDot { display: block; }
+.optInfo { flex: 1; min-width: 0; }
+.optName { font-size: 11px; color: var(--t1); line-height: 1.4; }
+.optDesc { font-size: 10px; color: var(--t2); margin-top: 2px; line-height: 1.45; }
+.optPrice { font-size: 10px; color: var(--t1); min-width: 64px; text-align: right; padding-top: 2px; flex-shrink: 0; }
+.optPricePP { color: var(--sead); }
+
+/* ===== PC Layout ===== */
+@media (min-width: 1024px) {
+  .simWrap { flex-direction: row; height: calc(100vh - var(--hdr-h)); min-height: 400px; overflow: hidden; }
+  .totalBar { display: none; }
+  .breakdownToggle { display: none; }
+  .breakdownPanel { display: none; }
+  .simMain { display: none; }
+  .simLeft { display: block; flex: 1; min-width: 0; overflow-y: auto; padding: 28px 36px 60px; }
+  .simRight {
+    display: flex; flex-direction: column; width: 320px; flex-shrink: 0;
+    border-left: 0.5px solid var(--border); background: var(--sand); overflow: hidden;
+  }
+  .pageH1 { font-size: 28px; }
+
+  /* Right panel inner */
+  .rightInner { padding: 28px 28px 20px; background: var(--bg); border-bottom: 0.5px solid var(--border); flex-shrink: 0; }
+  .rightLabel { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--t2); margin-bottom: 10px; display: block; }
+  .rightAmountRow { display: flex; align-items: baseline; gap: 6px; margin-bottom: 6px; }
+  .rightAmount { font-family: var(--num); font-size: 44px; color: var(--t1); font-style: italic; font-weight: 300; line-height: 1; }
+  .rightUnit { font-size: 13px; color: var(--t2); }
+  .rightNote { font-size: 11px; color: var(--t2); margin-bottom: 16px; line-height: 1.6; }
+  .rightBarWrap { height: 3px; background: var(--seam); border-radius: 2px; overflow: hidden; }
+  .rightBar { height: 100%; background: var(--sea); border-radius: 2px; transition: width .3s; }
+  .rightBkLbl {
+    font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--t2);
+    padding: 14px 28px 10px; border-bottom: 0.5px solid var(--border); flex-shrink: 0;
+  }
+  .rightBreakdown { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: var(--seam) transparent; }
+  .rightBreakdown::-webkit-scrollbar { width: 4px; }
+  .rightBreakdown::-webkit-scrollbar-thumb { background: var(--seam); border-radius: 2px; }
+  .rbItem { display: flex; align-items: center; justify-content: space-between; padding: 10px 28px; border-bottom: 0.5px solid var(--border); font-size: 13px; }
+  .rbLabel { color: var(--t1); flex: 1; }
+  .rbPrice { color: var(--t1); min-width: 76px; text-align: right; white-space: nowrap; }
+  .rbPricePending { color: var(--t2); font-size: 11px; }
+  .rightCtas {
+    padding: 18px 28px 22px; background: var(--bg); border-top: 0.5px solid var(--border);
+    display: flex; flex-direction: column; gap: 8px; flex-shrink: 0;
+  }
+  .rCtaLine {
+    display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%;
+    background: var(--sea); color: #fff; border: none; padding: 13px; border-radius: 22px;
+    font-size: 13px; letter-spacing: .07em; cursor: pointer; font-family: var(--gothic);
+  }
+  .rCtaConsult {
+    width: 100%; background: var(--bark); color: #f5ece0; border: none; padding: 12px;
+    border-radius: 22px; font-size: 12px; letter-spacing: .06em; cursor: pointer; font-family: var(--gothic);
+  }
+  .rCtaPdf {
+    width: 100%; background: var(--sand); color: var(--t2); border: none; padding: 10px;
+    border-radius: 22px; font-size: 11px; cursor: pointer; font-family: var(--gothic);
+  }
+  .rDisclaimer { font-size: 10px; color: var(--t2); line-height: 1.6; margin-top: 10px; padding: 0 4px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .simMain { padding: 24px 32px 60px; }
+}

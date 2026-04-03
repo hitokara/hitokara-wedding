@@ -1,0 +1,172 @@
+/* ===== Page Layout ===== */
+.pageOuter { display: flex; flex-direction: column; min-height: calc(100vh - var(--hdr-h)); }
+.main { display: flex; flex-direction: column; flex: 1; }
+
+/* ===== Page Header ===== */
+.pageHdr { padding: 32px 20px 16px; background: var(--sand); }
+.pageHdrRow { display: flex; justify-content: space-between; align-items: flex-start; }
+.pageEye { font-size: 9px; letter-spacing: .22em; text-transform: uppercase; color: var(--sea); display: block; margin-bottom: 6px; }
+.pageH1 { font-family: var(--mincho); font-size: 24px; font-weight: 400; line-height: 1.45; letter-spacing: .06em; color: var(--bark); margin-bottom: 4px; }
+.pageH1 em { font-style: normal; color: var(--sead); }
+.totalCount { font-family: var(--num); font-size: 32px; font-style: italic; font-weight: 300; color: rgba(58,143,191,.25); }
+.totalLabel { font-size: 9px; letter-spacing: .15em; color: var(--t2); text-align: right; }
+
+/* ===== Filter Bar ===== */
+.filterBar {
+  display: flex; align-items: center; gap: 6px; padding: 0 20px; height: 44px;
+  overflow-x: auto; scrollbar-width: none;
+  border-bottom: 0.5px solid var(--border); background: var(--bg);
+  position: sticky; top: 0; z-index: 19; flex-shrink: 0;
+}
+.filterBar::-webkit-scrollbar { display: none; }
+.fBtn {
+  height: 28px; padding: 0 14px; border: 0.5px solid var(--border2); border-radius: 14px;
+  background: none; font-size: 11px; color: var(--t2); cursor: pointer;
+  white-space: nowrap; flex-shrink: 0; font-family: var(--gothic); transition: all .15s;
+}
+.fBtnOn { background: var(--sea); color: #fff; border-color: var(--sea); }
+
+/* ===== Grid ===== */
+.gridArea { padding: 16px 20px 48px; flex: 1; }
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
+/* ===== Creator Card ===== */
+.crCard {
+  border-radius: var(--r-lg); overflow: hidden; background: var(--bg);
+  cursor: pointer; transition: transform .35s cubic-bezier(.16,.84,.44,1);
+  border: 0.5px solid var(--border);
+}
+.crCard:hover { transform: translateY(-3px); }
+.crCardActive { border-color: var(--sea); box-shadow: 0 0 0 1px var(--sea); }
+.crCardImg { width: 100%; aspect-ratio: 3/4; position: relative; overflow: hidden; }
+.crCardImgBg { width: 100%; height: 100%; background-size: cover; background-position: center; }
+.crCardGrad { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,.32)); }
+.crCardCat {
+  position: absolute; bottom: 8px; left: 8px; font-size: 9px;
+  letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.85);
+}
+.crCardFav {
+  position: absolute; top: 6px; right: 6px; width: 26px; height: 26px;
+  border-radius: 50%; border: none; background: rgba(255,255,255,.2);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 12px; z-index: 2; transition: all .2s;
+}
+.crCardFavOn { background: rgba(255,255,255,.85); color: #e05c5c; }
+.crCardBody { padding: 8px 10px 10px; }
+.crCardRole { font-size: 9px; color: var(--t2); letter-spacing: .06em; margin-bottom: 2px; }
+.crCardName { font-family: var(--mincho); font-size: 12px; color: var(--t1); margin-bottom: 4px; }
+.crCardPrice { font-family: var(--num); font-size: 13px; color: var(--sead); font-style: italic; margin-bottom: 4px; }
+.crCardTags { display: flex; flex-wrap: wrap; gap: 3px; }
+.crCardTag { font-size: 8px; padding: 1px 5px; border-radius: 6px; background: rgba(58,143,191,.08); color: var(--sead); }
+
+/* ===== Right Panel (PC) ===== */
+.rightPanel { display: none; }
+.panelEmpty {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 16px; padding: 40px 32px; text-align: center; color: var(--t2);
+}
+.panelEmptyIcon {
+  width: 48px; height: 48px; border-radius: 50%; background: var(--seal);
+  display: flex; align-items: center; justify-content: center; margin-bottom: 4px; font-size: 20px; color: var(--sea);
+}
+.panelEmptyT { font-family: var(--mincho); font-size: 14px; color: var(--t1); margin-bottom: 4px; }
+.panelEmptyD { font-size: 12px; color: var(--t2); line-height: 1.7; }
+
+/* ===== Modal / Detail Shared ===== */
+.modalOverlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.55);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  z-index: 1000; display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity .3s;
+}
+.modalOverlayOpen { opacity: 1; pointer-events: all; }
+.modalSp {
+  width: 100%; max-width: 560px; max-height: 88vh; background: var(--bg);
+  border-radius: 20px 20px 0 0; overflow: hidden; display: flex; flex-direction: column;
+  transform: translateY(100%); transition: transform .35s cubic-bezier(.16,.84,.44,1);
+}
+.modalOverlayOpen .modalSp { transform: translateY(0); }
+.modalHandle { width: 36px; height: 4px; border-radius: 2px; background: var(--border); margin: 10px auto 0; flex-shrink: 0; }
+.modalClose {
+  position: absolute; top: 12px; right: 14px; width: 30px; height: 30px;
+  border-radius: 50%; border: none; background: rgba(0,0,0,.12); color: var(--t1);
+  font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 2;
+}
+.modalImgWrap { width: 100%; height: 44vw; min-height: 180px; max-height: 280px; position: relative; overflow: hidden; flex-shrink: 0; }
+.modalImgBg { width: 100%; height: 100%; background-size: cover; background-position: center; }
+.modalImgGrad { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.4), transparent 55%); }
+.modalCatBadge { position: absolute; bottom: 12px; left: 14px; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.9); z-index: 2; }
+.modalFavBtn {
+  position: absolute; top: 10px; right: 10px; width: 30px; height: 30px;
+  border-radius: 50%; border: none; background: rgba(255,255,255,.2);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .2s; z-index: 2;
+}
+.modalFavBtnOn { background: rgba(255,255,255,.85); }
+.modalBody { padding: 16px 18px; overflow-y: auto; flex: 1; }
+.modalName { font-family: var(--mincho); font-size: 22px; font-weight: 400; color: var(--t1); letter-spacing: .06em; margin-bottom: 2px; }
+.modalRole { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--sead); margin-bottom: 10px; }
+.modalTags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+.modalTag { font-size: 10px; padding: 2px 8px; border-radius: 8px; background: var(--seal); color: var(--sead); }
+.modalPriceRow { display: flex; align-items: baseline; gap: 4px; margin-bottom: 14px; padding: 10px 12px; background: var(--seal); border-radius: 8px; }
+.modalPriceLbl { font-size: 10px; color: var(--t2); }
+.modalPriceVal { font-family: var(--num); font-size: 24px; color: var(--sead); font-style: italic; }
+.modalPriceUnit { font-size: 10px; color: var(--t2); }
+.modalSecLbl { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--sea); margin-bottom: 8px; display: block; }
+.modalProfile { font-size: 13px; color: var(--t2); line-height: 1.9; margin-bottom: 16px; }
+.modalWorks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 14px; }
+.modalWork { aspect-ratio: 1; border-radius: 6px; overflow: hidden; }
+.modalWorkInner { width: 100%; height: 100%; background-size: cover; }
+.modalBtns { display: flex; flex-direction: column; gap: 8px; padding: 16px 18px; }
+.modalBtnMain {
+  height: 48px; border-radius: 24px; border: none; background: var(--sea); color: #fff;
+  font-size: 13px; font-family: var(--gothic); display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+}
+.modalBtnSim {
+  height: 42px; border-radius: 21px; border: 0.5px solid var(--border2); background: none;
+  color: var(--t1); font-size: 12px; font-family: var(--gothic); cursor: pointer;
+}
+.pip { width: 7px; height: 7px; background: #7ee8a2; border-radius: 50%; flex-shrink: 0; display: block; }
+
+/* ===== Tablet (768px) ===== */
+@media (min-width: 768px) {
+  .pageHdr { padding: 80px 40px 20px; }
+  .filterBar { padding: 0 40px; }
+  .gridArea { padding: 20px 24px 48px; }
+  .grid { grid-template-columns: repeat(3, 1fr); }
+  .modalOverlay { align-items: center; }
+  .modalSp { border-radius: 20px; max-height: 88vh; }
+}
+
+/* ===== Desktop (1024px) ===== */
+@media (min-width: 1024px) {
+  .pageOuter {
+    position: fixed; top: var(--hdr-h); left: 0; right: 0; bottom: 0;
+    display: flex; flex-direction: column; overflow: hidden; background: var(--bg); z-index: 1;
+  }
+  .main { display: flex; flex-direction: row; flex: 1; min-height: 0; overflow: hidden; }
+  .leftCol {
+    flex: 1; min-width: 0; display: flex; flex-direction: column;
+    overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;
+  }
+  .leftCol .pageHdr { flex-shrink: 0; padding: 40px 40px 16px; }
+  .filterBar { flex-shrink: 0; position: sticky; top: 0; z-index: 10; background: var(--bg); padding: 0 40px; }
+  .gridArea { flex: 1; padding: 16px 28px 48px; }
+  .grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+  .rightPanel {
+    display: flex; flex-direction: column;
+    width: 34%; max-width: 420px; min-width: 300px;
+    border-left: 0.5px solid var(--border); background: var(--sand);
+    overflow: hidden; flex-shrink: 0; height: 100%;
+  }
+  .panelDetail { display: none; flex-direction: column; height: 100%; }
+  .panelDetailActive { display: flex; }
+  .panelDetail .modalImgWrap { height: 260px; max-height: 300px; flex-shrink: 0; }
+  .panelDetail .modalBody { flex: 1; overflow-y: auto; padding: 20px 24px 80px; -webkit-overflow-scrolling: touch; }
+  .panelDetail .modalBtns { padding: 16px 24px 24px; border-top: 0.5px solid var(--border); flex-shrink: 0; background: var(--bg); }
+
+  /* Hide SP modal on PC */
+  .modalOverlay { display: none; }
+}
