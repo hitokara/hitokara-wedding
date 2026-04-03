@@ -62,8 +62,8 @@ export default function HomePage() {
         <div className={s.heroImgArea}>
           <div className={s.heroImg} />
           <div className={s.heroOverlay} />
-          <div className={s.heroWave}><WaveSvg /></div>
         </div>
+        <div className={s.heroWave}><WaveSvg /></div>
         <div className={s.heroLeft}>
           <AnimateOnScroll animation="slideRight">
             <span className={s.heroEye}>Yokohama &amp; Kamakura</span>

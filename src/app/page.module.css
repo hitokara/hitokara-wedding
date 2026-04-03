@@ -53,12 +53,13 @@
   right: 0;
   height: 32px;
   overflow: hidden;
-  z-index: 2;
+  z-index: 3;
   pointer-events: none;
 }
 .heroWave svg {
   display: block;
   width: 200%;
+  height: 100%;
   animation: waveFlow 8s linear infinite;
 }
 .heroLeft {
