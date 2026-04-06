@@ -23,7 +23,7 @@ const PROBLEMS = [
 const VALUES = [
   { num: "01", label: "Value 01", t: "人で選べる", d: "すべてのクリエイターの顔・想い・料金を公開。打ち合わせ前に、ちゃんと知れる。" },
   { num: "02", label: "Value 02", t: "明朗会計", d: "シミュレーターで概算が一目でわかる。追加費用なし、持込自由で本当に納得できる式に。" },
-  { num: "03", label: "Value 03", t: "横浜・鎌倉特化", d: "エリアを知り尽くしたクリエイターが、海と風を感じる特別な式をつくります。" },
+  { num: "03", label: "Value 03", t: "持ち込み自由", d: "理由の見えない持込料や追加費用はかかりません。" },
 ];
 
 const PROMISES = [
@@ -84,7 +84,9 @@ export default function ConceptPage() {
           </AnimateOnScroll>
           <AnimateOnScroll animation="fadeUp" delay={80}>
             <h1 className={s.cpHeroH1}>
-              横浜・鎌倉で、<br />持ち込み自由・適正価格の<br /><em>ふたりらしい結婚式</em>をつくる。
+              <span style={{display:'inline-block',whiteSpace:'nowrap'}}>持ち込み自由・適正価格の</span><br />
+              <span style={{display:'inline-block',whiteSpace:'nowrap'}}><em>ふたりらしい結婚式</em>を</span><br />
+              <span style={{display:'inline-block',whiteSpace:'nowrap'}}>つくる。</span>
             </h1>
           </AnimateOnScroll>
           <AnimateOnScroll animation="fadeUp" delay={160}>

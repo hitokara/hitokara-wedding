@@ -38,6 +38,14 @@ function CreatorDetail({ cr, favs, toggleFav, gradient }: {
           </svg>
         </button>
       </div>
+      {/* Works thumbnails (horizontal scroll) */}
+      <div className={s.modalWorksScroll}>
+        {[0, 1, 2].map((i) => (
+          <div key={i} className={s.modalWorkThumb}>
+            <div className={s.modalWorkThumbInner} style={{ background: gradient }} />
+          </div>
+        ))}
+      </div>
       <div className={s.modalBody}>
         <div className={s.modalName}>{cr.name}</div>
         <div className={s.modalRole}>{cr.role}</div>
@@ -45,7 +53,7 @@ function CreatorDetail({ cr, favs, toggleFav, gradient }: {
           {cr.tags.map((t) => <span key={t} className={s.modalTag}>{t}</span>)}
         </div>
         <div className={s.modalPriceRow}>
-          <span className={s.modalPriceLbl}>参考価格</span>
+          <span className={s.modalPriceLbl}>指名料</span>
           <span className={s.modalPriceVal}>&yen;{cr.price.toLocaleString()}</span>
           <span className={s.modalPriceUnit}>〜</span>
         </div>
@@ -120,7 +128,7 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
             <div className={s.pageHdrRow}>
               <div>
                 <span className={s.pageEye}>Meet our creators</span>
-                <h1 className={s.pageH1}>横浜・鎌倉の<br />ウェディング<em>クリエイター</em></h1>
+                <h1 className={s.pageH1}>ウェディング<em>クリエイター</em></h1>
               </div>
             </div>
           </div>

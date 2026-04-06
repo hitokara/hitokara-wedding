@@ -1,0 +1,24 @@
+@keyframes creatorScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.trackWrapper {
+  overflow: hidden;
+  width: 100%;
+}
+
+.trackInner {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+  animation: creatorScroll 30s linear infinite;
+}
+
+.trackWrapper:hover .trackInner {
+  animation-play-state: paused;
+}

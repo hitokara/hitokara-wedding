@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import CreatorTrack from "@/components/CreatorTrack";
+import VenueGrid from "@/components/VenueGrid";
 import { CREATORS_LIST } from "@/lib/creators";
 import { ARTICLES } from "@/lib/articles";
 import { getCreators, getArticles, mapCMSCreator, mapCMSArticle } from "@/lib/microcms";
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
 const VALUES = [
   { num: "Value 01", title: "人で選ぶ", desc: "顔・想い・料金を確認してから指名できる。だから安心して任せられます。" },
   { num: "Value 02", title: "適正価格", desc: "シミュレーターで概算価格を算出。納得度の高いクオリティで安心。" },
-  { num: "Value 03", title: "持ち込み自由", desc: "理由の見えない持込料や追加費用はかかりません。ご自身がお願いしたいクリエイターさんにご依頼ください。" },
+  { num: "Value 03", title: "持ち込み自由", desc: "理由の見えない持込料や追加費用はかかりません。" },
 ];
 
 const STEPS = [
@@ -192,22 +193,7 @@ export default async function HomePage() {
         <AnimateOnScroll animation="fadeUp" delay={80}>
           <h2 className={s.secH2}>選べる<em>会場</em>。</h2>
         </AnimateOnScroll>
-        <div className={s.vGrid}>
-          {VENUES.map((v, i) => (
-            <AnimateOnScroll key={v.name} animation="scaleIn" delay={80 + i * 80}>
-              <div className={s.vCard}>
-                <div className={s.vImg}>
-                  <div className={s.vImgInner} style={{ background: v.bg }} />
-                </div>
-                <div className={s.vInfo}>
-                  <div className={s.vName}>{v.name}</div>
-                  <div className={s.vArea}>{v.area}</div>
-                  <div className={s.vDesc}>{v.desc}</div>
-                </div>
-              </div>
-            </AnimateOnScroll>
-          ))}
-        </div>
+        <VenueGrid venues={VENUES} styles={s} />
       </section>
 
       {/* Journal */}
@@ -230,6 +216,26 @@ export default async function HomePage() {
                   <div className={s.jTitle}>{a.title}</div>
                   <div className={s.jDate}>{a.date}</div>
                 </div>
+              </Link>
+            </AnimateOnScroll>
+          ))}
+        </div>
+      </section>
+
+      {/* News */}
+      <section className={s.newsSec} aria-label="お知らせ">
+        <AnimateOnScroll animation="slideRight">
+          <span className={s.secEye}>News</span>
+        </AnimateOnScroll>
+        <AnimateOnScroll animation="fadeUp" delay={80}>
+          <h2 className={s.secH2}>お知らせ</h2>
+        </AnimateOnScroll>
+        <div className={s.newsList}>
+          {topArticles.slice(0, 2).map((a) => (
+            <AnimateOnScroll key={a.slug} animation="fadeUp" delay={120}>
+              <Link href={`/journal/${a.slug}`} className={s.newsItem}>
+                <span className={s.newsDate}>{a.date}</span>
+                <span className={s.newsTitle}>{a.title}</span>
               </Link>
             </AnimateOnScroll>
           ))}

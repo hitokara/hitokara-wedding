@@ -159,6 +159,9 @@ function CreatorPicker({
   selectedCreatorId: string;
   onPick: (catId: string, creatorId: string) => void;
 }) {
+  // TODO: Integrate localStorage or Firebase for persisted favorites.
+  // When available, sort creators so favorited ones appear first:
+  // const sorted = [...creators].sort((a, b) => (favSet.has(b.id) ? 1 : 0) - (favSet.has(a.id) ? 1 : 0));
   const creators = CREATORS_LIST.filter((c) => c.cat === catKey);
   if (creators.length === 0) return null;
 
@@ -196,7 +199,7 @@ function CreatorPicker({
                     <span key={t} className={s.crPickerTag}>{t}</span>
                   ))}
                 </div>
-                <div className={s.crPickerPrice}>&yen;{cr.price.toLocaleString()}<span className={s.crPickerPriceUnit}>&nbsp;円〜</span></div>
+                <div className={s.crPickerPrice}><span className={s.crPickerPriceUnit}>指名料&nbsp;</span>&yen;{cr.price.toLocaleString()}<span className={s.crPickerPriceUnit}>〜</span></div>
               </div>
             </div>
           );
@@ -249,6 +252,32 @@ export default function SimulationClient({
 
   return (
     <div className={s.simWrap}>
+      {/* Print Summary (hidden on screen, shown in print) */}
+      <div className={s.printSummary}>
+        <h2 className={s.printTitle}>見積もりシミュレーション結果</h2>
+        <div className={s.printGuests}>ゲスト人数: {guests}名</div>
+        <table className={s.printTable}>
+          <thead>
+            <tr>
+              <th>カテゴリ</th>
+              <th>金額</th>
+            </tr>
+          </thead>
+          <tbody>
+            {breakdown.map((b) => (
+              <tr key={b.id}>
+                <td>{b.title}</td>
+                <td>{b.selected ? `\u00a5${fmtP(b.price)}` : "\u672a\u9078\u629e"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className={s.printTotal}>
+          合計: &yen;{fmtP(total)} 円
+        </div>
+        <div className={s.printDisclaimer}>※ プランニング料は含まれています。表示は参考金額です。</div>
+      </div>
+
       {/* SP: Total Bar */}
       <div className={s.totalBar}>
         <div className={s.totalLabel}>概算</div>

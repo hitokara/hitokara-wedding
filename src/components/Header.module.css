@@ -111,6 +111,8 @@
   background: none;
   cursor: pointer;
   padding: 0;
+  position: relative;
+  z-index: 101;
 }
 
 .hamburger span {
