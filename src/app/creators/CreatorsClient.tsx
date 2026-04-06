@@ -50,40 +50,32 @@ function CreatorDetail({ cr, favs, toggleFav, gradient }: {
 
   return (
     <>
+      {/* Photo strip: horizontal scroll of square photos */}
       <div className={s.modalImgWrap}>
         <div className={s.modalSlider} ref={sliderRef} onScroll={handleScroll}>
           {slides.map((bg, i) => (
             <div key={i} className={s.modalSlide} style={{ background: bg }} />
           ))}
         </div>
-        <div className={s.modalImgGrad} />
         <span className={s.modalCatBadge}>{cr.catLabel}</span>
-        <button
-          className={`${s.modalFavBtn} ${favs.has(cr.id) ? s.modalFavBtnOn : ""}`}
-          onClick={(e) => { e.stopPropagation(); toggleFav(cr.id); }}
-        >
-          <svg viewBox="0 0 24 24" width="14" height="14" fill={favs.has(cr.id) ? "#e05c5c" : "none"} stroke={favs.has(cr.id) ? "#e05c5c" : "rgba(255,255,255,.75)"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-          </svg>
-        </button>
-        <div className={s.modalDots}>
-          {slides.map((_, i) => (
-            <button
-              key={i}
-              className={`${s.modalDot} ${i === activeSlide ? s.modalDotActive : ""}`}
-              onClick={(e) => { e.stopPropagation(); goToSlide(i); }}
-            />
-          ))}
-        </div>
       </div>
-      {/* Slide counter */}
-      <div className={s.modalSlideCount}>
-        {activeSlide + 1} / {slides.length}
-      </div>
+
       <div className={s.modalBody}>
+        {/* Name + heart + price row */}
         <div className={s.modalNameRow}>
-          <div>
-            <div className={s.modalName}>{cr.name}</div>
+          <div className={s.modalNameGroup}>
+            <div className={s.modalNameInner}>
+              <div className={s.modalName}>{cr.name}</div>
+              <button
+                className={`${s.modalFavInline} ${favs.has(cr.id) ? s.modalFavInlineOn : ""}`}
+                onClick={(e) => { e.stopPropagation(); toggleFav(cr.id); }}
+                aria-label="お気に入り"
+              >
+                <svg viewBox="0 0 24 24" width="16" height="16" fill={favs.has(cr.id) ? "#e05c5c" : "none"} stroke={favs.has(cr.id) ? "#e05c5c" : "var(--t2)"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+              </button>
+            </div>
             <div className={s.modalRole}>{cr.role}</div>
           </div>
           <div className={s.modalPriceChip}>
@@ -92,37 +84,44 @@ function CreatorDetail({ cr, favs, toggleFav, gradient }: {
             <span className={s.modalPriceUnit}>〜</span>
           </div>
         </div>
+
         <div className={s.modalTags}>
           {cr.tags.map((t) => <span key={t} className={s.modalTag}>{t}</span>)}
-          {cr.mbti && <span className={s.modalTagMbti}>{cr.mbti}</span>}
         </div>
-        {cr.likes && (
-          <div className={s.modalMeta}>
-            <span className={s.modalMetaIcon}>&#9825;</span>
-            <span>{cr.likes}</span>
+
+        {/* MBTI & Likes side by side */}
+        {(cr.mbti || cr.likes) && (
+          <div className={s.modalInfoGrid}>
+            {cr.mbti && (
+              <div className={s.modalInfoItem}>
+                <span className={s.modalInfoLbl}>MBTI</span>
+                <span className={s.modalInfoVal}>{cr.mbti}</span>
+              </div>
+            )}
+            {cr.likes && (
+              <div className={s.modalInfoItem}>
+                <span className={s.modalInfoLbl}>好きなこと</span>
+                <span className={s.modalInfoVal}>{cr.likes}</span>
+              </div>
+            )}
           </div>
         )}
+
         <p className={s.modalProfile}>{cr.profile}</p>
+
         {cr.weddingThought && (
           <div className={s.modalThought}>
+            <div className={s.modalThoughtDeco}>&ldquo;</div>
             <span className={s.modalThoughtLbl}>結婚式への想い</span>
             <p className={s.modalThoughtTxt}>{cr.weddingThought}</p>
           </div>
         )}
       </div>
+
       <div className={s.modalBtns}>
         <a href="https://example.com" target="_blank" rel="noopener noreferrer" className={s.modalBtnMain}>
           この人に相談する
         </a>
-        <button
-          className={`${s.modalBtnSim} ${favs.has(cr.id) ? s.modalFavBtnOn : ""}`}
-          onClick={(e) => { e.stopPropagation(); toggleFav(cr.id); }}
-          aria-label="お気に入り"
-        >
-          <svg viewBox="0 0 24 24" width="18" height="18" fill={favs.has(cr.id) ? "#e05c5c" : "none"} stroke={favs.has(cr.id) ? "#e05c5c" : "currentColor"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-          </svg>
-        </button>
       </div>
     </>
   );
@@ -141,6 +140,18 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
     return init;
   });
   const [modalOpen, setModalOpen] = useState(false);
+
+  // Lock body scroll when SP modal is open
+  useEffect(() => {
+    if (modalOpen) {
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
+    }
+    return () => { document.body.style.overflow = ""; document.body.style.touchAction = ""; };
+  }, [modalOpen]);
 
   // Load favorites from localStorage on mount
   useEffect(() => {
