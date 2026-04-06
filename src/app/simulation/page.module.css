@@ -120,9 +120,14 @@
   display: flex; align-items: center; justify-content: center; cursor: pointer;
 }
 .crPickerFavBadge {
-  position: absolute; top: 6px; right: 6px; width: 22px; height: 22px;
-  border-radius: 50%; background: rgba(255,255,255,.85);
-  display: flex; align-items: center; justify-content: center; pointer-events: none;
+  position: absolute; top: 6px; left: 6px;
+  padding: 2px 7px 2px 5px; border-radius: 10px;
+  background: rgba(255,255,255,.9);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  display: flex; align-items: center; gap: 3px;
+  font-size: 9px; font-weight: 500; color: #e05c5c;
+  letter-spacing: .04em; pointer-events: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,.1);
 }
 .crPickerInfo { padding: 8px 10px 10px; }
 .crPickerName { font-family: var(--mincho); font-size: 13px; color: var(--t1); margin-bottom: 4px; letter-spacing: .04em; }

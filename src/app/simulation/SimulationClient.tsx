@@ -204,19 +204,15 @@ function CreatorPicker({
                 />
                 {isFav && (
                   <span className={s.crPickerFavBadge}>
-                    <svg viewBox="0 0 24 24" fill="#e05c5c" stroke="#e05c5c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="12" height="12">
+                    <svg viewBox="0 0 24 24" fill="#e05c5c" stroke="#fff" strokeWidth="1" width="11" height="11">
                       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                     </svg>
+                    お気に入り
                   </span>
                 )}
               </div>
               <div className={s.crPickerInfo}>
                 <div className={s.crPickerName}>
-                  {isFav && (
-                    <svg viewBox="0 0 24 24" fill="#e05c5c" stroke="none" width="10" height="10" style={{ marginRight: 3, verticalAlign: "middle", display: "inline" }}>
-                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                    </svg>
-                  )}
                   {cr.name}
                 </div>
                 <div className={s.crPickerTags}>
