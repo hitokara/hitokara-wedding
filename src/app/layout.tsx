@@ -11,6 +11,7 @@ const shipporiMincho = Shippori_Mincho({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-mincho",
+  preload: false,
 });
 
 const cormorantGaramond = Cormorant_Garamond({
@@ -25,6 +26,7 @@ const zenKakuGothicNew = Zen_Kaku_Gothic_New({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-gothic",
+  preload: false,
 });
 
 export const viewport: Viewport = {
