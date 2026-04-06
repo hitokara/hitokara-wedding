@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { fmtP } from "@/lib/simulation";
 import { CREATORS_LIST } from "@/lib/creators";
+import type { Creator } from "@/lib/creators";
 import type { CategoryItem } from "@/lib/simulation";
 import type { CMSCategoryGroup } from "@/lib/microcms";
 import s from "./page.module.css";
@@ -48,6 +49,7 @@ function AccordionSection({
   onSelect,
   creatorNoms,
   onCreatorNom,
+  cmsCreators,
 }: {
   data: AccData[];
   guests: number;
@@ -55,6 +57,7 @@ function AccordionSection({
   onSelect: (catId: string, itemId: string) => void;
   creatorNoms: Record<string, string>;
   onCreatorNom: (catId: string, creatorId: string) => void;
+  cmsCreators: Creator[];
 }) {
   const [openCats, setOpenCats] = useState<Set<string>>(new Set());
 
@@ -77,7 +80,8 @@ function AccordionSection({
         let price = 0;
         if (selItem) {
           if (selItem.nom === 1 && creatorNoms[cat.id]) {
-            const nominated = CREATORS_LIST.find((c) => c.id === creatorNoms[cat.id]);
+            const crSource = cmsCreators.length > 0 ? cmsCreators : CREATORS_LIST;
+            const nominated = crSource.find((c) => c.id === creatorNoms[cat.id]);
             price = nominated?.price ?? 0;
           } else {
             price = selItem.unit === "\u4eba" ? selItem.price * guests : selItem.price;
@@ -128,6 +132,7 @@ function AccordionSection({
                             catId={cat.id}
                             selectedCreatorId={creatorNoms[cat.id] || ""}
                             onPick={onCreatorNom}
+                            cmsCreators={cmsCreators}
                           />
                         )}
                       </div>
@@ -155,11 +160,13 @@ function CreatorPicker({
   catId,
   selectedCreatorId,
   onPick,
+  cmsCreators,
 }: {
   catKey: string;
   catId: string;
   selectedCreatorId: string;
   onPick: (catId: string, creatorId: string) => void;
+  cmsCreators: Creator[];
 }) {
   const [favSet, setFavSet] = useState<Set<string>>(new Set());
 
@@ -175,7 +182,9 @@ function CreatorPicker({
     }
   }, []);
 
-  const allCreators = CREATORS_LIST.filter((c) => c.cat === catKey);
+  // Use CMS creators (same IDs as localStorage favs), fallback to static
+  const source = cmsCreators.length > 0 ? cmsCreators : CREATORS_LIST;
+  const allCreators = source.filter((c) => c.cat === catKey);
   // Sort favorited creators first
   const creators = [...allCreators].sort((a, b) => {
     const aFav = favSet.has(a.id) ? 1 : 0;
@@ -232,8 +241,10 @@ function CreatorPicker({
 
 export default function SimulationClient({
   categories,
+  creators: cmsCreators,
 }: {
   categories: CMSCategoryGroup[];
+  creators: Creator[];
 }) {
   const [guests, setGuests] = useState(40);
   const [selections, setSelections] = useState<Record<string, string>>({});
@@ -313,7 +324,8 @@ export default function SimulationClient({
               if (selItem) {
                 label = selItem.label;
                 if (selItem.nom === 1 && creatorNoms[cat.id]) {
-                  const nominated = CREATORS_LIST.find((c) => c.id === creatorNoms[cat.id]);
+                  const crSource = cmsCreators.length > 0 ? cmsCreators : CREATORS_LIST;
+            const nominated = crSource.find((c) => c.id === creatorNoms[cat.id]);
                   price = nominated?.price ?? 0;
                   if (nominated) label += `（${nominated.name}）`;
                 } else {
@@ -405,7 +417,7 @@ export default function SimulationClient({
             onChange={(e) => setGuests(Number(e.target.value))}
           />
         </div>
-        <AccordionSection data={accData} guests={guests} selections={selections} onSelect={onSelect} creatorNoms={creatorNoms} onCreatorNom={onCreatorNom} />
+        <AccordionSection data={accData} guests={guests} selections={selections} onSelect={onSelect} creatorNoms={creatorNoms} onCreatorNom={onCreatorNom} cmsCreators={cmsCreators} />
       </div>
 
       {/* PC: Left Column */}
@@ -430,7 +442,7 @@ export default function SimulationClient({
             style={{ width: "100%", marginBottom: 16 }}
           />
         </div>
-        <AccordionSection data={accData} guests={guests} selections={selections} onSelect={onSelect} creatorNoms={creatorNoms} onCreatorNom={onCreatorNom} />
+        <AccordionSection data={accData} guests={guests} selections={selections} onSelect={onSelect} creatorNoms={creatorNoms} onCreatorNom={onCreatorNom} cmsCreators={cmsCreators} />
       </div>
 
       {/* PC: Right Column */}

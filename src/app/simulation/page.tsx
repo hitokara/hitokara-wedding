@@ -1,6 +1,8 @@
-import { getSimItems, mapCMSSimItems } from "@/lib/microcms";
+import { getSimItems, mapCMSSimItems, getCreators, mapCMSCreator } from "@/lib/microcms";
 import type { CMSCategoryGroup } from "@/lib/microcms";
 import { CATS, PLANNERS, CREATORS, FLOWER_MAIN } from "@/lib/simulation";
+import { CREATORS_LIST } from "@/lib/creators";
+import type { Creator } from "@/lib/creators";
 import SimulationClient from "./SimulationClient";
 
 export const revalidate = 60;
@@ -35,5 +37,12 @@ export default async function SimulationPage() {
     categories = buildLocalCategories();
   }
 
-  return <SimulationClient categories={categories} />;
+  // Fetch CMS creators (same IDs as stored in localStorage favs)
+  const cmsResult = await getCreators();
+  const creators: Creator[] =
+    cmsResult.contents.length > 0
+      ? cmsResult.contents.map(mapCMSCreator)
+      : CREATORS_LIST;
+
+  return <SimulationClient categories={categories} creators={creators} />;
 }
