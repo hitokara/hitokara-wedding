@@ -1,10 +1,15 @@
 import { createClient } from "microcms-js-sdk";
 
 // ---------- Client ----------
-export const client = createClient({
-  serviceDomain: process.env.MICROCMS_SERVICE_DOMAIN || "",
-  apiKey: process.env.MICROCMS_API_KEY || "",
-});
+const domain = process.env.MICROCMS_SERVICE_DOMAIN;
+const key = process.env.MICROCMS_API_KEY;
+
+function buildClient() {
+  if (!domain || !key) return null;
+  return createClient({ serviceDomain: domain, apiKey: key });
+}
+
+export const client = buildClient();
 
 // ---------- Common Types ----------
 export interface MicroCMSImage {
@@ -76,8 +81,9 @@ type ListResponse<T> = {
 };
 
 // ---------- Safe fetch wrapper ----------
-// microCMS がまだデータ0件 or API未設定でもクラッシュしない
+// microCMS が未設定 or データ0件でもクラッシュしない
 async function safeFetch<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
+  if (!client) return fallback;
   try {
     return await fn();
   } catch (e) {
@@ -96,7 +102,7 @@ export async function getCreators(params?: {
 }) {
   return safeFetch(
     () =>
-      client.get<ListResponse<CMSCreator>>({
+      client!.get<ListResponse<CMSCreator>>({
         endpoint: "creators",
         queries: {
           limit: params?.limit ?? 100,
@@ -111,7 +117,7 @@ export async function getCreators(params?: {
 
 export async function getCreatorById(id: string) {
   return safeFetch(
-    () => client.get<CMSCreator>({ endpoint: "creators", contentId: id }),
+    () => client!.get<CMSCreator>({ endpoint: "creators", contentId: id }),
     null as CMSCreator | null
   );
 }
@@ -124,7 +130,7 @@ export async function getArticles(params?: {
 }) {
   return safeFetch(
     () =>
-      client.get<ListResponse<CMSArticle>>({
+      client!.get<ListResponse<CMSArticle>>({
         endpoint: "articles",
         queries: {
           limit: params?.limit ?? 20,
@@ -140,7 +146,7 @@ export async function getArticles(params?: {
 export async function getArticleBySlug(slug: string) {
   const res = await safeFetch(
     () =>
-      client.get<ListResponse<CMSArticle>>({
+      client!.get<ListResponse<CMSArticle>>({
         endpoint: "articles",
         queries: { filters: `slug[equals]${slug}`, limit: 1 },
       }),
@@ -151,7 +157,7 @@ export async function getArticleBySlug(slug: string) {
 
 export async function getArticleById(id: string) {
   return safeFetch(
-    () => client.get<CMSArticle>({ endpoint: "articles", contentId: id }),
+    () => client!.get<CMSArticle>({ endpoint: "articles", contentId: id }),
     null as CMSArticle | null
   );
 }
@@ -160,7 +166,7 @@ export async function getArticleById(id: string) {
 export async function getVenues(params?: { limit?: number }) {
   return safeFetch(
     () =>
-      client.get<ListResponse<CMSVenue>>({
+      client!.get<ListResponse<CMSVenue>>({
         endpoint: "venues",
         queries: { limit: params?.limit ?? 50 },
       }),
@@ -172,7 +178,7 @@ export async function getVenues(params?: { limit?: number }) {
 export async function getNews(params?: { limit?: number }) {
   return safeFetch(
     () =>
-      client.get<ListResponse<CMSNews>>({
+      client!.get<ListResponse<CMSNews>>({
         endpoint: "news",
         queries: { limit: params?.limit ?? 10, orders: "-publishedAt" },
       }),
@@ -203,7 +209,7 @@ export interface CMSSimItem extends MicroCMSContent {
 export async function getSimItems() {
   return safeFetch(
     () =>
-      client.get<ListResponse<CMSSimItem>>({
+      client!.get<ListResponse<CMSSimItem>>({
         endpoint: "sim-items",
         queries: { limit: 20, orders: "sortOrder" },
       }),
