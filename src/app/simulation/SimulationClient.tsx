@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
-import Link from "next/link";
 import { fmtP } from "@/lib/simulation";
 import { CREATORS_LIST } from "@/lib/creators";
 import type { CategoryItem } from "@/lib/simulation";
@@ -362,10 +361,17 @@ export default function SimulationClient({
         </div>
         <div className={s.rightCtas}>
           <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.rCtaLine}>
-            <span className={s.pip} />LINEで送って相談する
+            <span className={s.pip} />LINEで相談
           </a>
-          <Link href="#contact" className={s.rCtaConsult}>プランナーに直接相談</Link>
-          <button className={s.rCtaPdf}>PDFで保存する</button>
+          <button className={s.rCtaConsult} onClick={() => window.print()}>PDFで保存</button>
+          <a
+            href={`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : 'https://hitokara-wedding.com/simulation')}&text=${encodeURIComponent(`見積もりシミュレーション結果: 合計 ¥${fmtP(total)}円（ゲスト${guests}名）`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={s.rCtaPdf}
+          >
+            LINEでシェア
+          </a>
           <div className={s.rDisclaimer}>※ プランニング料は含まれています。表示は参考金額です。</div>
         </div>
       </div>

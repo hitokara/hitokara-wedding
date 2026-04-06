@@ -188,3 +188,30 @@
 @media (min-width: 768px) and (max-width: 1023px) {
   .simMain { padding: 24px 32px 60px; }
 }
+
+/* ===== Print Styles ===== */
+@media print {
+  .totalBar,
+  .breakdownToggle,
+  .breakdownPanel,
+  .simRight,
+  .rightCtas {
+    display: none !important;
+  }
+  .simWrap {
+    display: block !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+  }
+  .simMain {
+    display: block !important;
+    padding: 20px !important;
+    overflow: visible !important;
+  }
+  .simLeft {
+    display: block !important;
+    padding: 20px !important;
+    overflow: visible !important;
+  }
+}

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
+import ConceptStats from "@/components/ConceptStats";
 import s from "./page.module.css";
 
 import type { Metadata } from "next";
@@ -96,20 +97,7 @@ export default function ConceptPage() {
         </div>
         <div className={s.cpHeroRight}>
           <AnimateOnScroll animation="fadeIn" delay={160}>
-            <div className={s.cpHeroStats}>
-              <div className={s.cpStat}>
-                <div className={s.cpStatNum}>98%</div>
-                <div className={s.cpStatDesc}>カップルが「打ち合わせ前に<br />担当者を知りたかった」と回答</div>
-              </div>
-              <div className={s.cpStat}>
-                <div className={s.cpStatNum}>1.8&times;</div>
-                <div className={s.cpStatDesc}>初期見積もりから最終費用が<br />平均1.8倍に膨らむことがある</div>
-              </div>
-              <div className={s.cpStat}>
-                <div className={s.cpStatNum}>6h</div>
-                <div className={s.cpStatDesc}>打ち合わせから決断を<br />迫られるまでの平均時間</div>
-              </div>
-            </div>
+            <ConceptStats />
           </AnimateOnScroll>
         </div>
       </section>
@@ -276,7 +264,7 @@ export default function ConceptPage() {
       <section className={s.cpCta}>
         <span className={s.cpCtaEye}>Free Consultation</span>
         <AnimateOnScroll animation="fadeUp">
-          <h2 className={s.cpCtaH}>まず、クリエイターに会いにきてください。</h2>
+          <h2 className={s.cpCtaH}>まずは、相談してみませんか？</h2>
         </AnimateOnScroll>
         <AnimateOnScroll animation="fadeUp" delay={80}>
           <p className={s.cpCtaSub}>相談は無料。LINEから気軽にどうぞ。</p>

@@ -33,7 +33,9 @@ function CreatorDetail({ cr, favs, toggleFav, gradient }: {
           className={`${s.modalFavBtn} ${favs.has(cr.id) ? s.modalFavBtnOn : ""}`}
           onClick={(e) => { e.stopPropagation(); toggleFav(cr.id); }}
         >
-          {favs.has(cr.id) ? "\u2764" : "\u2661"}
+          <svg viewBox="0 0 24 24" width="14" height="14" fill={favs.has(cr.id) ? "#e05c5c" : "none"} stroke={favs.has(cr.id) ? "#e05c5c" : "rgba(255,255,255,.75)"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
         </button>
       </div>
       <div className={s.modalBody}>
@@ -59,10 +61,18 @@ function CreatorDetail({ cr, favs, toggleFav, gradient }: {
         </div>
       </div>
       <div className={s.modalBtns}>
-        <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.modalBtnMain}>
-          <span className={s.pip} />この人に相談する
+        <a href="https://example.com" target="_blank" rel="noopener noreferrer" className={s.modalBtnMain}>
+          事例を見る
         </a>
-        <Link href="/simulation" className={s.modalBtnSim}>シミュレーターで見積もり</Link>
+        <button
+          className={s.modalBtnSim}
+          onClick={(e) => { e.stopPropagation(); toggleFav(cr.id); }}
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16" fill={favs.has(cr.id) ? "#e05c5c" : "none"} stroke={favs.has(cr.id) ? "#e05c5c" : "currentColor"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 6 }}>
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+          お気に入り
+        </button>
       </div>
     </>
   );
@@ -112,10 +122,6 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
                 <span className={s.pageEye}>Meet our creators</span>
                 <h1 className={s.pageH1}>横浜・鎌倉の<br />ウェディング<em>クリエイター</em></h1>
               </div>
-              <div style={{ textAlign: "right", paddingTop: 8 }}>
-                <div className={s.totalCount}>{filtered.length}</div>
-                <div className={s.totalLabel}>Creators</div>
-              </div>
             </div>
           </div>
 
@@ -147,13 +153,15 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
                       className={`${s.crCardFav} ${favs.has(cr.id) ? s.crCardFavOn : ""}`}
                       onClick={(e) => { e.stopPropagation(); toggleFav(cr.id); }}
                     >
-                      {favs.has(cr.id) ? "\u2764" : "\u2661"}
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill={favs.has(cr.id) ? "#e05c5c" : "none"} stroke={favs.has(cr.id) ? "#e05c5c" : "rgba(255,255,255,.75)"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                      </svg>
                     </button>
                   </div>
                   <div className={s.crCardBody}>
                     <div className={s.crCardRole}>{cr.role}</div>
                     <div className={s.crCardName}>{cr.name}</div>
-                    <div className={s.crCardPrice}>&yen;{cr.price.toLocaleString()}</div>
+                    <div className={s.crCardPrice}>指名料 &yen;{cr.price.toLocaleString()}〜</div>
                     <div className={s.crCardTags}>
                       {cr.tags.map((t) => <span key={t} className={s.crCardTag}>{t}</span>)}
                     </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
+import CreatorTrack from "@/components/CreatorTrack";
 import { CREATORS_LIST } from "@/lib/creators";
 import { ARTICLES } from "@/lib/articles";
 import { getCreators, getArticles, mapCMSCreator, mapCMSArticle } from "@/lib/microcms";
@@ -19,8 +20,8 @@ export const metadata: Metadata = {
 
 const VALUES = [
   { num: "Value 01", title: "人で選ぶ", desc: "顔・想い・料金を確認してから指名できる。だから安心して任せられます。" },
-  { num: "Value 02", title: "明朗会計", desc: "シミュレーターで概算がわかる。追加費用なし、持込自由で本当に納得できる式に。" },
-  { num: "Value 03", title: "横浜・鎌倉特化", desc: "エリアを知り尽くしたクリエイターが、海と風を感じる式を作ります。" },
+  { num: "Value 02", title: "適正価格", desc: "シミュレーターで概算価格を算出。納得度の高いクオリティで安心。" },
+  { num: "Value 03", title: "持ち込み自由", desc: "理由の見えない持込料や追加費用はかかりません。ご自身がお願いしたいクリエイターさんにご依頼ください。" },
 ];
 
 const STEPS = [
@@ -31,10 +32,10 @@ const STEPS = [
 ];
 
 const VENUES = [
-  { name: "横浜ベイサイド", area: "YOKOHAMA", bg: "linear-gradient(155deg,#8ab8d0,#4a7898)" },
-  { name: "鎌倉 古民家", area: "KAMAKURA", bg: "linear-gradient(155deg,#9ac8d8,#5898b8)" },
-  { name: "逗子マリーナ", area: "ZUSHI", bg: "linear-gradient(155deg,#7aa8c0,#3a6888)" },
-  { name: "葉山 山荘", area: "HAYAMA", bg: "linear-gradient(155deg,#6898b8,#385878)" },
+  { name: "横浜ベイサイド", area: "YOKOHAMA", bg: "linear-gradient(155deg,#8ab8d0,#4a7898)", desc: "海を望むベイエリアのリゾート空間。着席30〜120名" },
+  { name: "鎌倉 古民家", area: "KAMAKURA", bg: "linear-gradient(155deg,#9ac8d8,#5898b8)", desc: "鎌倉の歴史ある古民家を貸切。着席20〜60名" },
+  { name: "逗子マリーナ", area: "ZUSHI", bg: "linear-gradient(155deg,#7aa8c0,#3a6888)", desc: "南仏風リゾートで海辺のウェディング。着席30〜80名" },
+  { name: "葉山 山荘", area: "HAYAMA", bg: "linear-gradient(155deg,#6898b8,#385878)", desc: "緑豊かな山荘で落ち着いた式を。着席20〜50名" },
 ];
 
 const GRADIENTS = [
@@ -88,7 +89,9 @@ export default async function HomePage() {
           </AnimateOnScroll>
           <AnimateOnScroll animation="fadeUp" delay={80}>
             <h1 className={s.heroH1}>
-              横浜・鎌倉で<br /><em>ふたりらしい結婚式</em>を、<br />人から選ぶ。
+              <span style={{display:'inline-block', whiteSpace:'nowrap'}}>横浜・鎌倉で</span><br />
+              <span style={{display:'inline-block', whiteSpace:'nowrap'}}><em>ふたりらしい結婚式</em>を、</span><br />
+              <span style={{display:'inline-block', whiteSpace:'nowrap'}}>人から選ぶ。</span>
             </h1>
           </AnimateOnScroll>
           <AnimateOnScroll animation="fadeUp" delay={160}>
@@ -155,22 +158,7 @@ export default async function HomePage() {
           </div>
           <Link href="/creators" className={s.seeAll}>すべて見る &rarr;</Link>
         </div>
-        <div className={s.crTrack}>
-          {creators.map((cr, i) => (
-            <Link href="/creators" key={cr.id} className={s.crCard}>
-              <div className={s.crImgWrap}>
-                <div className={s.crImgBg} style={{ background: GRADIENTS[i % GRADIENTS.length] }} />
-                <div className={s.crGrad} />
-                <span className={s.crCatLabel}>{cr.catLabel}</span>
-              </div>
-              <div className={s.crRole}>{cr.role}</div>
-              <div className={s.crName}>{cr.name}</div>
-              <div className={s.crTags}>
-                {cr.tags.map((t) => <span key={t} className={s.crTag}>{t}</span>)}
-              </div>
-            </Link>
-          ))}
-        </div>
+        <CreatorTrack creators={creators} gradients={GRADIENTS} styles={s} />
       </section>
 
       {/* How It Works */}
@@ -214,6 +202,7 @@ export default async function HomePage() {
                 <div className={s.vInfo}>
                   <div className={s.vName}>{v.name}</div>
                   <div className={s.vArea}>{v.area}</div>
+                  <div className={s.vDesc}>{v.desc}</div>
                 </div>
               </div>
             </AnimateOnScroll>

@@ -47,7 +47,7 @@ export default function Header() {
               width={200}
               height={40}
               priority
-              style={{ height: '32px', width: 'auto' }}
+              style={{ height: '36px', width: 'auto' }}
             />
           </Link>
         </div>
@@ -67,8 +67,8 @@ export default function Header() {
 
         {/* Desktop CTAs */}
         <div className={styles.ctas}>
-          <Link href="#contact" className={styles.ctaOutline}>
-            相談を予約
+          <Link href="/simulation" className={styles.ctaOutline}>
+            見積もりシミュレーション
           </Link>
           <a
             href="https://lin.ee/tRn0iPk"
@@ -76,7 +76,7 @@ export default function Header() {
             rel="noopener noreferrer"
             className={styles.ctaFill}
           >
-            LINEで無料相談
+            LINEで相談
           </a>
         </div>
 
@@ -107,11 +107,11 @@ export default function Header() {
         ))}
         <div className={styles.drawerCtas}>
           <Link
-            href="#contact"
+            href="/simulation"
             className={styles.ctaOutline}
             onClick={closeDrawer}
           >
-            相談を予約
+            見積もりシミュレーション
           </Link>
           <a
             href="https://lin.ee/tRn0iPk"
@@ -120,7 +120,7 @@ export default function Header() {
             className={styles.ctaFill}
             onClick={closeDrawer}
           >
-            LINEで無料相談
+            LINEで相談
           </a>
         </div>
       </div>

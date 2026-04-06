@@ -18,11 +18,11 @@ export default function Footer() {
           <div className={styles.logo}>
             <Link href="/">
               <Image
-                src="/logo-footer.jpg"
+                src="/logo-header.jpg"
                 alt="ヒトカラウェディング"
                 width={180}
                 height={36}
-                style={{ height: '26px', width: 'auto', opacity: 0.7 }}
+                style={{ height: '30px', width: 'auto' }}
               />
             </Link>
           </div>
