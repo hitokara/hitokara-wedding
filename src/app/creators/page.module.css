@@ -38,7 +38,7 @@
 }
 .crCard:hover { transform: translateY(-3px); }
 .crCardActive { border-color: var(--sea); box-shadow: 0 0 0 1px var(--sea); }
-.crCardImg { width: 100%; aspect-ratio: 3/4; position: relative; overflow: hidden; }
+.crCardImg { width: 100%; aspect-ratio: 1/1; position: relative; overflow: hidden; }
 .crCardImgBg { width: 100%; height: 100%; background-size: cover; background-position: center; }
 .crCardGrad { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,.32)); }
 .crCardCat {
