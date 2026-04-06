@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
 import { FILTER_CATS } from "@/lib/creators";
 import type { Creator } from "@/lib/creators";
 import s from "./page.module.css";
+
+const STORAGE_KEY = "hitokara-favs";
 
 const GRADIENTS = [
   "linear-gradient(155deg,#8ab8d0,#4a7898)",
@@ -23,10 +25,35 @@ function CreatorDetail({ cr, favs, toggleFav, gradient }: {
   toggleFav: (id: string) => void;
   gradient: string;
 }) {
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const slides = [
+    gradient,
+    gradient.replace("155deg", "175deg"),
+    gradient.replace("155deg", "135deg"),
+  ];
+
+  const handleScroll = () => {
+    const el = sliderRef.current;
+    if (!el) return;
+    const idx = Math.round(el.scrollLeft / el.offsetWidth);
+    setActiveSlide(idx);
+  };
+
+  const goToSlide = (idx: number) => {
+    const el = sliderRef.current;
+    if (!el) return;
+    el.scrollTo({ left: idx * el.offsetWidth, behavior: "smooth" });
+  };
+
   return (
     <>
       <div className={s.modalImgWrap}>
-        <div className={s.modalImgBg} style={{ background: gradient }} />
+        <div className={s.modalSlider} ref={sliderRef} onScroll={handleScroll}>
+          {slides.map((bg, i) => (
+            <div key={i} className={s.modalSlide} style={{ background: bg }} />
+          ))}
+        </div>
         <div className={s.modalImgGrad} />
         <span className={s.modalCatBadge}>{cr.catLabel}</span>
         <button
@@ -37,6 +64,15 @@ function CreatorDetail({ cr, favs, toggleFav, gradient }: {
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
           </svg>
         </button>
+        <div className={s.modalDots}>
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              className={`${s.modalDot} ${i === activeSlide ? s.modalDotActive : ""}`}
+              onClick={(e) => { e.stopPropagation(); goToSlide(i); }}
+            />
+          ))}
+        </div>
       </div>
       {/* Works thumbnails (horizontal scroll) */}
       <div className={s.modalWorksScroll}>
@@ -100,11 +136,31 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
   });
   const [modalOpen, setModalOpen] = useState(false);
 
+  // Load favorites from localStorage on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const arr: string[] = JSON.parse(stored);
+        if (Array.isArray(arr) && arr.length > 0) {
+          setFavs(new Set(arr));
+        }
+      }
+    } catch {
+      // ignore parse errors
+    }
+  }, []);
+
   const toggleFav = useCallback((id: string) => {
     setFavs((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else next.add(id);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(next)));
+      } catch {
+        // ignore storage errors
+      }
       return next;
     });
   }, []);

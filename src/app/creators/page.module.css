@@ -95,6 +95,21 @@
 }
 .modalImgWrap { width: 100%; height: 44vw; min-height: 180px; max-height: 280px; position: relative; overflow: hidden; flex-shrink: 0; }
 .modalImgBg { width: 100%; height: 100%; background-size: cover; background-position: center; }
+.modalSlider {
+  display: flex; width: 100%; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.modalSlider::-webkit-scrollbar { display: none; }
+.modalSlide { flex: 0 0 100%; width: 100%; height: 100%; scroll-snap-align: start; background-size: cover; background-position: center; }
+.modalDots {
+  position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 6px; z-index: 3;
+}
+.modalDot {
+  width: 6px; height: 6px; border-radius: 50%; border: none; padding: 0;
+  background: rgba(255,255,255,.4); cursor: pointer; transition: all .2s;
+}
+.modalDotActive { background: #fff; transform: scale(1.3); }
 .modalImgGrad { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.4), transparent 55%); }
 .modalCatBadge { position: absolute; bottom: 12px; left: 14px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.9); z-index: 2; }
 .modalFavBtn {

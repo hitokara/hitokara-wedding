@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { fmtP } from "@/lib/simulation";
 import { CREATORS_LIST } from "@/lib/creators";
 import type { CategoryItem } from "@/lib/simulation";
 import type { CMSCategoryGroup } from "@/lib/microcms";
 import s from "./page.module.css";
+
+const FAVS_STORAGE_KEY = "hitokara-favs";
 
 interface AccData {
   id: string;
@@ -159,10 +161,27 @@ function CreatorPicker({
   selectedCreatorId: string;
   onPick: (catId: string, creatorId: string) => void;
 }) {
-  // TODO: Integrate localStorage or Firebase for persisted favorites.
-  // When available, sort creators so favorited ones appear first:
-  // const sorted = [...creators].sort((a, b) => (favSet.has(b.id) ? 1 : 0) - (favSet.has(a.id) ? 1 : 0));
-  const creators = CREATORS_LIST.filter((c) => c.cat === catKey);
+  const [favSet, setFavSet] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(FAVS_STORAGE_KEY);
+      if (stored) {
+        const arr: string[] = JSON.parse(stored);
+        if (Array.isArray(arr)) setFavSet(new Set(arr));
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const allCreators = CREATORS_LIST.filter((c) => c.cat === catKey);
+  // Sort favorited creators first
+  const creators = [...allCreators].sort((a, b) => {
+    const aFav = favSet.has(a.id) ? 1 : 0;
+    const bFav = favSet.has(b.id) ? 1 : 0;
+    return bFav - aFav;
+  });
   if (creators.length === 0) return null;
 
   return (
@@ -171,6 +190,7 @@ function CreatorPicker({
       <div className={s.crPickerTrack}>
         {creators.map((cr, i) => {
           const on = selectedCreatorId === cr.id;
+          const isFav = favSet.has(cr.id);
           return (
             <div
               key={cr.id}
@@ -182,18 +202,23 @@ function CreatorPicker({
                   className={s.crPickerImg}
                   style={{ background: CARD_GRADIENTS[i % CARD_GRADIENTS.length] }}
                 />
-                <button
-                  className={s.crPickerFav}
-                  onClick={(e) => e.stopPropagation()}
-                  aria-label="お気に入り"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.75)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="14" height="14">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                  </svg>
-                </button>
+                {isFav && (
+                  <span className={s.crPickerFavBadge}>
+                    <svg viewBox="0 0 24 24" fill="#e05c5c" stroke="#e05c5c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="12" height="12">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                  </span>
+                )}
               </div>
               <div className={s.crPickerInfo}>
-                <div className={s.crPickerName}>{cr.name}</div>
+                <div className={s.crPickerName}>
+                  {isFav && (
+                    <svg viewBox="0 0 24 24" fill="#e05c5c" stroke="none" width="10" height="10" style={{ marginRight: 3, verticalAlign: "middle", display: "inline" }}>
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                  )}
+                  {cr.name}
+                </div>
                 <div className={s.crPickerTags}>
                   {cr.tags.slice(0, 2).map((t) => (
                     <span key={t} className={s.crPickerTag}>{t}</span>
@@ -255,27 +280,51 @@ export default function SimulationClient({
       {/* Print Summary (hidden on screen, shown in print) */}
       <div className={s.printSummary}>
         <h2 className={s.printTitle}>見積もりシミュレーション結果</h2>
+        <div className={s.printDate}>{new Date().toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" })} 作成</div>
         <div className={s.printGuests}>ゲスト人数: {guests}名</div>
         <table className={s.printTable}>
           <thead>
             <tr>
               <th>カテゴリ</th>
+              <th>選択内容</th>
               <th>金額</th>
             </tr>
           </thead>
           <tbody>
-            {breakdown.map((b) => (
-              <tr key={b.id}>
-                <td>{b.title}</td>
-                <td>{b.selected ? `\u00a5${fmtP(b.price)}` : "\u672a\u9078\u629e"}</td>
-              </tr>
-            ))}
+            {accData.map((cat) => {
+              const sel = selections[cat.id];
+              const selItem = cat.items.find((it) => it.id === sel);
+              let price = 0;
+              let label = "\u672a\u9078\u629e";
+              if (selItem) {
+                label = selItem.label;
+                if (selItem.nom === 1 && creatorNoms[cat.id]) {
+                  const nominated = CREATORS_LIST.find((c) => c.id === creatorNoms[cat.id]);
+                  price = nominated?.price ?? 0;
+                  if (nominated) label += `\uff08${nominated.name}\uff09`;
+                } else {
+                  price = selItem.unit === "\u4eba" ? selItem.price * guests : selItem.price;
+                }
+              }
+              return (
+                <tr key={cat.id}>
+                  <td>{cat.title}</td>
+                  <td>{sel ? label : "\u2014"}</td>
+                  <td>{sel ? `\u00a5${fmtP(price)}` : "\u672a\u9078\u629e"}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
+        <div className={s.printSubtotal}>小計: &yen;{fmtP(total)}</div>
+        <div className={s.printPlanningFee}>プランニング料: 含む</div>
         <div className={s.printTotal}>
           合計: &yen;{fmtP(total)} 円
         </div>
-        <div className={s.printDisclaimer}>※ プランニング料は含まれています。表示は参考金額です。</div>
+        <div className={s.printDisclaimer}>
+          ※ プランニング料は含まれています。表示は参考金額です。<br />
+          ※ この見積もりはヒトカラウェディング（hitokara-wedding.com）で作成されました
+        </div>
       </div>
 
       {/* SP: Total Bar */}

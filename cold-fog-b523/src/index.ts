@@ -3,10 +3,12 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname === "/webhook" && request.method === "POST") {
-      const body = await request.json();
+      const body = await request.json() as Record<string, unknown>;
+      const events = body.events as Array<Record<string, unknown>> | undefined;
 
-      const replyToken = body.events?.[0]?.replyToken;
-      const userMessage = body.events?.[0]?.message?.text;
+      const replyToken = events?.[0]?.replyToken as string | undefined;
+      const msg = events?.[0]?.message as Record<string, unknown> | undefined;
+      const userMessage = msg?.text as string | undefined;
 
       if (replyToken && userMessage) {
         await fetch("https://api.line.me/v2/bot/message/reply", {

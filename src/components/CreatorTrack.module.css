@@ -16,7 +16,7 @@
   display: flex;
   gap: 12px;
   width: max-content;
-  animation: creatorScroll 30s linear infinite;
+  animation: creatorScroll 20s linear infinite;
 }
 
 .trackWrapper:hover .trackInner {
