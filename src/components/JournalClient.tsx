@@ -12,6 +12,7 @@ interface Article {
   author: string;
   excerpt?: string;
   gradient: string;
+  thumbnailUrl?: string;
 }
 
 interface SideCat {
@@ -77,15 +78,22 @@ export default function JournalClient({ articles, sideCats, styles: s }: Journal
                 {featured.map((a, i) => (
                   <AnimateOnScroll key={a.slug} animation="fadeUp" delay={80 + i * 80}>
                     <Link href={`/journal/${a.slug}`} className={s.featCard}>
-                      <div className={s.featImg} style={{ background: a.gradient }} />
-                      <div className={s.featCat}>{a.cat}</div>
-                      <div className={s.featTitle}>{a.title}</div>
-                      {a.excerpt && <div className={s.featExcerpt}>{a.excerpt}</div>}
-                      <div className={s.featMeta}>
-                        <div className={s.featAuthorAv}>{a.author[0]}</div>
-                        <div>{a.author}</div>
-                        <div className={s.featSep} />
-                        <div>{a.date}</div>
+                      {a.thumbnailUrl ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img src={a.thumbnailUrl} alt={a.title} className={s.featImg} />
+                      ) : (
+                        <div className={s.featImg} style={{ background: a.gradient }} />
+                      )}
+                      <div className={s.featBody}>
+                        <div className={s.featCat}>{a.cat}</div>
+                        <div className={s.featTitle}>{a.title}</div>
+                        {a.excerpt && <div className={s.featExcerpt}>{a.excerpt}</div>}
+                        <div className={s.featMeta}>
+                          <div className={s.featAuthorAv}>{a.author[0]}</div>
+                          <div>{a.author}</div>
+                          <div className={s.featSep} />
+                          <div>{a.date}</div>
+                        </div>
                       </div>
                     </Link>
                   </AnimateOnScroll>
@@ -97,7 +105,12 @@ export default function JournalClient({ articles, sideCats, styles: s }: Journal
                 {grid.map((a) => (
                   <Link href={`/journal/${a.slug}`} key={a.slug} className={s.artCard}>
                     <div className={s.artImg}>
-                      <div className={s.artImgInner} style={{ background: a.gradient }} />
+                      {a.thumbnailUrl ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img src={a.thumbnailUrl} alt={a.title} className={s.artImgInner} />
+                      ) : (
+                        <div className={s.artImgInner} style={{ background: a.gradient }} />
+                      )}
                     </div>
                     <div className={s.artCat}>{a.cat}</div>
                     <div className={s.artTitle}>{a.title}</div>
@@ -138,7 +151,12 @@ export default function JournalClient({ articles, sideCats, styles: s }: Journal
           <div className={s.sideRecent}>
             {recent.map((a) => (
               <Link href={`/journal/${a.slug}`} key={a.slug} className={s.sideArt}>
-                <div className={s.sideArtImg} style={{ background: a.gradient }} />
+                {a.thumbnailUrl ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img src={a.thumbnailUrl} alt={a.title} className={s.sideArtImg} />
+                ) : (
+                  <div className={s.sideArtImg} style={{ background: a.gradient }} />
+                )}
                 <div>
                   <div className={s.sideArtCat}>{a.cat}</div>
                   <div className={s.sideArtTitle}>{a.title}</div>
