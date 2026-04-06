@@ -14,11 +14,25 @@ export const metadata: Metadata = {
   },
 };
 
+// 静的データからMBTI等の補足情報をマップ（CMSにフィールド追加されるまでの暫定）
+const EXTRA_MAP = new Map(
+  CREATORS_LIST.map((c) => [c.id, { mbti: c.mbti, likes: c.likes, weddingThought: c.weddingThought }])
+);
+
 export default async function CreatorsPage() {
   const cmsResult = await getCreators();
   const creators =
     cmsResult.contents.length > 0
-      ? cmsResult.contents.map(mapCMSCreator)
+      ? cmsResult.contents.map((c) => {
+          const mapped = mapCMSCreator(c);
+          const extra = EXTRA_MAP.get(mapped.id);
+          return {
+            ...mapped,
+            mbti: mapped.mbti || extra?.mbti,
+            likes: mapped.likes || extra?.likes,
+            weddingThought: mapped.weddingThought || extra?.weddingThought,
+          };
+        })
       : CREATORS_LIST;
 
   return <CreatorsClient creators={creators} />;
