@@ -6,6 +6,7 @@ export interface Article {
   author: string;
   excerpt?: string;
   gradient: string;
+  thumbnailUrl?: string;
 }
 
 export const ARTICLES: Article[] = [

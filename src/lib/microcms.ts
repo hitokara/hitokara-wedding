@@ -284,6 +284,7 @@ export function mapCMSArticle(a: CMSArticle, index: number): Article {
     author: a.author ?? "",
     excerpt: a.excerpt,
     gradient: ARTICLE_GRADIENTS[index % ARTICLE_GRADIENTS.length],
+    thumbnailUrl: a.thumbnail?.url,
   };
 }
 

@@ -62,6 +62,7 @@ export default async function JournalArticlePage({ params }: Props) {
   const date = article?.date ?? "2025.06.01";
   const author = article?.author ?? "大久保 雄治";
   const gradient = article?.gradient ?? "linear-gradient(155deg,#8ab8d0,#4a7898)";
+  const thumbnailUrl = article?.thumbnailUrl ?? (cms?.thumbnail?.url || null);
   const excerptText = article?.excerpt ??
     "鎌倉の神社・寺院で行う神前式は、凛とした空気の中で誓いを立てる特別な体験。古都の歴史と自然が織りなす空間で、和装のふたりが映えます。";
 
@@ -120,9 +121,16 @@ export default async function JournalArticlePage({ params }: Props) {
               <span>読了5分</span>
             </div>
           </AnimateOnScroll>
-          <AnimateOnScroll animation="scaleIn" delay={160}>
-            <div className={s.abHero} style={{ background: gradient }} />
-          </AnimateOnScroll>
+          {thumbnailUrl ? (
+            <AnimateOnScroll animation="scaleIn" delay={160}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={thumbnailUrl} alt={title} className={s.abHero} />
+            </AnimateOnScroll>
+          ) : gradient && !cms ? (
+            <AnimateOnScroll animation="scaleIn" delay={160}>
+              <div className={s.abHero} style={{ background: gradient }} />
+            </AnimateOnScroll>
+          ) : null}
 
           {bodyHtml ? (
             /* CMS rich-text body */
