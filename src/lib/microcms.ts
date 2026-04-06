@@ -180,9 +180,41 @@ export async function getNews(params?: { limit?: number }) {
   );
 }
 
+// ---------- Sim Items ----------
+export interface CMSSimOption {
+  fieldId: string;
+  name: string;
+  desc?: string;
+  price?: number;
+  unitPrice?: number;
+  tag?: string[];
+  creatorCategory?: string;
+}
+
+export interface CMSSimItem extends MicroCMSContent {
+  key: string;
+  label: string;
+  sortOrder?: number;
+  note?: string;
+  special?: string[];
+  options?: CMSSimOption[];
+}
+
+export async function getSimItems() {
+  return safeFetch(
+    () =>
+      client.get<ListResponse<CMSSimItem>>({
+        endpoint: "sim-items",
+        queries: { limit: 20, orders: "sortOrder" },
+      }),
+    EMPTY_LIST as ListResponse<CMSSimItem>
+  );
+}
+
 // ---------- Mapping helpers ----------
 import type { Creator } from "@/lib/creators";
 import type { Article } from "@/lib/articles";
+import type { CategoryItem, CategoryGroup } from "@/lib/simulation";
 
 const CATEGORY_MAP: Record<string, { cat: string; catLabel: string }> = {
   "プランナー": { cat: "planner", catLabel: "プランナー" },
@@ -239,4 +271,42 @@ export function mapCMSArticle(a: CMSArticle, index: number): Article {
     excerpt: a.excerpt,
     gradient: ARTICLE_GRADIENTS[index % ARTICLE_GRADIENTS.length],
   };
+}
+
+/** CMS SimItem option -> local CategoryItem */
+function mapSimOption(simKey: string, opt: CMSSimOption, idx: number): CategoryItem {
+  const item: CategoryItem = {
+    id: `${simKey}-${idx}`,
+    label: opt.name,
+    price: opt.unitPrice ?? opt.price ?? 0,
+  };
+  if (opt.desc) item.note = opt.desc;
+  if (opt.unitPrice) item.unit = "人";
+
+  // tag mapping: ["nom"] -> nom:1, ["bring"] -> bring flag (keep as-is for now)
+  const tag = opt.tag?.[0];
+  if (tag === "nom") {
+    item.nom = 1;
+    item.price = 0;
+    if (opt.creatorCategory) item.ck = opt.creatorCategory;
+  }
+
+  return item;
+}
+
+/** CMS SimItems -> local CategoryGroup[] (accordion-ready) */
+export function mapCMSSimItems(items: CMSSimItem[]): CategoryGroup[] {
+  return items.map((sim) => ({
+    id: sim.key,
+    title: sim.label,
+    note: sim.note,
+    special: sim.special?.[0],
+    items: (sim.options ?? []).map((opt, i) => mapSimOption(sim.key, opt, i)),
+  }));
+}
+
+/** Extended CategoryGroup carrying CMS metadata for the simulation page */
+export interface CMSCategoryGroup extends CategoryGroup {
+  note?: string;
+  special?: string;
 }

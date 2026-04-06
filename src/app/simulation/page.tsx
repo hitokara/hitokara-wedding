@@ -1,350 +1,39 @@
-"use client";
+import { getSimItems, mapCMSSimItems } from "@/lib/microcms";
+import type { CMSCategoryGroup } from "@/lib/microcms";
+import { CATS, PLANNERS, CREATORS, FLOWER_MAIN } from "@/lib/simulation";
+import SimulationClient from "./SimulationClient";
 
-import { useState, useMemo, useCallback } from "react";
-import Link from "next/link";
-import { CATS, PLANNERS, CREATORS, FLOWER_MAIN, fmtP } from "@/lib/simulation";
-import { CREATORS_LIST } from "@/lib/creators";
-import type { CategoryItem } from "@/lib/simulation";
-import s from "./page.module.css";
+export const revalidate = 60;
 
-interface AccData {
-  id: string;
-  idx: string;
-  title: string;
-  items: CategoryItem[];
-}
-
-function buildAccordionData(): AccData[] {
+/** Fallback: build categories from local hardcoded data */
+function buildLocalCategories(): CMSCategoryGroup[] {
   const hairItems = CREATORS.filter((c) => c.ck === "hair" || c.id === "hair-std");
   const mcItems = CREATORS.filter((c) => c.ck === "mc" || c.id === "mc-std");
   const photoItems = CREATORS.filter((c) => c.ck === "photo" || c.id === "photo-std");
   const videoItems = CREATORS.filter((c) => c.ck === "movie" || c.id === "video-std");
+
   return [
-    { id: "planner", idx: "01", title: "プランニング", items: PLANNERS },
-    { id: "venue", idx: "02", title: "会場", items: CATS[0].items },
-    { id: "food", idx: "03", title: "料理・飲物", items: CATS[1].items },
-    { id: "dress", idx: "04", title: "衣装", items: CATS[2].items },
-    { id: "flower", idx: "05", title: "装花", items: FLOWER_MAIN },
-    { id: "hair", idx: "06", title: "ヘアメイク", items: hairItems },
-    { id: "mc", idx: "07", title: "司会", items: mcItems },
-    { id: "photo", idx: "08", title: "写真", items: photoItems },
-    { id: "video", idx: "09", title: "映像", items: videoItems },
+    { id: "planner", title: "プランニング", items: PLANNERS },
+    { id: "venue", title: "会場", items: CATS[0].items },
+    { id: "food", title: "料理・飲物", items: CATS[1].items },
+    { id: "dress", title: "衣装", items: CATS[2].items },
+    { id: "flower", title: "装花", items: FLOWER_MAIN },
+    { id: "hair", title: "ヘアメイク", items: hairItems },
+    { id: "mc", title: "司会", items: mcItems },
+    { id: "photo", title: "写真", items: photoItems },
+    { id: "video", title: "映像", items: videoItems },
   ];
 }
 
-function ChevSvg({ open }: { open: boolean }) {
-  return (
-    <svg className={`${s.accChev} ${open ? s.accChevOpen : ""}`} viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M3 5l4 4 4-4" />
-    </svg>
-  );
-}
+export default async function SimulationPage() {
+  const res = await getSimItems();
 
-function ToggleChevSvg() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M3 4l3 3 3-3" />
-    </svg>
-  );
-}
+  let categories: CMSCategoryGroup[];
+  if (res.contents.length > 0) {
+    categories = mapCMSSimItems(res.contents) as CMSCategoryGroup[];
+  } else {
+    categories = buildLocalCategories();
+  }
 
-function AccordionSection({
-  data,
-  guests,
-  selections,
-  onSelect,
-  creatorNoms,
-  onCreatorNom,
-}: {
-  data: AccData[];
-  guests: number;
-  selections: Record<string, string>;
-  onSelect: (catId: string, itemId: string) => void;
-  creatorNoms: Record<string, string>;
-  onCreatorNom: (catId: string, creatorId: string) => void;
-}) {
-  const [openCats, setOpenCats] = useState<Set<string>>(new Set());
-
-  const toggle = (id: string) => {
-    setOpenCats((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
-
-  return (
-    <div className={s.accRoot}>
-      {data.map((cat) => {
-        const isOpen = openCats.has(cat.id);
-        const sel = selections[cat.id];
-        const selItem = cat.items.find((it) => it.id === sel);
-        // For nomination items, use the nominated creator's price
-        let price = 0;
-        if (selItem) {
-          if (selItem.nom === 1 && creatorNoms[cat.id]) {
-            const nominated = CREATORS_LIST.find((c) => c.id === creatorNoms[cat.id]);
-            price = nominated?.price ?? 0;
-          } else {
-            price = selItem.unit === "\u4eba" ? selItem.price * guests : selItem.price;
-          }
-        }
-
-        return (
-          <div key={cat.id} className={s.accItem}>
-            <div className={s.accHdr} onClick={() => toggle(cat.id)}>
-              <span className={s.accIdx}>{cat.idx}</span>
-              <span className={s.accLabel}>{cat.title}</span>
-              <span className={`${s.accPrice} ${!sel ? s.accPricePending : ""}`}>
-                {sel ? `\u00a5${fmtP(price)}` : "\u672a\u9078\u629e"}
-              </span>
-              <ChevSvg open={isOpen} />
-            </div>
-            {isOpen && (
-              <div className={s.accBody}>
-                <div className={s.optList}>
-                  {cat.items.map((item) => {
-                    const on = sel === item.id;
-                    const displayPrice = item.nom === 1
-                      ? "\u6307\u540d"
-                      : item.unit === "\u4eba"
-                        ? `\u00a5${fmtP(item.price)}/\u4eba`
-                        : `\u00a5${fmtP(item.price)}`;
-                    return (
-                      <div key={item.id}>
-                        <div
-                          className={`${s.opt} ${on ? s.optOn : ""}`}
-                          onClick={() => onSelect(cat.id, item.id)}
-                        >
-                          <div className={s.optRadio}>
-                            <div className={s.optDot} />
-                          </div>
-                          <div className={s.optInfo}>
-                            <div className={s.optName}>{item.label}</div>
-                            {item.note && <div className={s.optDesc}>{item.note}</div>}
-                          </div>
-                          <div className={`${s.optPrice} ${item.nom === 1 ? s.optPricePP : item.unit === "\u4eba" ? s.optPricePP : ""}`}>
-                            {displayPrice}
-                          </div>
-                        </div>
-                        {/* Creator picker when nomination is selected */}
-                        {on && item.nom === 1 && item.ck && (
-                          <CreatorPicker
-                            catKey={item.ck}
-                            catId={cat.id}
-                            selectedCreatorId={creatorNoms[cat.id] || ""}
-                            onPick={onCreatorNom}
-                          />
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function CreatorPicker({
-  catKey,
-  catId,
-  selectedCreatorId,
-  onPick,
-}: {
-  catKey: string;
-  catId: string;
-  selectedCreatorId: string;
-  onPick: (catId: string, creatorId: string) => void;
-}) {
-  const creators = CREATORS_LIST.filter((c) => c.cat === catKey);
-  if (creators.length === 0) return null;
-
-  return (
-    <div className={s.crPicker}>
-      <div className={s.crPickerLabel}>クリエイターを選択</div>
-      <div className={s.crPickerGrid}>
-        {creators.map((cr) => {
-          const on = selectedCreatorId === cr.id;
-          return (
-            <div
-              key={cr.id}
-              className={`${s.crPickerCard} ${on ? s.crPickerCardOn : ""}`}
-              onClick={() => onPick(catId, cr.id)}
-            >
-              <div className={s.crPickerName}>{cr.name}</div>
-              <div className={s.crPickerRole}>{cr.catLabel}</div>
-              <div className={s.crPickerPrice}>&yen;{cr.price.toLocaleString()}</div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-export default function SimulationPage() {
-  const [guests, setGuests] = useState(40);
-  const [selections, setSelections] = useState<Record<string, string>>({});
-  const [creatorNoms, setCreatorNoms] = useState<Record<string, string>>({});
-  const [breakdownOpen, setBreakdownOpen] = useState(false);
-
-  const accData = useMemo(() => buildAccordionData(), []);
-
-  const onSelect = useCallback((catId: string, itemId: string) => {
-    setSelections((prev) => ({ ...prev, [catId]: itemId }));
-  }, []);
-
-  const onCreatorNom = useCallback((catId: string, creatorId: string) => {
-    setCreatorNoms((prev) => ({ ...prev, [catId]: creatorId }));
-  }, []);
-
-  const breakdown = useMemo(() => {
-    return accData.map((cat) => {
-      const sel = selections[cat.id];
-      const item = cat.items.find((it) => it.id === sel);
-      let price = 0;
-      if (item) {
-        if (item.nom === 1 && creatorNoms[cat.id]) {
-          const nominated = CREATORS_LIST.find((c) => c.id === creatorNoms[cat.id]);
-          price = nominated?.price ?? 0;
-        } else {
-          price = item.unit === "\u4eba" ? item.price * guests : item.price;
-        }
-      }
-      return { id: cat.id, title: cat.title, price, selected: !!sel };
-    });
-  }, [accData, selections, guests, creatorNoms]);
-
-  const total = useMemo(() => breakdown.reduce((sum, b) => sum + b.price, 0), [breakdown]);
-  const maxBudget = 5000000;
-  const barWidth = Math.min((total / maxBudget) * 100, 100);
-
-  return (
-    <div className={s.simWrap}>
-      {/* SP: Total Bar */}
-      <div className={s.totalBar}>
-        <div className={s.totalLabel}>概算</div>
-        <div className={s.totalAmountWrap}>
-          <span className={s.totalNum}>{fmtP(total)}</span>
-          <span className={s.totalUnit}>&nbsp;円〜</span>
-        </div>
-        <div className={s.totalCta}>
-          <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.tctaLine}>
-            <span className={s.pip} />LINEで送る
-          </a>
-        </div>
-      </div>
-
-      {/* SP: Breakdown Toggle */}
-      <button
-        className={`${s.breakdownToggle} ${breakdownOpen ? s.breakdownToggleOpen : ""}`}
-        onClick={() => setBreakdownOpen(!breakdownOpen)}
-      >
-        <span>内訳を確認する</span>
-        <ToggleChevSvg />
-      </button>
-      <div className={`${s.breakdownPanel} ${breakdownOpen ? s.breakdownPanelOpen : ""}`}>
-        <div className={s.breakdownInner}>
-          {breakdown.map((b) => (
-            <div key={b.id} className={s.bkItem}>
-              <span className={s.bkLabel}>{b.title}</span>
-              <span className={`${s.bkPrice} ${!b.selected ? s.bkPricePending : ""}`}>
-                {b.selected ? `\u00a5${fmtP(b.price)}` : "\u672a\u9078\u629e"}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* SP: Main Scrollable */}
-      <div className={s.simMain}>
-        <h1 className={s.pageH1}>結婚式費用の<em>見積もりシミュレーター</em></h1>
-        <div className={s.guestsBlock}>
-          <div className={s.gTop}>
-            <div className={s.gLabel}>ゲスト人数</div>
-            <div className={s.gValWrap}>
-              <span className={s.gVal}>{guests}</span>
-              <span className={s.gUnit}>名</span>
-            </div>
-          </div>
-          <input
-            type="range"
-            className={s.rangeInput}
-            min={10}
-            max={100}
-            value={guests}
-            step={1}
-            onChange={(e) => setGuests(Number(e.target.value))}
-          />
-        </div>
-        <AccordionSection data={accData} guests={guests} selections={selections} onSelect={onSelect} creatorNoms={creatorNoms} onCreatorNom={onCreatorNom} />
-      </div>
-
-      {/* PC: Left Column */}
-      <div className={s.simLeft}>
-        <h1 className={s.pageH1}>結婚式費用の<em>見積もりシミュレーター</em></h1>
-        <div className={s.guestsBlock}>
-          <div className={s.gTop}>
-            <div className={s.gLabel}>ゲスト人数</div>
-            <div className={s.gValWrap}>
-              <span className={s.gVal}>{guests}</span>
-              <span className={s.gUnit}>名</span>
-            </div>
-          </div>
-          <input
-            type="range"
-            className={s.rangeInput}
-            min={10}
-            max={100}
-            value={guests}
-            step={1}
-            onChange={(e) => setGuests(Number(e.target.value))}
-            style={{ width: "100%", marginBottom: 16 }}
-          />
-        </div>
-        <AccordionSection data={accData} guests={guests} selections={selections} onSelect={onSelect} creatorNoms={creatorNoms} onCreatorNom={onCreatorNom} />
-      </div>
-
-      {/* PC: Right Column */}
-      <div className={s.simRight}>
-        <div className={s.rightInner}>
-          <span className={s.rightLabel}>概算合計</span>
-          <div className={s.rightAmountRow}>
-            <div className={s.rightAmount}>{fmtP(total)}</div>
-            <div className={s.rightUnit}>円</div>
-          </div>
-          <div className={s.rightNote}>
-            {total === 0 ? "項目を選択すると合計が表示されます" : `ゲスト${guests}名の場合の概算です`}
-          </div>
-          <div className={s.rightBarWrap}>
-            <div className={s.rightBar} style={{ width: `${barWidth}%` }} />
-          </div>
-        </div>
-        <div className={s.rightBkLbl}>内訳</div>
-        <div className={s.rightBreakdown}>
-          {breakdown.map((b) => (
-            <div key={b.id} className={s.rbItem}>
-              <span className={s.rbLabel}>{b.title}</span>
-              <span className={`${s.rbPrice} ${!b.selected ? s.rbPricePending : ""}`}>
-                {b.selected ? `\u00a5${fmtP(b.price)}` : "\u672a\u9078\u629e"}
-              </span>
-            </div>
-          ))}
-        </div>
-        <div className={s.rightCtas}>
-          <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.rCtaLine}>
-            <span className={s.pip} />LINEで送って相談する
-          </a>
-          <Link href="#contact" className={s.rCtaConsult}>プランナーに直接相談</Link>
-          <button className={s.rCtaPdf}>PDFで保存する</button>
-          <div className={s.rDisclaimer}>※ プランニング料は含まれています。表示は参考金額です。</div>
-        </div>
-      </div>
-    </div>
-  );
+  return <SimulationClient categories={categories} />;
 }
