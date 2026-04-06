@@ -89,6 +89,26 @@ export default async function JournalArticlePage({ params }: Props) {
     ],
   };
 
+  // All articles for sidebar
+  const allArticles =
+    cmsAll.contents.length > 0
+      ? cmsAll.contents.map((a, i) => mapCMSArticle(a, i))
+      : ARTICLES;
+  const recentArticles = allArticles.filter((a) => a.slug !== slug).slice(0, 5);
+
+  const SIDE_CATS = [
+    { name: "エリア情報", count: 8 },
+    { name: "クリエイター紹介", count: 12 },
+    { name: "ノウハウ", count: 7 },
+    { name: "費用・見積もり", count: 5 },
+    { name: "実例レポート", count: 4 },
+    { name: "和婚", count: 6 },
+  ];
+
+  const heroStyle = thumbnailUrl
+    ? { backgroundImage: `url(${thumbnailUrl})` }
+    : { background: gradient };
+
   return (
     <div className={s.layoutWrap}>
       <script
@@ -104,14 +124,11 @@ export default async function JournalArticlePage({ params }: Props) {
           <span>{title}</span>
         </nav>
 
-        <article className={s.article}>
-          <AnimateOnScroll animation="slideRight">
+        {/* Article Header: photo + text overlay */}
+        <div className={s.abHeader} style={heroStyle}>
+          <div className={s.abHeaderOverlay}>
             <span className={s.abCat}>{cat}</span>
-          </AnimateOnScroll>
-          <AnimateOnScroll animation="fadeUp" delay={80}>
             <h1 className={s.abTitle}>{title}</h1>
-          </AnimateOnScroll>
-          <AnimateOnScroll animation="fadeIn" delay={160}>
             <div className={s.abMetaRow}>
               <div className={s.abAuthorAv}>{author[0]}</div>
               <span>{author}</span>
@@ -120,18 +137,10 @@ export default async function JournalArticlePage({ params }: Props) {
               <div className={s.abSep} />
               <span>読了5分</span>
             </div>
-          </AnimateOnScroll>
-          {thumbnailUrl ? (
-            <AnimateOnScroll animation="scaleIn" delay={160}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={thumbnailUrl} alt={title} className={s.abHero} />
-            </AnimateOnScroll>
-          ) : gradient && !cms ? (
-            <AnimateOnScroll animation="scaleIn" delay={160}>
-              <div className={s.abHero} style={{ background: gradient }} />
-            </AnimateOnScroll>
-          ) : null}
+          </div>
+        </div>
 
+        <article className={s.article}>
           {bodyHtml ? (
             /* CMS rich-text body */
             <AnimateOnScroll animation="fadeUp">
@@ -178,27 +187,56 @@ export default async function JournalArticlePage({ params }: Props) {
         </article>
       </div>
 
-      {/* Sidebar */}
+      {/* Sidebar: same structure as journal list page */}
       <aside className={s.artSide}>
+        {/* Categories */}
+        <div className={s.sideSection}>
+          <span className={s.sideLbl}>Categories</span>
+          <div className={s.sideCats}>
+            {SIDE_CATS.map((c) => (
+              <Link href={`/journal`} key={c.name} className={s.sideCatItem}>
+                {c.name}
+                <span className={s.sideCatCount}>{c.count}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Recent articles */}
+        <div className={s.sideSection}>
+          <span className={s.sideLbl}>新着記事</span>
+          <div className={s.sideRecent}>
+            {recentArticles.map((a) => (
+              <Link href={`/journal/${a.slug}`} key={a.slug} className={s.srCard}>
+                {a.thumbnailUrl ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img src={a.thumbnailUrl} alt={a.title} className={s.srImg} />
+                ) : (
+                  <div className={s.srImg} style={{ background: a.gradient }} />
+                )}
+                <div>
+                  <div className={s.srCat}>{a.cat}</div>
+                  <div className={s.srTitle}>{a.title}</div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Simulation CTA */}
+        <div className={s.sideCta}>
+          <div className={s.sideCtaLbl}>Simulation</div>
+          <div className={s.sideCtaH}>まず、概算を確認してみる</div>
+          <Link href="/simulation" className={s.sideCtaBtn}>シミュレーターを試す</Link>
+        </div>
+
+        {/* LINE CTA */}
         <div className={s.sideCta}>
           <div className={s.sideCtaLbl}>Consultation</div>
-          <div className={s.sideCtaH}>鎌倉エリアのプランナーに相談する</div>
+          <div className={s.sideCtaH}>プランナーに相談する</div>
           <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.sideCtaBtn}>
             <span className={s.pip} />LINEで無料相談
           </a>
-        </div>
-
-        <span className={s.sideLbl}>関連記事</span>
-        <div className={s.sideRecent}>
-          {relatedArticles.map((a) => (
-            <Link href={`/journal/${a.slug}`} key={a.slug} className={s.srCard}>
-              <div className={s.srImg} style={{ background: a.gradient }} />
-              <div>
-                <div className={s.srCat}>{a.cat}</div>
-                <div className={s.srTitle}>{a.title}</div>
-              </div>
-            </Link>
-          ))}
         </div>
       </aside>
     </div>
