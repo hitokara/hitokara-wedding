@@ -3,7 +3,10 @@ import Link from "next/link";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { CREATORS_LIST } from "@/lib/creators";
 import { ARTICLES } from "@/lib/articles";
+import { getCreators, getArticles, mapCMSCreator, mapCMSArticle } from "@/lib/microcms";
 import s from "./page.module.css";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "横浜・鎌倉で、ふたりらしい結婚式を | ヒトカラウェディング",
@@ -53,8 +56,23 @@ function WaveSvg() {
   );
 }
 
-export default function HomePage() {
-  const topArticles = ARTICLES.slice(0, 3);
+export default async function HomePage() {
+  // Fetch from microCMS with local fallback
+  const [cmsCreators, cmsArticles] = await Promise.all([
+    getCreators({ limit: 8 }),
+    getArticles({ limit: 3 }),
+  ]);
+
+  const creators =
+    cmsCreators.contents.length > 0
+      ? cmsCreators.contents.map(mapCMSCreator)
+      : CREATORS_LIST;
+
+  const topArticles =
+    cmsArticles.contents.length > 0
+      ? cmsArticles.contents.map((a, i) => mapCMSArticle(a, i))
+      : ARTICLES.slice(0, 3);
+
   return (
     <>
       {/* Hero */}
@@ -138,7 +156,7 @@ export default function HomePage() {
           <Link href="/creators" className={s.seeAll}>すべて見る &rarr;</Link>
         </div>
         <div className={s.crTrack}>
-          {CREATORS_LIST.map((cr, i) => (
+          {creators.map((cr, i) => (
             <Link href="/creators" key={cr.id} className={s.crCard}>
               <div className={s.crImgWrap}>
                 <div className={s.crImgBg} style={{ background: GRADIENTS[i % GRADIENTS.length] }} />

@@ -1,19 +1,45 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
-import { ARTICLES, getArticleBySlug } from "@/lib/articles";
+import { ARTICLES, getArticleBySlug as getLocalArticle } from "@/lib/articles";
+import {
+  getArticleBySlug as getCMSArticleBySlug,
+  getArticleById as getCMSArticleById,
+  getArticles,
+  mapCMSArticle,
+  type CMSArticle,
+} from "@/lib/microcms";
 import s from "./page.module.css";
+
+export const revalidate = 60;
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
+/** Try CMS first (by slug, then by id), then fall back to local */
+async function resolveArticle(slug: string) {
+  // 1. Try microCMS slug search
+  const bySlug = await getCMSArticleBySlug(slug);
+  if (bySlug) return { cms: bySlug, local: null };
+
+  // 2. Try microCMS content-id lookup
+  const byId = await getCMSArticleById(slug);
+  if (byId) return { cms: byId, local: null };
+
+  // 3. Fall back to local
+  const local = getLocalArticle(slug) ?? null;
+  return { cms: null, local };
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
-  const title = article?.title ?? slug;
-  const description = article?.excerpt
-    ? `${article.excerpt} | 横浜・鎌倉のウェディングプロデュース ヒトカラウェディングのジャーナル。`
+  const { cms, local } = await resolveArticle(slug);
+
+  const title = cms?.title ?? local?.title ?? slug;
+  const excerpt = cms?.excerpt ?? local?.excerpt;
+  const description = excerpt
+    ? `${excerpt} | 横浜・鎌倉のウェディングプロデュース ヒトカラウェディングのジャーナル。`
     : `${title} - 横浜・鎌倉の結婚式に関する記事。ヒトカラウェディングジャーナル。`;
   return {
     title,
@@ -26,7 +52,31 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function JournalArticlePage({ params }: Props) {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const { cms, local } = await resolveArticle(slug);
+
+  // Map CMS data or use local
+  const article = cms ? mapCMSArticle(cms, 0) : local;
+
+  const title = article?.title ?? "記事タイトル";
+  const cat = article?.cat ?? "ノウハウ";
+  const date = article?.date ?? "2025.06.01";
+  const author = article?.author ?? "大久保 雄治";
+  const gradient = article?.gradient ?? "linear-gradient(155deg,#8ab8d0,#4a7898)";
+  const excerptText = article?.excerpt ??
+    "鎌倉の神社・寺院で行う神前式は、凛とした空気の中で誓いを立てる特別な体験。古都の歴史と自然が織りなす空間で、和装のふたりが映えます。";
+
+  // CMS rich-text body (HTML) - only available from CMS
+  const bodyHtml = cms?.body ?? null;
+
+  // Related articles: fetch from CMS or fall back to local
+  const cmsAll = await getArticles({ limit: 10 });
+  const relatedArticles =
+    cmsAll.contents.length > 0
+      ? cmsAll.contents
+          .filter((a) => (a.slug || a.id) !== slug)
+          .slice(0, 3)
+          .map((a, i) => mapCMSArticle(a, i))
+      : ARTICLES.filter((a) => a.slug !== slug).slice(0, 3);
 
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
@@ -34,16 +84,9 @@ export default async function JournalArticlePage({ params }: Props) {
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "TOP", item: "https://hitokara-wedding.com" },
       { "@type": "ListItem", position: 2, name: "Journal", item: "https://hitokara-wedding.com/journal" },
-      { "@type": "ListItem", position: 3, name: article?.title ?? slug, item: `https://hitokara-wedding.com/journal/${slug}` },
+      { "@type": "ListItem", position: 3, name: title, item: `https://hitokara-wedding.com/journal/${slug}` },
     ],
   };
-  const related = ARTICLES.filter((a) => a.slug !== slug).slice(0, 3);
-
-  const title = article?.title ?? "記事タイトル";
-  const cat = article?.cat ?? "ノウハウ";
-  const date = article?.date ?? "2025.06.01";
-  const author = article?.author ?? "大久保 雄治";
-  const gradient = article?.gradient ?? "linear-gradient(155deg,#8ab8d0,#4a7898)";
 
   return (
     <div className={s.layoutWrap}>
@@ -80,32 +123,43 @@ export default async function JournalArticlePage({ params }: Props) {
           <AnimateOnScroll animation="scaleIn" delay={160}>
             <div className={s.abHero} style={{ background: gradient }} />
           </AnimateOnScroll>
-          <AnimateOnScroll animation="fadeUp">
-            <p className={s.abLead}>
-              {article?.excerpt ??
-                "鎌倉の神社・寺院で行う神前式は、凛とした空気の中で誓いを立てる特別な体験。古都の歴史と自然が織りなす空間で、和装のふたりが映えます。"}
-            </p>
-          </AnimateOnScroll>
 
-          <h2 className={s.abH2}>はじめに</h2>
-          <p className={s.abP}>
-            横浜から電車で40分ほどのアクセスの良さに加え、鎌倉には国指定の重要文化財を持つ神社・寺院が多く、格調ある神前式が叶います。鶴岡八幡宮を筆頭に、各エリアにゆかりの深い場所があります。
-          </p>
+          {bodyHtml ? (
+            /* CMS rich-text body */
+            <AnimateOnScroll animation="fadeUp">
+              <div
+                className={s.abRichBody}
+                dangerouslySetInnerHTML={{ __html: bodyHtml }}
+              />
+            </AnimateOnScroll>
+          ) : (
+            /* Fallback static content */
+            <>
+              <AnimateOnScroll animation="fadeUp">
+                <p className={s.abLead}>{excerptText}</p>
+              </AnimateOnScroll>
 
-          <div className={s.abCallout}>
-            <div className={s.abCalloutBody}>
-              「鎌倉は街全体が式場になる感覚。挙式後の写真散歩が楽しみで選びました」
-            </div>
-          </div>
+              <h2 className={s.abH2}>はじめに</h2>
+              <p className={s.abP}>
+                横浜から電車で40分ほどのアクセスの良さに加え、鎌倉には国指定の重要文化財を持つ神社・寺院が多く、格調ある神前式が叶います。鶴岡八幡宮を筆頭に、各エリアにゆかりの深い場所があります。
+              </p>
 
-          <p className={s.abP}>
-            持込カメラマンを活用すれば、神社の境内はもちろん、由比ヶ浜の海岸や古民家街を巡りながらのフォトセッションも可能です。
-          </p>
+              <div className={s.abCallout}>
+                <div className={s.abCalloutBody}>
+                  「鎌倉は街全体が式場になる感覚。挙式後の写真散歩が楽しみで選びました」
+                </div>
+              </div>
 
-          <h2 className={s.abH2}>エリア別おすすめ神社・会場</h2>
-          <p className={s.abP}>
-            北鎌倉エリア・鎌倉中心部・逗子・葉山と、それぞれの雰囲気が異なります。プランナーと一緒に事前に下見することをおすすめします。
-          </p>
+              <p className={s.abP}>
+                持込カメラマンを活用すれば、神社の境内はもちろん、由比ヶ浜の海岸や古民家街を巡りながらのフォトセッションも可能です。
+              </p>
+
+              <h2 className={s.abH2}>エリア別おすすめ神社・会場</h2>
+              <p className={s.abP}>
+                北鎌倉エリア・鎌倉中心部・逗子・葉山と、それぞれの雰囲気が異なります。プランナーと一緒に事前に下見することをおすすめします。
+              </p>
+            </>
+          )}
 
           <div className={s.abTagsRow}>
             <span className={s.abTag}>鎌倉</span>
@@ -128,7 +182,7 @@ export default async function JournalArticlePage({ params }: Props) {
 
         <span className={s.sideLbl}>関連記事</span>
         <div className={s.sideRecent}>
-          {related.map((a) => (
+          {relatedArticles.map((a) => (
             <Link href={`/journal/${a.slug}`} key={a.slug} className={s.srCard}>
               <div className={s.srImg} style={{ background: a.gradient }} />
               <div>

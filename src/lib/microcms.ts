@@ -30,9 +30,10 @@ export interface CMSCategory extends MicroCMSContent {
 export interface CMSCreator extends MicroCMSContent {
   name: string;
   role?: string;
-  category?: CMSCategory;       // リレーション（単一）
+  category?: string[];           // セレクトフィールド（配列）
+  categoryLabel?: string;
   price?: number;
-  tags?: string[];
+  tags?: string[];               // セレクトフィールド（配列）
   profile?: string;
   images?: MicroCMSImage[];
   works?: MicroCMSImage[];
@@ -177,4 +178,65 @@ export async function getNews(params?: { limit?: number }) {
       }),
     EMPTY_LIST as ListResponse<CMSNews>
   );
+}
+
+// ---------- Mapping helpers ----------
+import type { Creator } from "@/lib/creators";
+import type { Article } from "@/lib/articles";
+
+const CATEGORY_MAP: Record<string, { cat: string; catLabel: string }> = {
+  "プランナー": { cat: "planner", catLabel: "プランナー" },
+  "カメラマン": { cat: "photo", catLabel: "カメラマン" },
+  "映像": { cat: "movie", catLabel: "映像" },
+  "ヘアメイク": { cat: "hair", catLabel: "ヘアメイク" },
+  "司会": { cat: "mc", catLabel: "司会" },
+  "フラワー": { cat: "flower", catLabel: "フラワー" },
+  "ドレス": { cat: "dress", catLabel: "ドレス" },
+};
+
+const ARTICLE_GRADIENTS = [
+  "linear-gradient(155deg,#7aa8c0,#3a6888)",
+  "linear-gradient(155deg,#9ac8d8,#5898b8)",
+  "linear-gradient(155deg,#6898b8,#385878)",
+  "linear-gradient(155deg,#8ab8d0,#4a7898)",
+];
+
+/** CMS Creator -> local Creator shape */
+export function mapCMSCreator(c: CMSCreator): Creator {
+  const catName = c.categoryLabel ?? c.category?.[0] ?? "";
+  const mapped = CATEGORY_MAP[catName] ?? { cat: catName, catLabel: catName };
+  return {
+    id: c.id,
+    name: c.name,
+    role: c.role ?? "",
+    cat: mapped.cat,
+    catLabel: mapped.catLabel || c.categoryLabel || "",
+    price: c.price ?? 0,
+    tags: c.tags ?? [],
+    profile: c.profile ?? "",
+    fav: false,
+  };
+}
+
+/** Format ISO date to YYYY.MM.DD */
+function formatDate(iso?: string): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}.${m}.${day}`;
+}
+
+/** CMS Article -> local Article shape */
+export function mapCMSArticle(a: CMSArticle, index: number): Article {
+  return {
+    slug: a.slug || a.id,
+    cat: a.category?.name ?? "ノウハウ",
+    title: a.title,
+    date: formatDate(a.date || a.publishedAt),
+    author: a.author ?? "",
+    excerpt: a.excerpt,
+    gradient: ARTICLE_GRADIENTS[index % ARTICLE_GRADIENTS.length],
+  };
 }

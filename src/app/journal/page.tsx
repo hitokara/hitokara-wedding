@@ -1,9 +1,12 @@
 import Link from "next/link";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { ARTICLES } from "@/lib/articles";
+import { getArticles, mapCMSArticle } from "@/lib/microcms";
 import s from "./page.module.css";
 
 import type { Metadata } from "next";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "ジャーナル - 結婚式準備のヒントと横浜・鎌倉の会場情報",
@@ -23,10 +26,16 @@ const SIDE_CATS = [
   { name: "和婚", count: 6 },
 ];
 
-export default function JournalPage() {
-  const featured = ARTICLES.slice(0, 2);
-  const grid = ARTICLES.slice(2);
-  const recent = ARTICLES.slice(0, 4);
+export default async function JournalPage() {
+  const cmsResult = await getArticles({ limit: 20 });
+  const articles =
+    cmsResult.contents.length > 0
+      ? cmsResult.contents.map((a, i) => mapCMSArticle(a, i))
+      : ARTICLES;
+
+  const featured = articles.slice(0, 2);
+  const grid = articles.slice(2);
+  const recent = articles.slice(0, 4);
 
   return (
     <div className={s.layoutWrap}>
