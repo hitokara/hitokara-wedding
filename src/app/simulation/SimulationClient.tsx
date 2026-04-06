@@ -142,6 +142,13 @@ function AccordionSection({
   );
 }
 
+const CARD_GRADIENTS = [
+  "linear-gradient(155deg,#8ab8d0,#4a7898)",
+  "linear-gradient(155deg,#9ac8d8,#5898b8)",
+  "linear-gradient(155deg,#7aa8c0,#3a6888)",
+  "linear-gradient(155deg,#6898b8,#385878)",
+];
+
 function CreatorPicker({
   catKey,
   catId,
@@ -159,8 +166,8 @@ function CreatorPicker({
   return (
     <div className={s.crPicker}>
       <div className={s.crPickerLabel}>クリエイターを選択</div>
-      <div className={s.crPickerGrid}>
-        {creators.map((cr) => {
+      <div className={s.crPickerTrack}>
+        {creators.map((cr, i) => {
           const on = selectedCreatorId === cr.id;
           return (
             <div
@@ -168,9 +175,30 @@ function CreatorPicker({
               className={`${s.crPickerCard} ${on ? s.crPickerCardOn : ""}`}
               onClick={() => onPick(catId, cr.id)}
             >
-              <div className={s.crPickerName}>{cr.name}</div>
-              <div className={s.crPickerRole}>{cr.catLabel}</div>
-              <div className={s.crPickerPrice}>&yen;{cr.price.toLocaleString()}</div>
+              <div className={s.crPickerImgWrap}>
+                <div
+                  className={s.crPickerImg}
+                  style={{ background: CARD_GRADIENTS[i % CARD_GRADIENTS.length] }}
+                />
+                <button
+                  className={s.crPickerFav}
+                  onClick={(e) => e.stopPropagation()}
+                  aria-label="お気に入り"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.75)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="14" height="14">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                  </svg>
+                </button>
+              </div>
+              <div className={s.crPickerInfo}>
+                <div className={s.crPickerName}>{cr.name}</div>
+                <div className={s.crPickerTags}>
+                  {cr.tags.slice(0, 2).map((t) => (
+                    <span key={t} className={s.crPickerTag}>{t}</span>
+                  ))}
+                </div>
+                <div className={s.crPickerPrice}>&yen;{cr.price.toLocaleString()}<span className={s.crPickerPriceUnit}>&nbsp;円〜</span></div>
+              </div>
             </div>
           );
         })}
