@@ -14,9 +14,9 @@ export const metadata: Metadata = {
   },
 };
 
-// 静的データからMBTI等の補足情報をマップ（CMSにフィールド追加されるまでの暫定）
-const EXTRA_MAP = new Map(
-  CREATORS_LIST.map((c) => [c.id, { mbti: c.mbti, likes: c.likes, weddingThought: c.weddingThought }])
+// 静的データから名前ベースでMBTI等を補完（CMSにフィールド追加されるまでの暫定）
+const EXTRA_BY_NAME = new Map(
+  CREATORS_LIST.map((c) => [c.name, { mbti: c.mbti, likes: c.likes, weddingThought: c.weddingThought }])
 );
 
 export default async function CreatorsPage() {
@@ -25,7 +25,7 @@ export default async function CreatorsPage() {
     cmsResult.contents.length > 0
       ? cmsResult.contents.map((c) => {
           const mapped = mapCMSCreator(c);
-          const extra = EXTRA_MAP.get(mapped.id);
+          const extra = EXTRA_BY_NAME.get(mapped.name);
           return {
             ...mapped,
             mbti: mapped.mbti || extra?.mbti,
