@@ -122,18 +122,10 @@
 /* ===== Body ===== */
 .modalBody { padding: 14px 18px 8px; overflow-y: auto; flex: 1; overscroll-behavior: contain; }
 
-/* Name row: name + heart inline, price chip right */
+/* Name row */
 .modalNameRow { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
 .modalNameGroup { min-width: 0; }
-.modalNameInner { display: flex; align-items: center; gap: 8px; }
-.modalName { font-family: var(--mincho); font-size: 20px; font-weight: 400; color: var(--t1); letter-spacing: .06em; line-height: 1.3; white-space: nowrap; }
-.modalFavInline {
-  flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; border: none;
-  background: none; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: all .2s; padding: 0;
-}
-.modalFavInlineOn { animation: favPop .3s ease; }
-@keyframes favPop { 50% { transform: scale(1.3); } }
+.modalName { font-family: var(--mincho); font-size: 20px; font-weight: 400; color: var(--t1); letter-spacing: .06em; line-height: 1.3; }
 .modalRole { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--sead); margin-top: 2px; }
 .modalPriceChip {
   display: flex; align-items: baseline; gap: 3px; flex-shrink: 0;
@@ -189,6 +181,12 @@
   font-size: 13px; font-family: var(--gothic); display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;
   text-decoration: none;
 }
+.modalBtnFav {
+  height: 44px; width: 44px; border-radius: 50%; border: 0.5px solid var(--border2);
+  background: var(--bg); color: var(--t2); cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; transition: all .2s; padding: 0;
+}
+.modalBtnFavOn { border-color: #e05c5c; background: rgba(224,92,92,.06); }
 .pip { width: 7px; height: 7px; background: #7ee8a2; border-radius: 50%; flex-shrink: 0; display: block; }
 
 /* ===== Tablet (768px) ===== */
@@ -222,25 +220,44 @@
   .rightPanel {
     display: flex; flex-direction: column;
     width: 34%; max-width: 420px; min-width: 300px;
-    border-left: 0.5px solid var(--border); background: var(--sand);
+    border-left: 0.5px solid var(--border); background: #fff;
     overflow: hidden; flex-shrink: 0; height: 100%;
+    box-shadow: -4px 0 24px rgba(0,0,0,.04);
   }
   .panelDetail { display: none; flex-direction: column; height: 100%; }
   .panelDetailActive { display: flex; }
-  .panelDetail .modalImgWrap { height: auto; max-height: 240px; }
-  .panelDetail .modalSlide { flex: 0 0 85%; border-radius: 8px; }
-  .panelDetail .modalBody { flex: 1; overflow-y: auto; padding: 16px 20px 80px; -webkit-overflow-scrolling: touch; }
-  .panelDetail .modalBtns { padding: 12px 20px 20px; border-top: 0.5px solid var(--border); flex-shrink: 0; background: var(--bg); }
+
+  /* PC: photo takes ~50% of panel height */
+  .panelDetail .modalImgWrap {
+    height: 50%; max-height: none; min-height: 200px;
+  }
+  .panelDetail .modalSlider { gap: 0; padding: 0; }
+  .panelDetail .modalSlide { flex: 0 0 100%; border-radius: 0; }
+  .panelDetail .modalBody {
+    flex: 1; overflow-y: auto; padding: 20px 24px 80px;
+    -webkit-overflow-scrolling: touch; background: #fff;
+  }
+  .panelDetail .modalBtns {
+    padding: 12px 20px 20px; border-top: 0.5px solid var(--border);
+    flex-shrink: 0; background: #fff;
+  }
+
+  /* PC: info grid white card with subtle shadow */
+  .panelDetail .modalInfoGrid {
+    background: var(--sand); border: 0.5px solid var(--border);
+    border-radius: 10px; padding: 12px 16px;
+  }
 
   /* PC: enhanced wedding thought design */
   .panelDetail .modalThought {
-    background: linear-gradient(135deg, var(--sand) 0%, rgba(58,143,191,.06) 100%);
-    border-left: none; border: 1px solid rgba(58,143,191,.15);
-    border-radius: 16px; padding: 20px 20px 18px; margin-top: 4px;
+    background: linear-gradient(135deg, #f8f6f2 0%, rgba(58,143,191,.05) 100%);
+    border-left: none; border: 1px solid rgba(58,143,191,.12);
+    border-radius: 16px; padding: 22px 22px 18px; margin-top: 4px;
+    box-shadow: 0 2px 12px rgba(58,143,191,.06);
   }
   .panelDetail .modalThoughtDeco {
-    font-size: 72px; top: -8px; right: 16px;
-    color: rgba(58,143,191,.1);
+    font-size: 80px; top: -10px; right: 16px;
+    color: rgba(58,143,191,.08);
   }
   .panelDetail .modalThoughtLbl { font-size: 11px; margin-bottom: 10px; }
   .panelDetail .modalThoughtTxt { font-size: 14px; line-height: 2; }
