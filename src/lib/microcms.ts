@@ -40,6 +40,9 @@ export interface CMSCreator extends MicroCMSContent {
   price?: number;
   tags?: string[];               // セレクトフィールド（配列）
   profile?: string;
+  mbti?: string;
+  likes?: string;
+  weddingThought?: string;
   images?: MicroCMSImage[];
   works?: MicroCMSImage[];
 }
@@ -252,6 +255,9 @@ export function mapCMSCreator(c: CMSCreator): Creator {
     price: c.price ?? 0,
     tags: c.tags ?? [],
     profile: c.profile ?? "",
+    mbti: c.mbti,
+    likes: c.likes,
+    weddingThought: c.weddingThought,
     fav: false,
   };
 }

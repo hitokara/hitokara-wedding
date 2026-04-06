@@ -81,39 +81,47 @@ function CreatorDetail({ cr, favs, toggleFav, gradient }: {
         {activeSlide + 1} / {slides.length}
       </div>
       <div className={s.modalBody}>
-        <div className={s.modalName}>{cr.name}</div>
-        <div className={s.modalRole}>{cr.role}</div>
+        <div className={s.modalNameRow}>
+          <div>
+            <div className={s.modalName}>{cr.name}</div>
+            <div className={s.modalRole}>{cr.role}</div>
+          </div>
+          <div className={s.modalPriceChip}>
+            <span className={s.modalPriceLbl}>指名料</span>
+            <span className={s.modalPriceVal}>&yen;{cr.price.toLocaleString()}</span>
+            <span className={s.modalPriceUnit}>〜</span>
+          </div>
+        </div>
         <div className={s.modalTags}>
           {cr.tags.map((t) => <span key={t} className={s.modalTag}>{t}</span>)}
+          {cr.mbti && <span className={s.modalTagMbti}>{cr.mbti}</span>}
         </div>
-        <div className={s.modalPriceRow}>
-          <span className={s.modalPriceLbl}>指名料</span>
-          <span className={s.modalPriceVal}>&yen;{cr.price.toLocaleString()}</span>
-          <span className={s.modalPriceUnit}>〜</span>
-        </div>
-        <span className={s.modalSecLbl}>Profile</span>
+        {cr.likes && (
+          <div className={s.modalMeta}>
+            <span className={s.modalMetaIcon}>&#9825;</span>
+            <span>{cr.likes}</span>
+          </div>
+        )}
         <p className={s.modalProfile}>{cr.profile}</p>
-        <span className={s.modalSecLbl}>Works</span>
-        <div className={s.modalWorks}>
-          {[0, 1, 2].map((i) => (
-            <div key={i} className={s.modalWork}>
-              <div className={s.modalWorkInner} style={{ background: gradient }} />
-            </div>
-          ))}
-        </div>
+        {cr.weddingThought && (
+          <div className={s.modalThought}>
+            <span className={s.modalThoughtLbl}>結婚式への想い</span>
+            <p className={s.modalThoughtTxt}>{cr.weddingThought}</p>
+          </div>
+        )}
       </div>
       <div className={s.modalBtns}>
         <a href="https://example.com" target="_blank" rel="noopener noreferrer" className={s.modalBtnMain}>
-          事例を見る
+          この人に相談する
         </a>
         <button
-          className={s.modalBtnSim}
+          className={`${s.modalBtnSim} ${favs.has(cr.id) ? s.modalFavBtnOn : ""}`}
           onClick={(e) => { e.stopPropagation(); toggleFav(cr.id); }}
+          aria-label="お気に入り"
         >
-          <svg viewBox="0 0 24 24" width="16" height="16" fill={favs.has(cr.id) ? "#e05c5c" : "none"} stroke={favs.has(cr.id) ? "#e05c5c" : "currentColor"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 6 }}>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill={favs.has(cr.id) ? "#e05c5c" : "none"} stroke={favs.has(cr.id) ? "#e05c5c" : "currentColor"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
           </svg>
-          お気に入り
         </button>
       </div>
     </>
