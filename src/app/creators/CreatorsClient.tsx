@@ -27,10 +27,12 @@ function CreatorDetail({ cr, favs, toggleFav, gradient }: {
 }) {
   const sliderRef = useRef<HTMLDivElement>(null);
   const [activeSlide, setActiveSlide] = useState(0);
+  // Main photo + works photos in a single slider
   const slides = [
     gradient,
-    gradient.replace("155deg", "175deg"),
-    gradient.replace("155deg", "135deg"),
+    gradient.replace("#8ab8d0", "#9ac8d8").replace("#4a7898", "#5898b8"),
+    gradient.replace("#8ab8d0", "#7aa8c0").replace("#4a7898", "#4a7898"),
+    gradient.replace("#8ab8d0", "#aad0e0").replace("#4a7898", "#6aa8c8"),
   ];
 
   const handleScroll = () => {
@@ -74,13 +76,9 @@ function CreatorDetail({ cr, favs, toggleFav, gradient }: {
           ))}
         </div>
       </div>
-      {/* Works thumbnails (horizontal scroll) */}
-      <div className={s.modalWorksScroll}>
-        {[0, 1, 2].map((i) => (
-          <div key={i} className={s.modalWorkThumb}>
-            <div className={s.modalWorkThumbInner} style={{ background: gradient }} />
-          </div>
-        ))}
+      {/* Slide counter */}
+      <div className={s.modalSlideCount}>
+        {activeSlide + 1} / {slides.length}
       </div>
       <div className={s.modalBody}>
         <div className={s.modalName}>{cr.name}</div>

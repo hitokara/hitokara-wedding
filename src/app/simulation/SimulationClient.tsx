@@ -279,15 +279,33 @@ export default function SimulationClient({
     <div className={s.simWrap}>
       {/* Print Summary (hidden on screen, shown in print) */}
       <div className={s.printSummary}>
-        <h2 className={s.printTitle}>見積もりシミュレーション結果</h2>
-        <div className={s.printDate}>{new Date().toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" })} 作成</div>
-        <div className={s.printGuests}>ゲスト人数: {guests}名</div>
+        <div className={s.printHeader}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo-header.jpg" alt="ヒトカラウェディング" className={s.printLogo} />
+          <div className={s.printHeaderRight}>
+            <div className={s.printHeaderTitle}>見積もりシミュレーション</div>
+            <div className={s.printHeaderSub}>Estimate Simulation</div>
+          </div>
+        </div>
+        <div className={s.printMeta}>
+          <div className={s.printMetaItem}>
+            <span className={s.printMetaLabel}>作成日時</span>
+            <span className={s.printMetaValue}>
+              {new Date().toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" })}
+              {" "}{new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
+            </span>
+          </div>
+          <div className={s.printMetaItem}>
+            <span className={s.printMetaLabel}>ゲスト人数</span>
+            <span className={s.printMetaValue}>{guests}名</span>
+          </div>
+        </div>
         <table className={s.printTable}>
           <thead>
             <tr>
               <th>カテゴリ</th>
               <th>選択内容</th>
-              <th>金額</th>
+              <th>金額（税別）</th>
             </tr>
           </thead>
           <tbody>
@@ -295,35 +313,43 @@ export default function SimulationClient({
               const sel = selections[cat.id];
               const selItem = cat.items.find((it) => it.id === sel);
               let price = 0;
-              let label = "\u672a\u9078\u629e";
+              let label = "—";
               if (selItem) {
                 label = selItem.label;
                 if (selItem.nom === 1 && creatorNoms[cat.id]) {
                   const nominated = CREATORS_LIST.find((c) => c.id === creatorNoms[cat.id]);
                   price = nominated?.price ?? 0;
-                  if (nominated) label += `\uff08${nominated.name}\uff09`;
+                  if (nominated) label += `（${nominated.name}）`;
                 } else {
-                  price = selItem.unit === "\u4eba" ? selItem.price * guests : selItem.price;
+                  price = selItem.unit === "人" ? selItem.price * guests : selItem.price;
                 }
               }
               return (
-                <tr key={cat.id}>
+                <tr key={cat.id} className={sel ? "" : s.printRowEmpty}>
                   <td>{cat.title}</td>
-                  <td>{sel ? label : "\u2014"}</td>
-                  <td>{sel ? `\u00a5${fmtP(price)}` : "\u672a\u9078\u629e"}</td>
+                  <td>{label}</td>
+                  <td>{sel ? `¥${price.toLocaleString()}` : "—"}</td>
                 </tr>
               );
             })}
           </tbody>
         </table>
-        <div className={s.printSubtotal}>小計: &yen;{fmtP(total)}</div>
-        <div className={s.printPlanningFee}>プランニング料: 含む</div>
-        <div className={s.printTotal}>
-          合計: &yen;{fmtP(total)} 円
+        <div className={s.printTotalSection}>
+          <div className={s.printTotalRow}>
+            <span>概算合計</span>
+            <span className={s.printTotalAmount}>¥{total.toLocaleString()}</span>
+          </div>
+          <div className={s.printTotalUnit}>円（税別）</div>
         </div>
-        <div className={s.printDisclaimer}>
-          ※ プランニング料は含まれています。表示は参考金額です。<br />
-          ※ この見積もりはヒトカラウェディング（hitokara-wedding.com）で作成されました
+        <div className={s.printFooter}>
+          <div className={s.printFooterNote}>
+            ※ プランニング料は含まれています。表示は参考金額です。<br />
+            ※ 実際の金額はお打ち合わせにて確定いたします。
+          </div>
+          <div className={s.printFooterBrand}>
+            ヒトカラウェディング ｜ hitokara-wedding.com<br />
+            横浜・鎌倉のウェディングプロデュース
+          </div>
         </div>
       </div>
 

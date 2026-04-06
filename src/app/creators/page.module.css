@@ -93,7 +93,7 @@
   border-radius: 50%; border: none; background: rgba(0,0,0,.12); color: var(--t1);
   font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 3;
 }
-.modalImgWrap { width: 100%; height: 44vw; min-height: 180px; max-height: 280px; position: relative; overflow: hidden; flex-shrink: 0; }
+.modalImgWrap { width: 100%; aspect-ratio: 1/1; max-height: 50vh; position: relative; overflow: hidden; flex-shrink: 0; }
 .modalImgBg { width: 100%; height: 100%; background-size: cover; background-position: center; }
 .modalSlider {
   display: flex; width: 100%; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory;
@@ -111,6 +111,10 @@
 }
 .modalDotActive { background: #fff; transform: scale(1.3); }
 .modalImgGrad { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.4), transparent 55%); }
+.modalSlideCount {
+  text-align: center; padding: 6px 0; font-size: 11px; color: var(--t2);
+  letter-spacing: 0.1em; background: var(--bg); flex-shrink: 0;
+}
 .modalCatBadge { position: absolute; bottom: 12px; left: 14px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.9); z-index: 2; }
 .modalFavBtn {
   position: absolute; top: 12px; right: 52px; width: 30px; height: 30px;
@@ -187,7 +191,7 @@
   }
   .panelDetail { display: none; flex-direction: column; height: 100%; }
   .panelDetailActive { display: flex; }
-  .panelDetail .modalImgWrap { height: 260px; max-height: 300px; flex-shrink: 0; }
+  .panelDetail .modalImgWrap { aspect-ratio: 1/1; height: auto; max-height: 320px; flex-shrink: 0; }
   .panelDetail .modalBody { flex: 1; overflow-y: auto; padding: 20px 24px 80px; -webkit-overflow-scrolling: touch; }
   .panelDetail .modalBtns { padding: 16px 24px 24px; border-top: 0.5px solid var(--border); flex-shrink: 0; background: var(--bg); }
 
