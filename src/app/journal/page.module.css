@@ -96,7 +96,7 @@
   .featRow { flex-direction: row; }
   .featCard { flex: 1; }
   .gridSection { padding: 20px 32px 48px; }
-  .artGrid { grid-template-columns: repeat(3, 1fr); }
+  .artGrid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
 }
 
 /* ===== Desktop ===== */

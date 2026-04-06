@@ -95,7 +95,7 @@
     grid-template-columns: 1fr;
     gap: 8px;
     flex: 1;
-    padding: 0 40px 0 0;
+    padding: 0 20px 0 0;
     border-bottom: none;
     border-right: 0.5px solid rgba(255,255,255,.12);
   }
@@ -384,12 +384,13 @@
 
 @media (min-width: 768px) {
   .cpPromise { padding: 80px 40px; }
-  .cpPromiseGrid { flex-direction: row; gap: 24px; }
-  .cpPi { flex: 1; flex-direction: column; border-bottom: none; padding: 0; }
+  .cpPi { flex-direction: column; border-bottom: none; padding: 0; }
   .cpPiNum { font-size: 36px; margin-bottom: 12px; }
 }
 @media (min-width: 1024px) {
   .cpPromise { padding: 100px 52px; }
+  .cpPromiseGrid { flex-direction: row; gap: 24px; }
+  .cpPi { flex: 1; }
 }
 
 /* ===== MESSAGE ===== */

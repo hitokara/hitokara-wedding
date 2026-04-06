@@ -148,7 +148,7 @@
 }
 
 @media (min-width: 768px) {
-  .hero { flex-direction: row; min-height: 100svh; }
+  .hero { flex-direction: row; min-height: 100vh; }
   .heroImgArea { position: absolute; right: 0; top: 0; bottom: 0; width: 50%; height: 100%; max-height: none; }
   .heroLeft { width: 52%; padding: 80px 40px 60px; justify-content: center; }
   .heroH1 { font-size: 38px; }
