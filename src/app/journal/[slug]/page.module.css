@@ -1,6 +1,6 @@
 /* ===== Layout ===== */
 .layoutWrap { display: flex; flex-direction: column; min-height: calc(100vh - var(--hdr-h)); }
-.jMain { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+.jMain { flex: 1; display: flex; flex-direction: column; }
 
 /* ===== Breadcrumb ===== */
 .breadcrumb {
@@ -89,8 +89,15 @@
 
 /* ===== Desktop ===== */
 @media (min-width: 1024px) {
-  .layoutWrap { flex-direction: row; max-width: 1200px; margin-inline: auto; height: calc(100vh - var(--hdr-h)); overflow: hidden; }
-  .jMain { flex: 1; min-width: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .layoutWrap {
+    position: fixed; top: var(--hdr-h); left: 0; right: 0; bottom: 0;
+    flex-direction: row; max-width: 1200px; margin-inline: auto;
+    overflow: hidden; z-index: 1;
+  }
+  .jMain {
+    flex: 1; min-width: 0; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    height: 100%;
+  }
   .breadcrumb { padding: 12px 52px; top: 0; }
 
   /* Header: controlled height, text overlay */

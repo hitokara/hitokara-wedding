@@ -103,8 +103,12 @@
 
 /* ===== Desktop ===== */
 @media (min-width: 1024px) {
-  .layoutWrap { flex-direction: row; max-width: 1200px; margin-inline: auto; height: calc(100vh - var(--hdr-h)); overflow: hidden; }
-  .jMain { flex: 1; min-width: 0; overflow-y: auto; display: flex; flex-direction: column; -webkit-overflow-scrolling: touch; }
+  .layoutWrap {
+    position: fixed; top: var(--hdr-h); left: 0; right: 0; bottom: 0;
+    flex-direction: row; max-width: 1200px; margin-inline: auto;
+    overflow: hidden; z-index: 1;
+  }
+  .jMain { flex: 1; min-width: 0; overflow-y: auto; display: flex; flex-direction: column; -webkit-overflow-scrolling: touch; height: 100%; }
   .pageHdr { padding: 32px 40px 16px; top: 0; }
   .filterBar { padding: 0 40px; top: 0; }
   .gridSection { padding: 20px 40px 60px; }
