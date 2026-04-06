@@ -123,7 +123,7 @@
 .crPickerName { font-family: var(--mincho); font-size: 13px; color: var(--t1); margin-bottom: 4px; letter-spacing: .04em; }
 .crPickerTags { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 5px; }
 .crPickerTag { font-size: 10px; padding: 1px 6px; border-radius: 6px; background: rgba(58,143,191,.08); color: var(--sead); }
-.crPickerPrice { font-family: var(--num); font-size: 15px; color: var(--sead); font-style: italic; font-weight: 300; }
+.crPickerPrice { font-family: var(--gothic); font-size: 13px; color: var(--sead); font-weight: 500; }
 .crPickerPriceUnit { font-family: var(--gothic); font-size: 10px; font-style: normal; color: var(--t2); }
 
 @media (min-width: 1024px) {

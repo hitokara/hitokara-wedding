@@ -3,45 +3,31 @@
   top: 0;
   z-index: 100;
   height: var(--hdr-h);
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.95);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
 }
 
 .inner {
   width: 100%;
   max-width: 1200px;
-  margin-inline: auto;
-  padding-inline: 16px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 /* Logo */
-.logo {
-  font-family: var(--mincho);
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--bark);
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-}
-
 .logo a {
   display: flex;
   align-items: center;
-  gap: 6px;
 }
 
-/* Desktop Nav */
-.nav {
-  display: none;
-  gap: 24px;
-}
+/* Desktop Nav — hidden on mobile */
+.nav { display: none; }
 
 .navLink {
   font-size: 13px;
@@ -50,114 +36,106 @@
   transition: color 0.2s;
   font-weight: 500;
 }
+.navLink:hover { color: var(--sea); }
 
-.navLink:hover {
-  color: var(--sea);
-}
-
-/* CTA Buttons */
-.ctas {
-  display: none;
-  align-items: center;
-  gap: 8px;
-}
+/* Desktop CTAs — hidden on mobile */
+.ctas { display: none; }
 
 .ctaOutline {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   height: 36px;
-  padding-inline: 16px;
-  font-size: 14px;
+  padding: 0 16px;
+  font-size: 13px;
   font-weight: 500;
   border: 1px solid var(--sea);
   color: var(--sea);
   border-radius: 999px;
-  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+  transition: background 0.2s;
 }
-
-.ctaOutline:hover {
-  background: var(--seal);
-}
+.ctaOutline:hover { background: var(--seal); }
 
 .ctaFill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   height: 36px;
-  padding-inline: 16px;
-  font-size: 14px;
+  padding: 0 16px;
+  font-size: 13px;
   font-weight: 500;
   background: var(--sea);
   color: #fff;
   border-radius: 999px;
+  white-space: nowrap;
   transition: background 0.2s;
 }
+.ctaFill:hover { background: var(--sead); }
 
-.ctaFill:hover {
-  background: var(--sead);
-}
-
-/* Hamburger */
+/* ========== Hamburger — ALWAYS visible on mobile ========== */
 .hamburger {
-  display: flex !important;
+  appearance: none;
+  -webkit-appearance: none;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 44px;
   height: 44px;
   gap: 6px;
-  border: none;
+  border: 0;
   background: transparent;
   cursor: pointer;
   padding: 0;
-  position: relative;
-  z-index: 101;
-  -webkit-tap-highlight-color: transparent;
+  margin: 0;
   flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
 
 .hamburger span {
   display: block;
   width: 22px;
   height: 2px;
-  background: #1c1c1a;
+  background-color: #1c1c1a;
   border-radius: 1px;
-  transition: transform 0.3s, opacity 0.3s;
+  transition: transform 0.3s ease, opacity 0.3s ease;
   pointer-events: none;
 }
 
 .hamburgerOpen span:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
+  transform: translateY(8px) rotate(45deg);
 }
-
 .hamburgerOpen span:nth-child(2) {
   opacity: 0;
 }
-
 .hamburgerOpen span:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
+  transform: translateY(-8px) rotate(-45deg);
 }
 
-/* Drawer (mobile) */
+/* ========== Mobile Drawer ========== */
 .drawer {
   position: fixed;
-  inset: 0;
   top: var(--hdr-h);
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: #fff;
+  z-index: 200;
   display: flex;
   flex-direction: column;
-  padding: 0;
-  z-index: 99;
-  transform: translateX(-100%);
-  pointer-events: none;
-  transition: transform 0.35s cubic-bezier(0.16, 0.84, 0.44, 1);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .drawerOpen {
   transform: translateX(0);
+  opacity: 1;
   pointer-events: auto;
 }
 
@@ -169,14 +147,8 @@
   color: var(--t1);
   padding: 20px 28px;
   border-bottom: 0.5px solid var(--border);
-  transition: background 0.15s, color 0.15s;
 }
-
-.drawerLink:hover,
-.drawerLink:active {
-  background: var(--sand);
-  color: var(--sea);
-}
+.drawerLink:active { background: var(--sand); color: var(--sea); }
 
 .drawerCtas {
   display: flex;
@@ -184,7 +156,6 @@
   gap: 12px;
   margin-top: auto;
   padding: 28px;
-  width: 100%;
 }
 
 .drawerCtas .ctaOutline,
@@ -197,39 +168,18 @@
   justify-content: center;
 }
 
-/* Tablet+ */
+/* ========== Tablet+ (768px) ========== */
 @media (min-width: 768px) {
-  .inner {
-    padding-inline: 24px;
-  }
-
-  .nav {
-    display: flex;
-  }
-
-  .ctas {
-    display: flex;
-  }
-
-  .hamburger {
-    display: none !important;
-  }
-
-  .drawer {
-    display: none;
-  }
+  .inner { padding: 0 24px; }
+  .nav { display: flex; gap: 24px; align-items: center; }
+  .ctas { display: flex; align-items: center; gap: 8px; }
+  .hamburger { display: none; }
+  .drawer { display: none; }
 }
 
+/* ========== Desktop (1024px) ========== */
 @media (min-width: 1024px) {
-  .inner {
-    padding-inline: 32px;
-  }
-
-  .nav {
-    gap: 32px;
-  }
-
-  .navLink {
-    font-size: 14px;
-  }
+  .inner { padding: 0 32px; }
+  .nav { gap: 32px; }
+  .navLink { font-size: 14px; }
 }
