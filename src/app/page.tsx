@@ -120,22 +120,24 @@ export default async function HomePage() {
 
       {/* Values */}
       <section className={s.valSec} aria-label="ヒトカラウェディングの特徴">
-        <AnimateOnScroll animation="slideRight">
-          <span className={s.secEye}>Our Values</span>
-        </AnimateOnScroll>
-        <AnimateOnScroll animation="fadeUp" delay={80}>
-          <h2 className={s.secH2}>選ぶ<em>自由</em>と、正直な価格。</h2>
-        </AnimateOnScroll>
-        <div className={s.valGrid}>
-          {VALUES.map((v, i) => (
-            <AnimateOnScroll key={v.num} animation="fadeUp" delay={160 + i * 80}>
-              <div className={s.valCard}>
-                <div className={s.valNum}>{v.num}</div>
-                <div className={s.valTitle}>{v.title}</div>
-                <p className={s.valDesc}>{v.desc}</p>
-              </div>
-            </AnimateOnScroll>
-          ))}
+        <div className={s.inner}>
+          <AnimateOnScroll animation="slideRight">
+            <span className={s.secEye}>Our Values</span>
+          </AnimateOnScroll>
+          <AnimateOnScroll animation="fadeUp" delay={80}>
+            <h2 className={s.secH2}>選ぶ<em>自由</em>と、正直な価格。</h2>
+          </AnimateOnScroll>
+          <div className={s.valGrid}>
+            {VALUES.map((v, i) => (
+              <AnimateOnScroll key={v.num} animation="fadeUp" delay={160 + i * 80}>
+                <div className={s.valCard}>
+                  <div className={s.valNum}>{v.num}</div>
+                  <div className={s.valTitle}>{v.title}</div>
+                  <p className={s.valDesc}>{v.desc}</p>
+                </div>
+              </AnimateOnScroll>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -164,103 +166,113 @@ export default async function HomePage() {
 
       {/* How It Works */}
       <section className={s.howSec} aria-label="ご利用の流れ">
-        <AnimateOnScroll animation="slideRight">
-          <span className={s.secEye}>How it works</span>
-        </AnimateOnScroll>
-        <AnimateOnScroll animation="fadeUp" delay={80}>
-          <h2 className={s.secH2}>たった<em>4ステップ</em>で。</h2>
-        </AnimateOnScroll>
-        <div className={s.steps}>
-          {STEPS.map((st, i) => (
-            <AnimateOnScroll key={st.n} animation="fadeUp" delay={80 + i * 80}>
-              <div className={s.step}>
-                <div className={`${s.sDot} ${st.done ? s.sDotDone : s.sDotPending}`}>{st.n}</div>
-                <div>
-                  <div className={s.sTitle}>{st.t}</div>
-                  <p className={s.sDesc}>{st.d}</p>
+        <div className={s.inner}>
+          <AnimateOnScroll animation="slideRight">
+            <span className={s.secEye}>How it works</span>
+          </AnimateOnScroll>
+          <AnimateOnScroll animation="fadeUp" delay={80}>
+            <h2 className={s.secH2}>たった<em>4ステップ</em>で。</h2>
+          </AnimateOnScroll>
+          <div className={s.steps}>
+            {STEPS.map((st, i) => (
+              <AnimateOnScroll key={st.n} animation="fadeUp" delay={80 + i * 80}>
+                <div className={s.step}>
+                  <div className={`${s.sDot} ${st.done ? s.sDotDone : s.sDotPending}`}>{st.n}</div>
+                  <div>
+                    <div className={s.sTitle}>{st.t}</div>
+                    <p className={s.sDesc}>{st.d}</p>
+                  </div>
                 </div>
-              </div>
-            </AnimateOnScroll>
-          ))}
+              </AnimateOnScroll>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Venues */}
       <section className={s.venuesSec} id="venues" aria-label="横浜・鎌倉の結婚式会場">
-        <AnimateOnScroll animation="slideRight">
-          <span className={s.secEye}>Venues</span>
-        </AnimateOnScroll>
-        <AnimateOnScroll animation="fadeUp" delay={80}>
-          <h2 className={s.secH2}>選べる<em>会場</em>。</h2>
-        </AnimateOnScroll>
-        <VenueGrid venues={VENUES} styles={s} />
+        <div className={s.inner}>
+          <AnimateOnScroll animation="slideRight">
+            <span className={s.secEye}>Venues</span>
+          </AnimateOnScroll>
+          <AnimateOnScroll animation="fadeUp" delay={80}>
+            <h2 className={s.secH2}>選べる<em>会場</em>。</h2>
+          </AnimateOnScroll>
+          <VenueGrid venues={VENUES} styles={s} />
+        </div>
       </section>
 
       {/* Journal */}
       <section className={s.jSec} aria-label="ジャーナル - 結婚式のヒント">
-        <AnimateOnScroll animation="slideRight">
-          <span className={s.secEye}>Journal</span>
-        </AnimateOnScroll>
-        <AnimateOnScroll animation="fadeUp" delay={80}>
-          <h2 className={s.secH2}>結婚式の<em>ヒント</em>と物語。</h2>
-        </AnimateOnScroll>
-        <div className={s.jGrid}>
-          {topArticles.map((a, i) => (
-            <AnimateOnScroll key={a.slug} animation="fadeUp" delay={80 + i * 80}>
-              <Link href={`/journal/${a.slug}`} className={s.jCard}>
-                <div className={s.jImg}>
-                  <div className={s.jImgInner} style={{ background: a.gradient }} />
-                </div>
-                <div>
-                  <div className={s.jCat}>{a.cat}</div>
-                  <div className={s.jTitle}>{a.title}</div>
-                  <div className={s.jDate}>{a.date}</div>
-                </div>
-              </Link>
-            </AnimateOnScroll>
-          ))}
+        <div className={s.inner}>
+          <AnimateOnScroll animation="slideRight">
+            <span className={s.secEye}>Journal</span>
+          </AnimateOnScroll>
+          <AnimateOnScroll animation="fadeUp" delay={80}>
+            <h2 className={s.secH2}>結婚式の<em>ヒント</em>と物語。</h2>
+          </AnimateOnScroll>
+          <div className={s.jGrid}>
+            {topArticles.map((a, i) => (
+              <AnimateOnScroll key={a.slug} animation="fadeUp" delay={80 + i * 80}>
+                <Link href={`/journal/${a.slug}`} className={s.jCard}>
+                  <div className={s.jImg}>
+                    <div className={s.jImgInner} style={{ background: a.gradient }} />
+                  </div>
+                  <div>
+                    <div className={s.jCat}>{a.cat}</div>
+                    <div className={s.jTitle}>{a.title}</div>
+                    <div className={s.jDate}>{a.date}</div>
+                  </div>
+                </Link>
+              </AnimateOnScroll>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* News */}
       <section className={s.newsSec} aria-label="お知らせ">
-        <AnimateOnScroll animation="slideRight">
-          <span className={s.secEye}>News</span>
-        </AnimateOnScroll>
-        <AnimateOnScroll animation="fadeUp" delay={80}>
-          <h2 className={s.secH2}>お知らせ</h2>
-        </AnimateOnScroll>
-        <div className={s.newsList}>
-          {topArticles.slice(0, 2).map((a) => (
-            <AnimateOnScroll key={a.slug} animation="fadeUp" delay={120}>
-              <Link href={`/journal/${a.slug}`} className={s.newsItem}>
-                <span className={s.newsDate}>{a.date}</span>
-                <span className={s.newsTitle}>{a.title}</span>
-              </Link>
-            </AnimateOnScroll>
-          ))}
+        <div className={s.inner}>
+          <AnimateOnScroll animation="slideRight">
+            <span className={s.secEye}>News</span>
+          </AnimateOnScroll>
+          <AnimateOnScroll animation="fadeUp" delay={80}>
+            <h2 className={s.secH2}>お知らせ</h2>
+          </AnimateOnScroll>
+          <div className={s.newsList}>
+            {topArticles.slice(0, 2).map((a) => (
+              <AnimateOnScroll key={a.slug} animation="fadeUp" delay={120}>
+                <Link href={`/journal/${a.slug}`} className={s.newsItem}>
+                  <span className={s.newsDate}>{a.date}</span>
+                  <span className={s.newsTitle}>{a.title}</span>
+                </Link>
+              </AnimateOnScroll>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* CTA */}
       <section className={s.ctaSec} aria-label="無料相談">
-        <div className={s.ctaEye}>Free consultation</div>
-        <AnimateOnScroll animation="fadeUp">
-          <h2 className={s.ctaH}>まず、話してみませんか。</h2>
-        </AnimateOnScroll>
-        <AnimateOnScroll animation="fadeUp" delay={80}>
-          <p className={s.ctaSubText}>
-            LINEから気軽にメッセージを。<br />概算の確認だけでも大歓迎です。
-          </p>
-        </AnimateOnScroll>
-        <AnimateOnScroll animation="fadeUp" delay={160}>
-          <div className={s.ctaBtns}>
-            <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.ctaLine}>
-              <span className={s.pip} />LINEで無料相談
-            </a>
-            <Link href="#contact" className={s.ctaConsult}>相談を予約する</Link>
-          </div>
-        </AnimateOnScroll>
+        <div className={s.inner}>
+          <div className={s.ctaEye}>Free consultation</div>
+          <AnimateOnScroll animation="fadeUp">
+            <h2 className={s.ctaH}>まず、話してみませんか。</h2>
+          </AnimateOnScroll>
+          <AnimateOnScroll animation="fadeUp" delay={80}>
+            <p className={s.ctaSubText}>
+              LINEから気軽にメッセージを。<br />概算の確認だけでも大歓迎です。
+            </p>
+          </AnimateOnScroll>
+          <AnimateOnScroll animation="fadeUp" delay={160}>
+            <div className={s.ctaBtns}>
+              <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.ctaLine}>
+                <span className={s.pip} />LINEで無料相談
+              </a>
+              <Link href="#contact" className={s.ctaConsult}>相談を予約する</Link>
+            </div>
+          </AnimateOnScroll>
+        </div>
       </section>
     </>
   );

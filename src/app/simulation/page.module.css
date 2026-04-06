@@ -142,7 +142,7 @@
 
 /* ===== PC Layout ===== */
 @media (min-width: 1024px) {
-  .simWrap { flex-direction: row; height: calc(100vh - var(--hdr-h)); min-height: 400px; overflow: hidden; border-inline: 0.5px solid var(--border); }
+  .simWrap { flex-direction: row; height: calc(100vh - var(--hdr-h)); min-height: 400px; overflow: hidden; border-inline: 0.5px solid var(--border); max-width: 1200px; margin-inline: auto; }
   .totalBar { display: none; }
   .breakdownToggle { display: none; }
   .breakdownPanel { display: none; }

@@ -89,7 +89,7 @@
 
 /* ===== Desktop ===== */
 @media (min-width: 1024px) {
-  .layoutWrap { flex-direction: row; }
+  .layoutWrap { flex-direction: row; max-width: 1200px; margin-inline: auto; }
   .jMain { flex: 1; min-width: 0; overflow-y: auto; }
   .breadcrumb { padding: 12px 52px; top: 0; }
 
