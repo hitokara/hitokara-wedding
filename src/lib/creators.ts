@@ -10,6 +10,7 @@ export interface Creator {
   mbti?: string;
   likes?: string;
   weddingThought?: string;
+  snsInstagram?: string;
   fav: boolean;
 }
 

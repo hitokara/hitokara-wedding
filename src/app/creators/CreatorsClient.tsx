@@ -50,7 +50,7 @@ function CreatorDetail({ cr, favs, toggleFav, gradient }: {
 
   return (
     <>
-      {/* Photo strip: horizontal scroll of square photos */}
+      {/* Photo slider */}
       <div className={s.modalImgWrap}>
         <div className={s.modalSlider} ref={sliderRef} onScroll={handleScroll}>
           {slides.map((bg, i) => (
@@ -58,6 +58,23 @@ function CreatorDetail({ cr, favs, toggleFav, gradient }: {
           ))}
         </div>
         <span className={s.modalCatBadge}>{cr.catLabel}</span>
+        {/* Navigation arrows (PC) */}
+        {activeSlide > 0 && (
+          <button className={`${s.slideArrow} ${s.slideArrowL}`} onClick={() => goToSlide(activeSlide - 1)} aria-label="前の写真">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+        )}
+        {activeSlide < slides.length - 1 && (
+          <button className={`${s.slideArrow} ${s.slideArrowR}`} onClick={() => goToSlide(activeSlide + 1)} aria-label="次の写真">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+        )}
+        {/* Dots */}
+        <div className={s.slideDots}>
+          {slides.map((_, i) => (
+            <button key={i} className={`${s.slideDot} ${i === activeSlide ? s.slideDotOn : ""}`} onClick={() => goToSlide(i)} />
+          ))}
+        </div>
       </div>
 
       <div className={s.modalBody}>
@@ -107,7 +124,16 @@ function CreatorDetail({ cr, favs, toggleFav, gradient }: {
       </div>
 
       <div className={s.modalBtns}>
-        <a href="https://example.com" target="_blank" rel="noopener noreferrer" className={s.modalBtnMain}>
+        <a
+          href={cr.snsInstagram || "#"}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`${s.modalBtnMain} ${!cr.snsInstagram ? s.modalBtnDisabled : ""}`}
+          onClick={(e) => { if (!cr.snsInstagram) e.preventDefault(); }}
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><circle cx="17.5" cy="6.5" r=".9" fill="currentColor" stroke="none"/>
+          </svg>
           SNSを見る
         </a>
         <button

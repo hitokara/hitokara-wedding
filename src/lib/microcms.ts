@@ -43,6 +43,7 @@ export interface CMSCreator extends MicroCMSContent {
   mbti?: string;
   likes?: string;
   weddingThought?: string;
+  snsInstagram?: string;
   images?: MicroCMSImage[];
   works?: MicroCMSImage[];
 }
@@ -258,6 +259,7 @@ export function mapCMSCreator(c: CMSCreator): Creator {
     mbti: c.mbti,
     likes: c.likes,
     weddingThought: c.weddingThought,
+    snsInstagram: c.snsInstagram,
     fav: false,
   };
 }
