@@ -262,13 +262,14 @@ export default function SimulationClient({
   }, []);
 
   const breakdown = useMemo(() => {
+    const crSource = cmsCreators.length > 0 ? cmsCreators : CREATORS_LIST;
     return accData.map((cat) => {
       const sel = selections[cat.id];
       const item = cat.items.find((it) => it.id === sel);
       let price = 0;
       if (item) {
         if (item.nom === 1 && creatorNoms[cat.id]) {
-          const nominated = CREATORS_LIST.find((c) => c.id === creatorNoms[cat.id]);
+          const nominated = crSource.find((c) => c.id === creatorNoms[cat.id]);
           price = nominated?.price ?? 0;
         } else {
           price = item.unit === "\u4eba" ? item.price * guests : item.price;
@@ -276,7 +277,7 @@ export default function SimulationClient({
       }
       return { id: cat.id, title: cat.title, price, selected: !!sel };
     });
-  }, [accData, selections, guests, creatorNoms]);
+  }, [accData, selections, guests, creatorNoms, cmsCreators]);
 
   const total = useMemo(() => breakdown.reduce((sum, b) => sum + b.price, 0), [breakdown]);
   const maxBudget = 5000000;
