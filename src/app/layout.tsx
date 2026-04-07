@@ -4,7 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-const SITE_URL = "https://hitokara-wedding.com";
+const SITE_URL = "https://hitokarawedding.com";
 
 const shipporiMincho = Shippori_Mincho({
   weight: ["400", "500", "600", "700"],
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     url: SITE_URL,
     images: [
       {
-        url: "https://hitokara-wedding.com/og-default.jpg",
+        url: "https://hitokarawedding.com/og-default.jpg",
         width: 1200,
         height: 630,
         alt: "ヒトカラウェディング - 横浜・鎌倉のウェディングプロデュース",

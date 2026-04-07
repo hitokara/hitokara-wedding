@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { ARTICLES } from "@/lib/articles";
 import { CREATORS_LIST } from "@/lib/creators";
 
-const SITE_URL = "https://hitokara-wedding.com";
+const SITE_URL = "https://hitokarawedding.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [

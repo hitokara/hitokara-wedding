@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description:
     "横浜・鎌倉エリアで活躍するウェディングクリエイター一覧。プランナー・カメラマン・ヘアメイク・映像・司会・フラワーを顔と実績で選べます。",
   alternates: {
-    canonical: "https://hitokara-wedding.com/creators",
+    canonical: "https://hitokarawedding.com/creators",
   },
 };
 

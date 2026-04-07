@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description:
     "横浜・鎌倉エリアの結婚式に関するジャーナル。会場レポート、クリエイター紹介、費用・見積もりのノウハウ、持ち込み自由のウェディングスタイルなど、ふたりらしい結婚式づくりのヒントをお届けします。",
   alternates: {
-    canonical: "https://hitokara-wedding.com/journal",
+    canonical: "https://hitokarawedding.com/journal",
   },
 };
 

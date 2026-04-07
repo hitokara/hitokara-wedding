@@ -47,12 +47,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: {
-      canonical: `https://hitokara-wedding.com/journal/${slug}`,
+      canonical: `https://hitokarawedding.com/journal/${slug}`,
     },
     openGraph: {
       title,
       description,
-      url: `https://hitokara-wedding.com/journal/${slug}`,
+      url: `https://hitokarawedding.com/journal/${slug}`,
       ...(thumbnailUrl
         ? {
             images: [
@@ -128,12 +128,12 @@ export default async function JournalArticlePage({ params }: Props) {
     publisher: {
       "@type": "Organization" as const,
       name: "ヒトカラウェディング",
-      url: "https://hitokara-wedding.com",
+      url: "https://hitokarawedding.com",
     },
     ...(thumbnailUrl ? { image: thumbnailUrl } : {}),
     mainEntityOfPage: {
       "@type": "WebPage" as const,
-      "@id": `https://hitokara-wedding.com/journal/${slug}`,
+      "@id": `https://hitokarawedding.com/journal/${slug}`,
     },
   };
 

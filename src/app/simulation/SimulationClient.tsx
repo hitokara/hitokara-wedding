@@ -361,7 +361,7 @@ export default function SimulationClient({
             ※ 実際の金額はお打ち合わせにて確定いたします。
           </div>
           <div className={s.printFooterBrand}>
-            ヒトカラウェディング ｜ hitokara-wedding.com<br />
+            ヒトカラウェディング ｜ hitokarawedding.com<br />
             横浜・鎌倉のウェディングプロデュース
           </div>
         </div>
@@ -499,7 +499,7 @@ export default function SimulationClient({
           </a>
           <button className={s.rCtaConsult} onClick={() => { trackEvent("sim_pdf_save", { total: total }); window.print(); }}>PDFで保存</button>
           <a
-            href={`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : 'https://hitokara-wedding.com/simulation')}&text=${encodeURIComponent(`見積もりシミュレーション結果: 合計 ¥${fmtP(total)}円（ゲスト${guests}名）`)}`}
+            href={`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : 'https://hitokarawedding.com/simulation')}&text=${encodeURIComponent(`見積もりシミュレーション結果: 合計 ¥${fmtP(total)}円（ゲスト${guests}名）`)}`}
             target="_blank"
             rel="noopener noreferrer"
             className={s.rCtaPdf}

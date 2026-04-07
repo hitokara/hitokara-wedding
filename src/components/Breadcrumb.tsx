@@ -1,7 +1,7 @@
 import Link from "next/link";
 import s from "./Breadcrumb.module.css";
 
-const SITE_URL = "https://hitokara-wedding.com";
+const SITE_URL = "https://hitokarawedding.com";
 
 interface BreadcrumbItem {
   label: string;

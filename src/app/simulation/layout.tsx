@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description:
     "横浜・鎌倉の結婚式費用をリアルタイムで試算できるブライダル見積もりシミュレーター。ゲスト人数・会場・プランナー・カメラマンなどを選ぶだけで概算合計を表示。持ち込み自由・追加費用なしの適正価格がわかります。結婚式の費用相場が気になる方もぜひお試しください。",
   alternates: {
-    canonical: "https://hitokara-wedding.com/simulation",
+    canonical: "https://hitokarawedding.com/simulation",
   },
 };
 

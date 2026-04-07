@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description:
     "ヒトカラウェディングのコンセプト。横浜・鎌倉エリアで、式場ではなく「人（クリエイター）」から選ぶ新しいウェディングスタイル。持ち込み自由・適正価格・透明な見積もりで、ふたりらしい結婚式をプロデュースします。鶴岡八幡宮・鎌倉宮での神前式にも対応。",
   alternates: {
-    canonical: "https://hitokara-wedding.com/concept",
+    canonical: "https://hitokarawedding.com/concept",
   },
 };
 

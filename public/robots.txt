@@ -1,5 +1,5 @@
-# https://hitokara-wedding.com
+# https://hitokarawedding.com
 User-agent: *
 Allow: /
 
-Sitemap: https://hitokara-wedding.com/sitemap.xml
+Sitemap: https://hitokarawedding.com/sitemap.xml

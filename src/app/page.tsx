@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description:
     "横浜・鎌倉エリアで、クリエイターを自分で選べるウェディングプロデュース。持ち込み自由・適正価格の結婚式。カメラマン・プランナー・ヘアメイクを顔と実績で指名。鶴岡八幡宮・鎌倉宮での神前式にも対応。見積もりシミュレーターで費用をリアルタイム試算。",
   alternates: {
-    canonical: "https://hitokara-wedding.com",
+    canonical: "https://hitokarawedding.com",
   },
 };
 
