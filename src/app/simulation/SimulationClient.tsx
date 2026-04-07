@@ -401,7 +401,10 @@ export default function SimulationClient({
       {/* SP: Main Scrollable */}
       <div className={s.simMain}>
         <Breadcrumb items={[{ label: "Simulation" }]} />
-        <h1 className={s.pageH1}>結婚式費用の<em>見積もりシミュレーター</em></h1>
+        <div className={s.pageHdr}>
+          <span className={s.pageEye}>Simulation</span>
+          <h1 className={s.pageH1}>見積もり<em>シミュレーター</em></h1>
+        </div>
         <div className={s.guestsBlock}>
           <div className={s.gTop}>
             <div className={s.gLabel}>ゲスト人数</div>
@@ -426,7 +429,10 @@ export default function SimulationClient({
       {/* PC: Left Column */}
       <div className={s.simLeft}>
         <Breadcrumb items={[{ label: "Simulation" }]} />
-        <h1 className={s.pageH1}>結婚式費用の<em>見積もりシミュレーター</em></h1>
+        <div className={s.pageHdr}>
+          <span className={s.pageEye}>Simulation</span>
+          <h1 className={s.pageH1}>見積もり<em>シミュレーター</em></h1>
+        </div>
         <div className={s.guestsBlock}>
           <div className={s.gTop}>
             <div className={s.gLabel}>ゲスト人数</div>

@@ -1,6 +1,8 @@
 /* ===== Layout ===== */
 .simWrap { display: flex; flex-direction: column; min-height: calc(100vh - var(--hdr-h)); }
-.pageH1 { font-family: var(--mincho); font-size: 24px; font-weight: 400; line-height: 1.45; letter-spacing: .06em; color: var(--bark); margin-bottom: 20px; }
+.pageHdr { padding: 24px 20px 16px; background: var(--sand); }
+.pageEye { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--sea); display: block; margin-bottom: 6px; }
+.pageH1 { font-family: var(--mincho); font-size: 24px; font-weight: 400; line-height: 1.45; letter-spacing: .06em; color: var(--bark); margin-bottom: 0; }
 .pageH1 em { font-style: normal; color: var(--sead); }
 
 /* ===== SP Total Bar ===== */
