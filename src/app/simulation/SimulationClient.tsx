@@ -249,10 +249,32 @@ export default function SimulationClient({
   categories: CMSCategoryGroup[];
   creators: Creator[];
 }) {
+  const SIM_STORAGE_KEY = "hitokara-sim";
+
   const [guests, setGuests] = useState(40);
   const [selections, setSelections] = useState<Record<string, string>>({});
   const [creatorNoms, setCreatorNoms] = useState<Record<string, string>>({});
   const [breakdownOpen, setBreakdownOpen] = useState(false);
+
+  // Restore from localStorage on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(SIM_STORAGE_KEY);
+      if (stored) {
+        const data = JSON.parse(stored);
+        if (data.guests) setGuests(data.guests);
+        if (data.selections) setSelections(data.selections);
+        if (data.creatorNoms) setCreatorNoms(data.creatorNoms);
+      }
+    } catch { /* ignore */ }
+  }, []);
+
+  // Save to localStorage on change
+  useEffect(() => {
+    try {
+      localStorage.setItem(SIM_STORAGE_KEY, JSON.stringify({ guests, selections, creatorNoms }));
+    } catch { /* ignore */ }
+  }, [guests, selections, creatorNoms]);
 
   const accData = useMemo(() => buildAccordionData(categories), [categories]);
 
