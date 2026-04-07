@@ -6,6 +6,7 @@ import { FILTER_CATS } from "@/lib/creators";
 import type { Creator } from "@/lib/creators";
 import Breadcrumb from "@/components/Breadcrumb";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
+import { trackEvent } from "@/lib/gtag";
 import s from "./page.module.css";
 
 const STORAGE_KEY = "hitokara-favs";
@@ -131,7 +132,7 @@ function CreatorDetail({ cr, favs, toggleFav, gradient }: {
           target="_blank"
           rel="noopener noreferrer"
           className={`${s.modalBtnMain} ${!cr.snsInstagram ? s.modalBtnDisabled : ""}`}
-          onClick={(e) => { if (!cr.snsInstagram) e.preventDefault(); }}
+          onClick={(e) => { if (!cr.snsInstagram) { e.preventDefault(); } else { trackEvent("creator_sns_click", { creator_id: cr.id }); } }}
         >
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><circle cx="17.5" cy="6.5" r=".9" fill="currentColor" stroke="none"/>
@@ -196,8 +197,9 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
   const toggleFav = useCallback((id: string) => {
     setFavs((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      const adding = !next.has(id);
+      if (adding) next.add(id); else next.delete(id);
+      trackEvent("creator_favorite", { creator_id: id, action: adding ? "add" : "remove" });
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(next)));
       } catch {
@@ -212,6 +214,7 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
 
   const openDetail = (id: string) => {
     setSelected(id);
+    trackEvent("creator_view_detail", { creator_id: id });
     // On SP, open modal
     if (typeof window !== "undefined" && window.innerWidth < 1024) {
       setModalOpen(true);

@@ -8,6 +8,7 @@ import type { CategoryItem } from "@/lib/simulation";
 import type { CMSCategoryGroup } from "@/lib/microcms";
 import Breadcrumb from "@/components/Breadcrumb";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
+import { trackEvent } from "@/lib/gtag";
 import s from "./page.module.css";
 
 const FAVS_STORAGE_KEY = "hitokara-favs";
@@ -257,10 +258,12 @@ export default function SimulationClient({
 
   const onSelect = useCallback((catId: string, itemId: string) => {
     setSelections((prev) => ({ ...prev, [catId]: itemId }));
+    trackEvent("sim_select_item", { category: catId, item: itemId });
   }, []);
 
   const onCreatorNom = useCallback((catId: string, creatorId: string) => {
     setCreatorNoms((prev) => ({ ...prev, [catId]: creatorId }));
+    trackEvent("sim_nominate_creator", { category: catId, creator_id: creatorId });
   }, []);
 
   const breakdown = useMemo(() => {
@@ -372,7 +375,7 @@ export default function SimulationClient({
           <span className={s.totalUnit}>&nbsp;円〜</span>
         </div>
         <div className={s.totalCta}>
-          <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.tctaLine}>
+          <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.tctaLine} onClick={() => trackEvent("cta_line", { location: "simulation_sp" })}>
             <span className={s.pip} />LINEで送る
           </a>
         </div>
@@ -491,10 +494,10 @@ export default function SimulationClient({
           ))}
         </div>
         <div className={s.rightCtas}>
-          <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.rCtaLine}>
+          <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.rCtaLine} onClick={() => trackEvent("cta_line", { location: "simulation_pc" })}>
             <span className={s.pip} />LINEで相談
           </a>
-          <button className={s.rCtaConsult} onClick={() => window.print()}>PDFで保存</button>
+          <button className={s.rCtaConsult} onClick={() => { trackEvent("sim_pdf_save", { total: total }); window.print(); }}>PDFで保存</button>
           <a
             href={`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : 'https://hitokara-wedding.com/simulation')}&text=${encodeURIComponent(`見積もりシミュレーション結果: 合計 ¥${fmtP(total)}円（ゲスト${guests}名）`)}`}
             target="_blank"

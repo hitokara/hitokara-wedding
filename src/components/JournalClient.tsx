@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import Breadcrumb from "@/components/Breadcrumb";
+import { trackEvent } from "@/lib/gtag";
 
 interface Article {
   slug: string;
@@ -63,7 +64,7 @@ export default function JournalClient({ articles, sideCats, styles: s }: Journal
             <button
               key={c.name}
               className={`${s.fBtn} ${activeCat === c.name ? s.fBtnOn : ""}`}
-              onClick={() => setActiveCat(c.name)}
+              onClick={() => { setActiveCat(c.name); trackEvent("journal_filter", { category: c.name }); }}
             >
               {c.name}
             </button>
