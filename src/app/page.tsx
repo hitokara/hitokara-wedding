@@ -75,8 +75,26 @@ export default async function HomePage() {
       ? cmsArticles.contents.map((a, i) => mapCMSArticle(a, i))
       : ARTICLES.slice(0, 3);
 
+  const howToJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: "ヒトカラウェディングで結婚式を準備する方法",
+    description:
+      "横浜・鎌倉エリアでクリエイターを自分で選んで結婚式を準備する4つのステップ",
+    step: STEPS.map((st, i) => ({
+      "@type": "HowToStep" as const,
+      position: i + 1,
+      name: st.t,
+      text: st.d,
+    })),
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+      />
       {/* Hero */}
       <section className={s.hero} aria-label="ヒトカラウェディング - 横浜・鎌倉のウェディングプロデュース">
         <div className={s.heroImgArea}>

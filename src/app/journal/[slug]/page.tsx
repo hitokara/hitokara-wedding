@@ -42,11 +42,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = excerpt
     ? `${excerpt} | 横浜・鎌倉のウェディングプロデュース ヒトカラウェディングのジャーナル。`
     : `${title} - 横浜・鎌倉の結婚式に関する記事。ヒトカラウェディングジャーナル。`;
+  const thumbnailUrl = cms?.thumbnail?.url;
   return {
     title,
     description,
     alternates: {
       canonical: `https://hitokara-wedding.com/journal/${slug}`,
+    },
+    openGraph: {
+      title,
+      description,
+      url: `https://hitokara-wedding.com/journal/${slug}`,
+      ...(thumbnailUrl
+        ? {
+            images: [
+              {
+                url: thumbnailUrl,
+                width: 1200,
+                height: 630,
+                alt: title,
+              },
+            ],
+          }
+        : {}),
     },
   };
 }
@@ -100,8 +118,31 @@ export default async function JournalArticlePage({ params }: Props) {
     ? { backgroundImage: `url(${thumbnailUrl})` }
     : { background: gradient };
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: title,
+    description: excerptText,
+    datePublished: date.replace(/\./g, "-"),
+    author: { "@type": "Person" as const, name: author },
+    publisher: {
+      "@type": "Organization" as const,
+      name: "ヒトカラウェディング",
+      url: "https://hitokara-wedding.com",
+    },
+    ...(thumbnailUrl ? { image: thumbnailUrl } : {}),
+    mainEntityOfPage: {
+      "@type": "WebPage" as const,
+      "@id": `https://hitokara-wedding.com/journal/${slug}`,
+    },
+  };
+
   return (
     <div className={s.layoutWrap}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <div className={s.jMain}>
         <Breadcrumb items={[{ label: "Journal", href: "/journal" }, { label: title }]} />
 
