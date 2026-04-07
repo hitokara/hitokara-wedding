@@ -265,7 +265,7 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
                       className={`${s.crCardFav} ${favs.has(cr.id) ? s.crCardFavOn : ""}`}
                       onClick={(e) => { e.stopPropagation(); toggleFav(cr.id); }}
                     >
-                      <svg viewBox="0 0 24 24" width="12" height="12" fill={favs.has(cr.id) ? "#e05c5c" : "none"} stroke={favs.has(cr.id) ? "#e05c5c" : "rgba(255,255,255,.75)"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill={favs.has(cr.id) ? "#e05c5c" : "none"} stroke={favs.has(cr.id) ? "#e05c5c" : "rgba(255,255,255,.75)"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ filter: "drop-shadow(0 1px 3px rgba(0,0,0,.2))" }}>
                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                       </svg>
                     </button>
