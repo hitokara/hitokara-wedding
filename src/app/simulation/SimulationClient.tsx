@@ -398,13 +398,15 @@ export default function SimulationClient({
         </div>
       </div>
 
+      {/* Breadcrumb + Header (shared SP/PC) */}
+      <Breadcrumb items={[{ label: "Simulation" }]} />
+      <div className={s.pageHdr}>
+        <span className={s.pageEye}>Simulation</span>
+        <h1 className={s.pageH1}>見積もり<em>シミュレーター</em></h1>
+      </div>
+
       {/* SP: Main Scrollable */}
       <div className={s.simMain}>
-        <Breadcrumb items={[{ label: "Simulation" }]} />
-        <div className={s.pageHdr}>
-          <span className={s.pageEye}>Simulation</span>
-          <h1 className={s.pageH1}>見積もり<em>シミュレーター</em></h1>
-        </div>
         <div className={s.guestsBlock}>
           <div className={s.gTop}>
             <div className={s.gLabel}>ゲスト人数</div>
@@ -428,11 +430,6 @@ export default function SimulationClient({
 
       {/* PC: Left Column */}
       <div className={s.simLeft}>
-        <Breadcrumb items={[{ label: "Simulation" }]} />
-        <div className={s.pageHdr}>
-          <span className={s.pageEye}>Simulation</span>
-          <h1 className={s.pageH1}>見積もり<em>シミュレーター</em></h1>
-        </div>
         <div className={s.guestsBlock}>
           <div className={s.gTop}>
             <div className={s.gLabel}>ゲスト人数</div>
