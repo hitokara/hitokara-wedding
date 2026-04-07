@@ -1,8 +1,8 @@
 /* ===== Layout ===== */
 .simWrap { display: flex; flex-direction: column; min-height: calc(100vh - var(--hdr-h)); }
-.pageHdr { padding: 24px 20px 16px; background: var(--bg); }
+.pageHdr { padding: 32px 20px 16px; background: var(--bg); }
 .pageEye { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--sea); display: block; margin-bottom: 6px; }
-.pageH1 { font-family: var(--mincho); font-size: 24px; font-weight: 400; line-height: 1.45; letter-spacing: .06em; color: var(--bark); margin-bottom: 0; }
+.pageH1 { font-family: var(--mincho); font-size: 24px; font-weight: 400; line-height: 1.45; letter-spacing: .06em; color: var(--bark); margin-bottom: 4px; }
 .pageH1 em { font-style: normal; color: var(--sead); }
 
 /* ===== SP Total Bar ===== */
@@ -157,15 +157,15 @@
     display: flex; flex-direction: column; flex: 1; min-width: 0;
     overflow-y: auto; -webkit-overflow-scrolling: touch;
   }
-  .simLeft .pageHdr { padding: 24px 36px 16px; flex-shrink: 0; }
-  .simLeft .guestsBlock { padding-inline: 36px; }
-  .simLeft .accRoot { padding: 0 36px 60px; }
+  .simLeft .pageHdr { padding: 32px 40px 16px; flex-shrink: 0; }
+  .simLeft .guestsBlock { padding-inline: 40px; }
+  .simLeft .accRoot { padding: 0 40px 60px; }
   .simRight {
     display: flex; flex-direction: column;
-    width: 30%; max-width: 340px; min-width: 280px; flex-shrink: 0;
+    width: 32%; max-width: 360px; min-width: 260px; flex-shrink: 0;
     border-left: 0.5px solid var(--border); background: var(--bg); overflow: hidden;
   }
-  .pageH1 { font-size: 28px; }
+  .pageH1 { font-size: 24px; }
 
   /* Right panel inner */
   .rightInner { padding: 28px 28px 20px; background: var(--bg); border-bottom: 0.5px solid var(--border); flex-shrink: 0; }

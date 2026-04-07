@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FILTER_CATS } from "@/lib/creators";
 import type { Creator } from "@/lib/creators";
 import Breadcrumb from "@/components/Breadcrumb";
+import AnimateOnScroll from "@/components/AnimateOnScroll";
 import s from "./page.module.css";
 
 const STORAGE_KEY = "hitokara-favs";
@@ -221,14 +222,14 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
     <div className={s.pageOuter}>
       <div className={s.main}>
         <div className={s.leftCol}>
-          <Breadcrumb items={[{ label: "Creators", href: "/creators" }]} />
+          <Breadcrumb items={[{ label: "Creators" }]} />
           <div className={s.pageHdr}>
-            <div className={s.pageHdrRow}>
-              <div>
-                <span className={s.pageEye}>Meet our creators</span>
-                <h1 className={s.pageH1}>ウェディング<em>クリエイター</em></h1>
-              </div>
-            </div>
+            <AnimateOnScroll animation="slideRight">
+              <span className={s.pageEye}>Creators</span>
+            </AnimateOnScroll>
+            <AnimateOnScroll animation="fadeUp" delay={80}>
+              <h1 className={s.pageH1}>ウェディング<em>クリエイター</em></h1>
+            </AnimateOnScroll>
           </div>
 
           <div className={s.filterBar}>

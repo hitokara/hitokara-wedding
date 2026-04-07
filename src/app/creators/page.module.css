@@ -215,7 +215,7 @@
 
 /* ===== Tablet (768px) ===== */
 @media (min-width: 768px) {
-  .pageHdr { padding: 80px 40px 20px; }
+  .pageHdr { padding: 32px 40px 16px; }
   .filterBar { padding: 0 40px; }
   .gridArea { padding: 20px 24px 48px; }
   .grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
@@ -237,17 +237,16 @@
     flex: 1; min-width: 0; display: flex; flex-direction: column;
     overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;
   }
-  .leftCol .pageHdr { flex-shrink: 0; padding: 40px 40px 16px; }
+  .leftCol .pageHdr { flex-shrink: 0; padding: 32px 40px 16px; }
   .filterBar { flex-shrink: 0; position: sticky; top: 0; z-index: 10; background: var(--bg); padding: 0 40px; }
   .gridArea { flex: 1; padding: 16px 28px 48px; }
   .grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
 
   .rightPanel {
     display: flex; flex-direction: column;
-    width: 34%; max-width: 420px; min-width: 300px;
-    border-left: 0.5px solid var(--border); background: #fff;
+    width: 32%; max-width: 360px; min-width: 260px;
+    border-left: 0.5px solid var(--border); background: var(--bg);
     overflow: hidden; flex-shrink: 0; height: 100%;
-    box-shadow: -4px 0 24px rgba(0,0,0,.04);
   }
   .panelDetail { display: none; flex-direction: column; height: 100%; }
   .panelDetailActive { display: flex; }

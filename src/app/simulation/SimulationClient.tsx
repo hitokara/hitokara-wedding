@@ -7,6 +7,7 @@ import type { Creator } from "@/lib/creators";
 import type { CategoryItem } from "@/lib/simulation";
 import type { CMSCategoryGroup } from "@/lib/microcms";
 import Breadcrumb from "@/components/Breadcrumb";
+import AnimateOnScroll from "@/components/AnimateOnScroll";
 import s from "./page.module.css";
 
 const FAVS_STORAGE_KEY = "hitokara-favs";
@@ -402,8 +403,12 @@ export default function SimulationClient({
       <div className={s.simMain}>
         <Breadcrumb items={[{ label: "Simulation" }]} />
         <div className={s.pageHdr}>
-          <span className={s.pageEye}>Simulation</span>
-          <h1 className={s.pageH1}>見積もり<em>シミュレーター</em></h1>
+          <AnimateOnScroll animation="slideRight">
+            <span className={s.pageEye}>Simulation</span>
+          </AnimateOnScroll>
+          <AnimateOnScroll animation="fadeUp" delay={80}>
+            <h1 className={s.pageH1}>見積もり<em>シミュレーター</em></h1>
+          </AnimateOnScroll>
         </div>
         <div className={s.guestsBlock}>
           <div className={s.gTop}>
@@ -430,8 +435,12 @@ export default function SimulationClient({
       <div className={s.simLeft}>
         <Breadcrumb items={[{ label: "Simulation" }]} />
         <div className={s.pageHdr}>
-          <span className={s.pageEye}>Simulation</span>
-          <h1 className={s.pageH1}>見積もり<em>シミュレーター</em></h1>
+          <AnimateOnScroll animation="slideRight">
+            <span className={s.pageEye}>Simulation</span>
+          </AnimateOnScroll>
+          <AnimateOnScroll animation="fadeUp" delay={80}>
+            <h1 className={s.pageH1}>見積もり<em>シミュレーター</em></h1>
+          </AnimateOnScroll>
         </div>
         <div className={s.guestsBlock}>
           <div className={s.gTop}>

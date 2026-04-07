@@ -131,7 +131,7 @@
 
   .artGrid { grid-template-columns: repeat(3, 1fr); gap: 18px; }
   .sidebar {
-    width: 30%; max-width: 320px; min-width: 220px; flex-shrink: 0;
+    width: 32%; max-width: 360px; min-width: 260px; flex-shrink: 0;
     border-top: none; border-left: 0.5px solid var(--border);
     overflow-y: auto; height: 100%; padding: 24px 20px 40px;
     -webkit-overflow-scrolling: touch;
