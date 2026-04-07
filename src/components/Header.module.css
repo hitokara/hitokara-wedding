@@ -1,7 +1,7 @@
 .header {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: var(--z-header);
   height: var(--hdr-h);
   background: rgba(255, 255, 255, 0.95);
   -webkit-backdrop-filter: blur(12px);
@@ -121,7 +121,7 @@
   right: 0;
   bottom: 0;
   background: #fff;
-  z-index: 200;
+  z-index: var(--z-drawer);
   display: flex;
   flex-direction: column;
   overflow-y: auto;

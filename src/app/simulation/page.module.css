@@ -19,7 +19,9 @@
 .tctaLine {
   height: 36px; border-radius: 18px; padding: 0 14px; border: none; background: var(--sea); color: #fff;
   font-size: 12px; font-family: var(--gothic); display: flex; align-items: center; gap: 5px; cursor: pointer; white-space: nowrap;
+  transition: opacity .2s;
 }
+.tctaLine:hover { opacity: .85; }
 .pip { width: 7px; height: 7px; background: #7ee8a2; border-radius: 50%; flex-shrink: 0; display: block; }
 
 /* ===== SP Breakdown Toggle ===== */
@@ -77,7 +79,8 @@
 .accChevOpen { transform: rotate(180deg); }
 .accBody { padding: 4px 0 16px 28px; }
 .optList { display: flex; flex-direction: column; gap: 5px; }
-.opt { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; background: var(--bg); }
+.opt { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; background: var(--bg); transition: background .15s; }
+.opt:hover { background: var(--seal); }
 .optOn { background: var(--seal); }
 .optRadio {
   width: 15px; height: 15px; border-radius: 50%; border: 1.5px solid var(--border2);
@@ -195,17 +198,23 @@
     display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%;
     background: var(--sea); color: #fff; border: none; padding: 13px; border-radius: 22px;
     font-size: 13px; letter-spacing: .07em; cursor: pointer; font-family: var(--gothic);
+    transition: opacity .2s;
   }
+  .rCtaLine:hover { opacity: .85; }
   .rCtaConsult {
     width: 100%; background: var(--bark); color: #f5ece0; border: none; padding: 12px;
     border-radius: 22px; font-size: 13px; letter-spacing: .06em; cursor: pointer; font-family: var(--gothic);
     display: flex; align-items: center; justify-content: center; text-align: center;
+    transition: opacity .2s;
   }
+  .rCtaConsult:hover { opacity: .85; }
   .rCtaPdf {
     width: 100%; background: var(--sand); color: var(--t2); border: none; padding: 10px;
     border-radius: 22px; font-size: 12px; cursor: pointer; font-family: var(--gothic);
     display: flex; align-items: center; justify-content: center; text-align: center;
+    transition: background .2s;
   }
+  .rCtaPdf:hover { background: var(--seam); }
   .rDisclaimer { font-size: 11px; color: var(--t2); line-height: 1.6; margin-top: 10px; padding: 0 4px; }
 }
 @media (min-width: 768px) and (max-width: 1023px) {

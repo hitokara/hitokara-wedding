@@ -26,6 +26,13 @@
   --r-md: 8px;
   --r-lg: 12px;
 
+  /* Z-index scale */
+  --z-base: 1;
+  --z-sticky: 10;
+  --z-header: 100;
+  --z-drawer: 200;
+  --z-modal: 1000;
+
   /* Layout */
   --hdr-h: 56px;
 }

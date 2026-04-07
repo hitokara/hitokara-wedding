@@ -3,7 +3,7 @@
 .jMain { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
 
 /* ===== Page Header ===== */
-.pageHdr { padding: 32px 20px 16px; background: var(--bg); position: sticky; top: 0; z-index: 20; flex-shrink: 0; }
+.pageHdr { padding: 32px 20px 16px; background: var(--bg); position: sticky; top: 0; z-index: var(--z-sticky); flex-shrink: 0; }
 .pageEye { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--sea); display: block; margin-bottom: 6px; }
 .pageH1 { font-family: var(--mincho); font-size: 24px; font-weight: 400; line-height: 1.45; letter-spacing: .06em; color: var(--bark); margin-bottom: 4px; }
 .pageH1 em { font-style: normal; color: var(--sead); }
@@ -13,7 +13,7 @@
   display: flex; align-items: center; gap: 6px; padding: 0 20px; height: 44px;
   overflow-x: auto; scrollbar-width: none;
   border-bottom: 0.5px solid var(--border); background: var(--bg);
-  position: sticky; top: 0; z-index: 19; flex-shrink: 0;
+  position: sticky; top: 0; z-index: var(--z-sticky); flex-shrink: 0;
 }
 .filterBar::-webkit-scrollbar { display: none; }
 .fBtn {
@@ -46,7 +46,8 @@
 
 /* ===== Article Grid ===== */
 .artGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-.artCard { cursor: pointer; }
+.artCard { cursor: pointer; transition: transform .3s cubic-bezier(.16,.84,.44,1); }
+.artCard:hover { transform: translateY(-3px); }
 .artImg {
   width: 100%; aspect-ratio: 3/2; border-radius: 8px; overflow: hidden;
   margin-bottom: 7px; background: var(--seam);
@@ -88,8 +89,9 @@
 .sideCtaBtn {
   display: block; width: 100%; background: var(--sea); color: #fff; border: none;
   padding: 10px; border-radius: 20px; font-size: 13px; cursor: pointer;
-  font-family: var(--gothic); text-align: center;
+  font-family: var(--gothic); text-align: center; transition: opacity .2s;
 }
+.sideCtaBtn:hover { opacity: .85; }
 
 /* ===== Tablet ===== */
 @media (min-width: 768px) and (max-width: 1023px) {
@@ -106,7 +108,7 @@
   .layoutWrap {
     position: fixed; top: var(--hdr-h); left: 0; right: 0; bottom: 0;
     flex-direction: row; max-width: 1200px; margin-inline: auto;
-    overflow: hidden; z-index: 1; background: var(--bg);
+    overflow: hidden; z-index: var(--z-base); background: var(--bg);
   }
   .jMain { flex: 1; min-width: 0; overflow-y: auto; display: flex; flex-direction: column; -webkit-overflow-scrolling: touch; height: 100%; }
   .pageHdr { padding: 32px 40px 16px; top: 0; }

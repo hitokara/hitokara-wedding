@@ -78,7 +78,7 @@
 }
 .heroH1 {
   font-family: var(--mincho);
-  font-size: 30px;
+  font-size: clamp(30px, 5vw, 46px);
   font-weight: 400;
   line-height: 1.45;
   letter-spacing: .06em;
@@ -151,13 +151,13 @@
   .hero { flex-direction: row; min-height: 100vh; }
   .heroImgArea { position: absolute; right: 0; top: 0; bottom: 0; width: 50%; height: 100%; max-height: none; }
   .heroLeft { width: 52%; padding: 80px 40px 60px; justify-content: center; }
-  .heroH1 { font-size: 38px; }
+  .heroH1 { /* fluid via clamp() */ }
   .heroBtns { flex-direction: row; gap: 12px; }
   .btnMain, .btnSub { width: auto; padding: 0 28px; }
 }
 @media (min-width: 1024px) {
   .heroLeft { width: 50%; padding: 100px 52px 80px; }
-  .heroH1 { font-size: 46px; }
+  .heroH1 { /* fluid via clamp() */ }
 }
 
 /* ===== Section Common ===== */
@@ -171,7 +171,7 @@
 }
 .secH2 {
   font-family: var(--mincho);
-  font-size: 26px;
+  font-size: clamp(26px, 3.5vw, 34px);
   font-weight: 400;
   line-height: 1.45;
   letter-spacing: .06em;
@@ -182,8 +182,8 @@
   color: var(--sead);
 }
 
-@media (min-width: 768px) { .secH2 { font-size: 30px; } }
-@media (min-width: 1024px) { .secH2 { font-size: 34px; } }
+@media (min-width: 768px) { .secH2 { /* fluid via clamp() */ } }
+@media (min-width: 1024px) { .secH2 { /* fluid via clamp() */ } }
 
 /* ===== WAVE DIVIDER ===== */
 .waveDivider {
