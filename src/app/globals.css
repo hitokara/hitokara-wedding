@@ -92,6 +92,15 @@ ol {
   list-style: none;
 }
 
+/* ===== Focus Visible (Accessibility) ===== */
+:focus-visible {
+  outline: 2px solid var(--sea);
+  outline-offset: 2px;
+}
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
 /* ===== Typography Helpers ===== */
 .mincho {
   font-family: var(--mincho);
@@ -204,4 +213,14 @@ ol {
 .backdrop-blur {
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
+}
+
+/* ===== Reduced Motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
