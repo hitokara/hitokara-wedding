@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
+import Breadcrumb from "@/components/Breadcrumb";
 
 interface Article {
   slug: string;
@@ -40,6 +41,7 @@ export default function JournalClient({ articles, sideCats, styles: s }: Journal
   return (
     <div className={s.layoutWrap}>
       <div className={s.jMain}>
+        <Breadcrumb items={[{ label: "Journal" }]} />
         <div className={s.pageHdr}>
           <AnimateOnScroll animation="slideRight">
             <span className={s.pageEye}>Journal</span>

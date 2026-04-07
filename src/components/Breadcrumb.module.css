@@ -1,0 +1,19 @@
+.breadcrumb {
+  display: flex; align-items: center; gap: 6px; padding: 12px 20px;
+  font-size: 12px; color: var(--t2);
+  border-bottom: 0.5px solid var(--border); overflow-x: auto;
+  scrollbar-width: none; white-space: nowrap; background: var(--bg);
+  position: sticky; top: 0; z-index: 20; flex-shrink: 0;
+}
+.breadcrumb::-webkit-scrollbar { display: none; }
+.sep { opacity: .4; margin: 0 2px; }
+.link { color: var(--sea); text-decoration: none; }
+.link:hover { text-decoration: underline; }
+.current { color: var(--t2); }
+
+@media (min-width: 768px) {
+  .breadcrumb { padding: 12px 40px; }
+}
+@media (min-width: 1024px) {
+  .breadcrumb { padding: 12px 52px; }
+}

@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
 import { FILTER_CATS } from "@/lib/creators";
 import type { Creator } from "@/lib/creators";
+import Breadcrumb from "@/components/Breadcrumb";
 import s from "./page.module.css";
 
 const STORAGE_KEY = "hitokara-favs";
@@ -220,6 +221,7 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
     <div className={s.pageOuter}>
       <div className={s.main}>
         <div className={s.leftCol}>
+          <Breadcrumb items={[{ label: "Creators", href: "/creators" }]} />
           <div className={s.pageHdr}>
             <div className={s.pageHdrRow}>
               <div>

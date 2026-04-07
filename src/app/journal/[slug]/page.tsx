@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
+import Breadcrumb from "@/components/Breadcrumb";
 import { ARTICLES, getArticleBySlug as getLocalArticle } from "@/lib/articles";
 import {
   getArticleBySlug as getCMSArticleBySlug,
@@ -79,16 +80,6 @@ export default async function JournalArticlePage({ params }: Props) {
           .map((a, i) => mapCMSArticle(a, i))
       : ARTICLES.filter((a) => a.slug !== slug).slice(0, 3);
 
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "TOP", item: "https://hitokara-wedding.com" },
-      { "@type": "ListItem", position: 2, name: "Journal", item: "https://hitokara-wedding.com/journal" },
-      { "@type": "ListItem", position: 3, name: title, item: `https://hitokara-wedding.com/journal/${slug}` },
-    ],
-  };
-
   // All articles for sidebar
   const allArticles =
     cmsAll.contents.length > 0
@@ -111,18 +102,8 @@ export default async function JournalArticlePage({ params }: Props) {
 
   return (
     <div className={s.layoutWrap}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
       <div className={s.jMain}>
-        <nav className={s.breadcrumb} aria-label="パンくずリスト">
-          <Link href="/" className={s.bcLink}>TOP</Link>
-          <span className={s.bcSep}>/</span>
-          <Link href="/journal" className={s.bcLink}>Journal</Link>
-          <span className={s.bcSep}>/</span>
-          <span>{title}</span>
-        </nav>
+        <Breadcrumb items={[{ label: "Journal", href: "/journal" }, { label: title }]} />
 
         {/* Article Header: photo + text overlay */}
         <div className={s.abHeader} style={heroStyle}>

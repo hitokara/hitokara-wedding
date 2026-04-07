@@ -1,6 +1,7 @@
 import Link from "next/link";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import ConceptStats from "@/components/ConceptStats";
+import Breadcrumb from "@/components/Breadcrumb";
 import s from "./page.module.css";
 
 import type { Metadata } from "next";
@@ -75,6 +76,7 @@ export default function ConceptPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
+      <Breadcrumb items={[{ label: "Concept" }]} />
       {/* Hero */}
       <section className={s.cpHero} aria-label="コンセプト">
         <div className={s.cpHeroBg}>98<br />1.8</div>
