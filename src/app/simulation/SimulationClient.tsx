@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { fmtP } from "@/lib/simulation";
 import { CREATORS_LIST } from "@/lib/creators";
 import type { Creator } from "@/lib/creators";
@@ -12,6 +12,32 @@ import { trackEvent } from "@/lib/gtag";
 import s from "./page.module.css";
 
 const FAVS_STORAGE_KEY = "hitokara-favs";
+
+async function generatePdf(el: HTMLElement) {
+  const html2canvas = (await import("html2canvas-pro")).default;
+  const { jsPDF } = await import("jspdf");
+
+  // Make printSummary visible for capture
+  el.style.display = "block";
+  el.style.position = "absolute";
+  el.style.left = "-9999px";
+  el.style.width = "800px";
+
+  const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: "#fff" });
+
+  el.style.display = "";
+  el.style.position = "";
+  el.style.left = "";
+  el.style.width = "";
+
+  const imgW = canvas.width;
+  const imgH = canvas.height;
+  const pdfW = 210; // A4 mm
+  const pdfH = (imgH * pdfW) / imgW;
+  const pdf = new jsPDF({ unit: "mm", format: [pdfW, pdfH] });
+  pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, pdfW, pdfH);
+  pdf.save("hitokara-simulation.pdf");
+}
 
 interface AccData {
   id: string;
@@ -250,6 +276,7 @@ export default function SimulationClient({
   creators: Creator[];
 }) {
   const SIM_STORAGE_KEY = "hitokara-sim";
+  const printRef = useRef<HTMLDivElement>(null);
 
   const [guests, setGuests] = useState(40);
   const [selections, setSelections] = useState<Record<string, string>>({});
@@ -310,10 +337,16 @@ export default function SimulationClient({
   const maxBudget = 5000000;
   const barWidth = Math.min((total / maxBudget) * 100, 100);
 
+  const handlePdf = useCallback(() => {
+    if (!printRef.current) return;
+    trackEvent("sim_pdf_save", { total });
+    generatePdf(printRef.current);
+  }, [total]);
+
   return (
     <div className={s.simWrap}>
-      {/* Print Summary (hidden on screen, shown in print) */}
-      <div className={s.printSummary}>
+      {/* Print Summary (hidden on screen, used for PDF generation) */}
+      <div className={s.printSummary} ref={printRef}>
         <div className={s.printHeader}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo-header.jpg" alt="ヒトカラウェディング" className={s.printLogo} />
@@ -400,6 +433,7 @@ export default function SimulationClient({
           <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.tctaLine} onClick={() => trackEvent("cta_line", { location: "simulation_sp" })}>
             <span className={s.pip} />LINEで送る
           </a>
+          <button className={s.tctaPdf} onClick={handlePdf}>PDF</button>
         </div>
       </div>
 
@@ -519,7 +553,7 @@ export default function SimulationClient({
           <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.rCtaLine} onClick={() => trackEvent("cta_line", { location: "simulation_pc" })}>
             <span className={s.pip} />LINEで相談
           </a>
-          <button className={s.rCtaConsult} onClick={() => { trackEvent("sim_pdf_save", { total: total }); window.print(); }}>PDFで保存</button>
+          <button className={s.rCtaConsult} onClick={handlePdf}>PDFで保存</button>
           <a
             href={`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : 'https://hitokarawedding.com/simulation')}&text=${encodeURIComponent(`見積もりシミュレーション結果: 合計 ¥${fmtP(total)}円（ゲスト${guests}名）`)}`}
             target="_blank"

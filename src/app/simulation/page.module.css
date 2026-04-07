@@ -22,6 +22,12 @@
   transition: opacity .2s;
 }
 .tctaLine:hover { opacity: .85; }
+.tctaPdf {
+  height: 36px; border-radius: 18px; padding: 0 14px; border: 0.5px solid var(--border2);
+  background: var(--bg); color: var(--t1); font-size: 12px; font-family: var(--gothic);
+  cursor: pointer; white-space: nowrap; transition: opacity .2s;
+}
+.tctaPdf:hover { opacity: .85; }
 .pip { width: 7px; height: 7px; background: #7ee8a2; border-radius: 50%; flex-shrink: 0; display: block; }
 
 /* ===== SP Breakdown Toggle ===== */
