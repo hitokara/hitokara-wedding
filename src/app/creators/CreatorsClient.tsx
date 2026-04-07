@@ -78,6 +78,8 @@ function CreatorDetail({ cr, favs, toggleFav, gradient }: {
             <button key={i} className={`${s.slideDot} ${i === activeSlide ? s.slideDotOn : ""}`} onClick={() => goToSlide(i)} />
           ))}
         </div>
+        {/* Slide counter */}
+        <span className={s.slideCount}>{activeSlide + 1} / {slides.length}</span>
       </div>
 
       <div className={s.modalBody}>
