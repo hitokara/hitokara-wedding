@@ -44,8 +44,8 @@ export interface CMSCreator extends MicroCMSContent {
   likes?: string;
   weddingThought?: string;
   snsInstagram?: string;
-  images?: MicroCMSImage[];
-  works?: MicroCMSImage[];
+  images?: MicroCMSImage;        // 単一画像フィールド
+  works?: MicroCMSImage[];       // 複数画像フィールド
 }
 
 // ---------- Journal Article ----------
@@ -265,8 +265,8 @@ export function mapCMSCreator(c: CMSCreator): Creator {
     likes: c.likes,
     weddingThought: c.weddingThought,
     snsInstagram: c.snsInstagram,
-    images: c.images?.map((img) => ({ url: img.url })),
-    works: c.works?.map((img) => ({ url: img.url })),
+    images: c.images ? [{ url: c.images.url }] : undefined,
+    works: Array.isArray(c.works) ? c.works.map((img) => ({ url: img.url })) : undefined,
     fav: false,
   };
 }
