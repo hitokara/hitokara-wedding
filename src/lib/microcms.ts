@@ -237,6 +237,8 @@ const CATEGORY_MAP: Record<string, { cat: string; catLabel: string }> = {
   "キャプテン": { cat: "captain", catLabel: "キャプテン" },
   "音響": { cat: "sound", catLabel: "音響" },
   "デザイナー": { cat: "designer", catLabel: "デザイナー" },
+  "その他": { cat: "other", catLabel: "その他" },
+  "other": { cat: "other", catLabel: "Other" },
 };
 
 const ARTICLE_GRADIENTS = [
@@ -263,6 +265,8 @@ export function mapCMSCreator(c: CMSCreator): Creator {
     likes: c.likes,
     weddingThought: c.weddingThought,
     snsInstagram: c.snsInstagram,
+    images: c.images?.map((img) => ({ url: img.url })),
+    works: c.works?.map((img) => ({ url: img.url })),
     fav: false,
   };
 }

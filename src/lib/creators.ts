@@ -11,6 +11,8 @@ export interface Creator {
   likes?: string;
   weddingThought?: string;
   snsInstagram?: string;
+  images?: { url: string }[];
+  works?: { url: string }[];
   fav: boolean;
 }
 
@@ -148,4 +150,5 @@ export const FILTER_CATS = [
   { key: "hair", label: "ヘアメイク" },
   { key: "mc", label: "司会" },
   { key: "flower", label: "フラワー" },
+  { key: "other", label: "Other" },
 ];

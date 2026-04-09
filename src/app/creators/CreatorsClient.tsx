@@ -30,13 +30,12 @@ function CreatorDetail({ cr, favs, toggleFav, gradient }: {
 }) {
   const sliderRef = useRef<HTMLDivElement>(null);
   const [activeSlide, setActiveSlide] = useState(0);
-  // Main photo + works photos in a single slider
-  const slides = [
-    gradient,
-    gradient.replace("#8ab8d0", "#9ac8d8").replace("#4a7898", "#5898b8"),
-    gradient.replace("#8ab8d0", "#7aa8c0").replace("#4a7898", "#4a7898"),
-    gradient.replace("#8ab8d0", "#aad0e0").replace("#4a7898", "#6aa8c8"),
-  ];
+  // CMS images + works combined, fallback to gradients
+  const cmsImages = [...(cr.images || []), ...(cr.works || [])];
+  const slides: { type: "img" | "grad"; value: string }[] =
+    cmsImages.length > 0
+      ? cmsImages.map((img) => ({ type: "img" as const, value: img.url }))
+      : [gradient, gradient.replace("#8ab8d0", "#9ac8d8")].map((g) => ({ type: "grad" as const, value: g }));
 
   const handleScroll = () => {
     const el = sliderRef.current;
@@ -56,8 +55,10 @@ function CreatorDetail({ cr, favs, toggleFav, gradient }: {
       {/* Photo slider */}
       <div className={s.modalImgWrap}>
         <div className={s.modalSlider} ref={sliderRef} onScroll={handleScroll}>
-          {slides.map((bg, i) => (
-            <div key={i} className={s.modalSlide} style={{ background: bg }} />
+          {slides.map((sl, i) => (
+            sl.type === "img"
+              ? <div key={i} className={s.modalSlide} style={{ backgroundImage: `url(${sl.value})` }} />
+              : <div key={i} className={s.modalSlide} style={{ background: sl.value }} />
           ))}
         </div>
         <span className={s.modalCatBadge}>{cr.catLabel}</span>
@@ -258,7 +259,11 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
                   onClick={() => openDetail(cr.id)}
                 >
                   <div className={s.crCardImg}>
-                    <div className={s.crCardImgBg} style={{ background: GRADIENTS[i % GRADIENTS.length] }} />
+                    <div className={s.crCardImgBg} style={
+                      cr.images?.[0]
+                        ? { backgroundImage: `url(${cr.images[0].url})` }
+                        : { background: GRADIENTS[i % GRADIENTS.length] }
+                    } />
                     <div className={s.crCardGrad} />
                     <span className={s.crCardCat}>{cr.catLabel}</span>
                     <button
