@@ -234,6 +234,9 @@ const CATEGORY_MAP: Record<string, { cat: string; catLabel: string }> = {
   "司会": { cat: "mc", catLabel: "司会" },
   "フラワー": { cat: "flower", catLabel: "フラワー" },
   "ドレス": { cat: "dress", catLabel: "ドレス" },
+  "キャプテン": { cat: "captain", catLabel: "キャプテン" },
+  "音響": { cat: "sound", catLabel: "音響" },
+  "デザイナー": { cat: "designer", catLabel: "デザイナー" },
 };
 
 const ARTICLE_GRADIENTS = [
