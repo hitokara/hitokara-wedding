@@ -44,6 +44,8 @@ export interface CMSCreator extends MicroCMSContent {
   likes?: string;
   weddingThought?: string;
   snsInstagram?: string;
+  sampleVideoUrl?: string;       // YouTube / Vimeo URL
+  sampleVideoTitle?: string;     // 動画タイトル（任意）
   images?: MicroCMSImage;        // 単一画像フィールド
   works?: MicroCMSImage[];       // 複数画像フィールド
 }
@@ -227,17 +229,29 @@ import type { Article } from "@/lib/articles";
 import type { CategoryItem, CategoryGroup } from "@/lib/simulation";
 
 const CATEGORY_MAP: Record<string, { cat: string; catLabel: string }> = {
+  // プランナー
   "プランナー": { cat: "planner", catLabel: "プランナー" },
-  "カメラマン": { cat: "photo", catLabel: "カメラマン" },
-  "映像": { cat: "movie", catLabel: "映像" },
+  // 写真・映像（カメラマン＋映像を統合）
+  "写真・映像": { cat: "photo_movie", catLabel: "写真・映像" },
+  "カメラマン": { cat: "photo_movie", catLabel: "写真・映像" },
+  "写真": { cat: "photo_movie", catLabel: "写真・映像" },
+  "映像": { cat: "photo_movie", catLabel: "写真・映像" },
+  // ヘアメイク
   "ヘアメイク": { cat: "hair", catLabel: "ヘアメイク" },
-  "司会": { cat: "mc", catLabel: "司会" },
-  "フラワー": { cat: "flower", catLabel: "フラワー" },
-  "ドレス": { cat: "dress", catLabel: "ドレス" },
-  "キャプテン": { cat: "captain", catLabel: "キャプテン" },
-  "音響": { cat: "sound", catLabel: "音響" },
-  "デザイナー": { cat: "designer", catLabel: "デザイナー" },
-  "その他": { cat: "other", catLabel: "その他" },
+  // 音楽（司会・音響を統合）
+  "音楽": { cat: "music", catLabel: "音楽" },
+  "司会": { cat: "music", catLabel: "音楽" },
+  "音響": { cat: "music", catLabel: "音楽" },
+  // 装花
+  "装花": { cat: "flower", catLabel: "装花" },
+  "フラワー": { cat: "flower", catLabel: "装花" },
+  // アイテム（ドレス・デザイナー等を統合）
+  "アイテム": { cat: "item", catLabel: "アイテム" },
+  "ドレス": { cat: "item", catLabel: "アイテム" },
+  "デザイナー": { cat: "item", catLabel: "アイテム" },
+  // Other
+  "その他": { cat: "other", catLabel: "Other" },
+  "キャプテン": { cat: "other", catLabel: "Other" },
   "other": { cat: "other", catLabel: "Other" },
 };
 
@@ -265,6 +279,8 @@ export function mapCMSCreator(c: CMSCreator): Creator {
     likes: c.likes,
     weddingThought: c.weddingThought,
     snsInstagram: c.snsInstagram,
+    sampleVideoUrl: c.sampleVideoUrl,
+    sampleVideoTitle: c.sampleVideoTitle,
     images: c.images ? [{ url: c.images.url }] : undefined,
     works: Array.isArray(c.works) ? c.works.map((img) => ({ url: img.url })) : undefined,
     fav: false,

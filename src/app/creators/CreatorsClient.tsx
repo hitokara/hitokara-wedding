@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import Link from "next/link";
 import { FILTER_CATS } from "@/lib/creators";
 import type { Creator } from "@/lib/creators";
 import Breadcrumb from "@/components/Breadcrumb";
@@ -10,6 +9,27 @@ import { trackEvent } from "@/lib/gtag";
 import s from "./page.module.css";
 
 const STORAGE_KEY = "hitokara-favs";
+
+/** YouTube / Vimeo URL → embed URL */
+function getEmbedUrl(url?: string): string | null {
+  if (!url) return null;
+  const trimmed = url.trim();
+  // YouTube
+  const ytMatch = trimmed.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+  );
+  if (ytMatch) {
+    return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&rel=0&modestbranding=1`;
+  }
+  // Vimeo
+  const vmMatch = trimmed.match(
+    /vimeo\.com\/(?:video\/|channels\/[^/]+\/|groups\/[^/]+\/videos\/)?(\d+)/
+  );
+  if (vmMatch) {
+    return `https://player.vimeo.com/video/${vmMatch[1]}?autoplay=1`;
+  }
+  return null;
+}
 
 const GRADIENTS = [
   "linear-gradient(155deg,#8ab8d0,#4a7898)",
@@ -22,11 +42,12 @@ const GRADIENTS = [
   "linear-gradient(155deg,#6898b8,#385878)",
 ];
 
-function CreatorDetail({ cr, favs, toggleFav, gradient }: {
+function CreatorDetail({ cr, favs, toggleFav, gradient, onOpenVideo }: {
   cr: Creator;
   favs: Set<string>;
   toggleFav: (id: string) => void;
   gradient: string;
+  onOpenVideo: (cr: Creator) => void;
 }) {
   const sliderRef = useRef<HTMLDivElement>(null);
   const [activeSlide, setActiveSlide] = useState(0);
@@ -120,6 +141,31 @@ function CreatorDetail({ cr, favs, toggleFav, gradient }: {
 
         <p className={s.modalProfile}>{cr.profile}</p>
 
+        {/* Sample video button (only when URL exists) */}
+        {getEmbedUrl(cr.sampleVideoUrl) && (
+          <button
+            type="button"
+            className={s.videoBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenVideo(cr);
+            }}
+            aria-label="サンプル動画を見る"
+          >
+            <span className={s.videoBtnIcon} aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </span>
+            <span className={s.videoBtnText}>
+              {cr.sampleVideoTitle || "サンプル動画を見る"}
+            </span>
+            <svg className={s.videoBtnArrow} viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </button>
+        )}
+
         {cr.weddingThought && (
           <div className={s.modalThought}>
             <div className={s.modalThoughtDeco}>&ldquo;</div>
@@ -169,6 +215,56 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
     return init;
   });
   const [modalOpen, setModalOpen] = useState(false);
+  const [videoCreator, setVideoCreator] = useState<Creator | null>(null);
+
+  // SP swipe-down-to-close state
+  const modalSpRef = useRef<HTMLDivElement>(null);
+  const dragStartYRef = useRef<number | null>(null);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [dragging, setDragging] = useState(false);
+
+  const openVideo = useCallback((cr: Creator) => {
+    setVideoCreator(cr);
+    trackEvent("creator_video_play", { creator_id: cr.id });
+  }, []);
+
+  const closeVideo = useCallback(() => setVideoCreator(null), []);
+
+  // Close video with Escape
+  useEffect(() => {
+    if (!videoCreator) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") closeVideo(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [videoCreator, closeVideo]);
+
+  // Touch handlers for swipe-down-to-close (SP modal)
+  const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    // Only start drag if the inner scrollable body is scrolled to top
+    const bodyEl = modalSpRef.current?.querySelector<HTMLElement>(`.${s.modalBody}`);
+    if (bodyEl && bodyEl.scrollTop > 0) return;
+    dragStartYRef.current = e.touches[0].clientY;
+    setDragging(true);
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if (dragStartYRef.current === null) return;
+    const delta = e.touches[0].clientY - dragStartYRef.current;
+    if (delta > 0) {
+      setDragOffset(delta);
+    } else {
+      setDragOffset(0);
+    }
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    if (dragOffset > 100) {
+      setModalOpen(false);
+    }
+    dragStartYRef.current = null;
+    setDragging(false);
+    setDragOffset(0);
+  }, [dragOffset]);
 
   // Lock body scroll when SP modal is open
   useEffect(() => {
@@ -304,6 +400,7 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
                 favs={favs}
                 toggleFav={toggleFav}
                 gradient={GRADIENTS[creators.indexOf(selectedCr) % GRADIENTS.length]}
+                onOpenVideo={openVideo}
               />
             </div>
           )}
@@ -315,19 +412,62 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
         className={`${s.modalOverlay} ${modalOpen ? s.modalOverlayOpen : ""}`}
         onClick={() => setModalOpen(false)}
       >
-        <div className={s.modalSp} onClick={(e) => e.stopPropagation()}>
+        <div
+          className={s.modalSp}
+          ref={modalSpRef}
+          onClick={(e) => e.stopPropagation()}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchEnd}
+          style={{
+            transform: dragOffset > 0 ? `translateY(${dragOffset}px)` : undefined,
+            transition: dragging ? "none" : undefined,
+          }}
+        >
           <div className={s.modalHandle} />
-          <button className={s.modalClose} onClick={() => setModalOpen(false)}>&times;</button>
+          <button className={s.modalClose} onClick={() => setModalOpen(false)} aria-label="閉じる">&times;</button>
           {selectedCr && (
             <CreatorDetail
               cr={selectedCr}
               favs={favs}
               toggleFav={toggleFav}
               gradient={GRADIENTS[creators.indexOf(selectedCr) % GRADIENTS.length]}
+              onOpenVideo={openVideo}
             />
           )}
         </div>
       </div>
+
+      {/* Video Modal (lazy-mounted iframe) */}
+      {videoCreator && (
+        <div
+          className={`${s.videoOverlay} ${s.videoOverlayOpen}`}
+          onClick={closeVideo}
+          role="dialog"
+          aria-modal="true"
+          aria-label="サンプル動画"
+        >
+          <div className={s.videoFrameWrap} onClick={(e) => e.stopPropagation()}>
+            <button className={s.videoClose} onClick={closeVideo} aria-label="動画を閉じる">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M18 6L6 18M6 6l12 12"/>
+              </svg>
+            </button>
+            {getEmbedUrl(videoCreator.sampleVideoUrl) && (
+              <iframe
+                src={getEmbedUrl(videoCreator.sampleVideoUrl)!}
+                title={videoCreator.sampleVideoTitle || `${videoCreator.name} サンプル動画`}
+                allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                allowFullScreen
+              />
+            )}
+            {videoCreator.sampleVideoTitle && (
+              <div className={s.videoCaption}>{videoCreator.sampleVideoTitle}</div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

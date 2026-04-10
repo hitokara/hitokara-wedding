@@ -11,6 +11,8 @@ export interface Creator {
   likes?: string;
   weddingThought?: string;
   snsInstagram?: string;
+  sampleVideoUrl?: string;
+  sampleVideoTitle?: string;
   images?: { url: string }[];
   works?: { url: string }[];
   fav: boolean;
@@ -142,13 +144,10 @@ export const CREATORS_LIST: Creator[] = [
 export const FILTER_CATS = [
   { key: "all", label: "すべて" },
   { key: "planner", label: "プランナー" },
-  { key: "photo", label: "カメラマン" },
-  { key: "captain", label: "キャプテン" },
-  { key: "sound", label: "音響" },
-  { key: "designer", label: "デザイナー" },
-  { key: "movie", label: "映像" },
+  { key: "photo_movie", label: "写真・映像" },
   { key: "hair", label: "ヘアメイク" },
-  { key: "mc", label: "司会" },
-  { key: "flower", label: "フラワー" },
+  { key: "music", label: "音楽" },
+  { key: "flower", label: "装花" },
+  { key: "item", label: "アイテム" },
   { key: "other", label: "Other" },
 ];

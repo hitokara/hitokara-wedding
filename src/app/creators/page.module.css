@@ -183,6 +183,67 @@
 /* Profile */
 .modalProfile { font-size: 13px; color: var(--t2); line-height: 1.8; margin-bottom: 12px; }
 
+/* ===== Sample video button ===== */
+.videoBtn {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 11px 14px; margin-bottom: 14px;
+  border: 0.5px solid rgba(58,143,191,.28); border-radius: 10px;
+  background: linear-gradient(135deg, rgba(58,143,191,.05), rgba(58,143,191,.02));
+  color: var(--sead); font-size: 12.5px; font-family: var(--gothic);
+  cursor: pointer; transition: all .2s ease;
+  text-align: left; line-height: 1.4;
+}
+.videoBtn:hover {
+  background: linear-gradient(135deg, rgba(58,143,191,.1), rgba(58,143,191,.04));
+  border-color: var(--sea);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(58,143,191,.12);
+}
+.videoBtnIcon {
+  width: 26px; height: 26px; border-radius: 50%; background: var(--sea);
+  color: #fff; display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0; padding-left: 2px;
+}
+.videoBtnText { flex: 1; min-width: 0; font-weight: 500; }
+.videoBtnArrow { opacity: .6; flex-shrink: 0; }
+
+/* ===== Video Overlay Modal ===== */
+.videoOverlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.92);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  z-index: calc(var(--z-modal) + 10);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; opacity: 0; pointer-events: none;
+  animation: videoFadeIn .25s forwards;
+}
+.videoOverlayOpen { opacity: 1; pointer-events: all; }
+@keyframes videoFadeIn { to { opacity: 1; } }
+.videoFrameWrap {
+  position: relative; width: 100%; max-width: 960px;
+}
+.videoFrameWrap iframe {
+  width: 100%; aspect-ratio: 16/9; display: block;
+  background: #000; border: 0; border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.4);
+}
+.videoClose {
+  position: absolute; top: -42px; right: 0;
+  width: 36px; height: 36px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,.15); color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s;
+}
+.videoClose:hover { background: rgba(255,255,255,.28); }
+.videoCaption {
+  margin-top: 12px; text-align: center;
+  font-size: 12px; color: rgba(255,255,255,.7);
+  font-family: var(--gothic); letter-spacing: .04em;
+}
+@media (max-width: 640px) {
+  .videoOverlay { padding: 12px; }
+  .videoClose { top: -40px; right: 4px; width: 32px; height: 32px; }
+}
+
 /* Wedding thought: special design */
 .modalThought {
   position: relative; background: var(--sand); border-radius: 12px;

@@ -184,6 +184,29 @@ const CARD_GRADIENTS = [
   "linear-gradient(155deg,#6898b8,#385878)",
 ];
 
+/**
+ * Category alias map: supports both legacy category keys (photo, movie, mc, sound, ...)
+ * and new merged keys (photo_movie, music, item) across both sides.
+ */
+const CAT_ALIAS: Record<string, string[]> = {
+  photo_movie: ["photo_movie", "photo", "movie"],
+  music: ["music", "mc", "sound"],
+  item: ["item", "designer", "dress"],
+  other: ["other", "captain"],
+};
+
+function catMatches(creatorCat: string, pickerCatKey: string): boolean {
+  if (creatorCat === pickerCatKey) return true;
+  // Picker uses a merged key → match any legacy creator cat inside
+  const pickerAliases = CAT_ALIAS[pickerCatKey];
+  if (pickerAliases?.includes(creatorCat)) return true;
+  // Picker uses a legacy key → match merged creator cats whose alias list contains it
+  for (const [merged, aliases] of Object.entries(CAT_ALIAS)) {
+    if (aliases.includes(pickerCatKey) && creatorCat === merged) return true;
+  }
+  return false;
+}
+
 function CreatorPicker({
   catKey,
   catId,
@@ -213,7 +236,7 @@ function CreatorPicker({
 
   // Use CMS creators (same IDs as localStorage favs), fallback to static
   const source = cmsCreators.length > 0 ? cmsCreators : CREATORS_LIST;
-  const allCreators = source.filter((c) => c.cat === catKey);
+  const allCreators = source.filter((c) => catMatches(c.cat, catKey));
   // Sort favorited creators first
   const creators = [...allCreators].sort((a, b) => {
     const aFav = favSet.has(a.id) ? 1 : 0;
