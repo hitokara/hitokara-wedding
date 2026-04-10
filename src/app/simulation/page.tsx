@@ -44,5 +44,38 @@ export default async function SimulationPage() {
       ? cmsResult.contents.map(mapCMSCreator)
       : CREATORS_LIST;
 
+  // Override/append "Other creators" category
+  const otherCreators = creators.filter((c) => c.cat === "other");
+  if (otherCreators.length > 0) {
+    const otherCategory: CMSCategoryGroup = {
+      id: "other",
+      title: "結婚式を、もっと豊かな時間にしてくれるクリエイターたち",
+      items: [
+        {
+          id: "other-none",
+          label: "指名しない",
+          price: 0,
+          note: "この項目をスキップ",
+        },
+        {
+          id: "other-nom",
+          label: "クリエイター指名",
+          price: 0,
+          nom: 1,
+          ck: "other",
+          note: "気になるクリエイターを直接指名",
+        },
+      ],
+    };
+    // Replace existing "other" category if present, otherwise append
+    const existingIdx = categories.findIndex((cat) => cat.id === "other");
+    if (existingIdx >= 0) {
+      categories = [...categories];
+      categories[existingIdx] = otherCategory;
+    } else {
+      categories = [...categories, otherCategory];
+    }
+  }
+
   return <SimulationClient categories={categories} creators={creators} />;
 }
