@@ -22,15 +22,10 @@ const PROBLEMS = [
 ];
 
 const VALUES = [
-  { num: "01", label: "Value 01", t: "人で選べる", d: "すべてのクリエイターの顔・想い・料金を公開。打ち合わせ前に、ちゃんと知れる。" },
-  { num: "02", label: "Value 02", t: "明朗会計", d: "シミュレーターで概算が一目でわかる。追加費用なし、持込自由で本当に納得できる式に。" },
-  { num: "03", label: "Value 03", t: "持ち込み自由", d: "理由の見えない持込料や追加費用はかかりません。" },
-];
-
-const PROMISES = [
-  { num: "01", t: "人を先に知れる", d: "契約前にクリエイターの顔・想い・実績・料金をすべて確認できます。" },
-  { num: "02", t: "追加費用ゼロ", d: "シミュレーターの金額がそのまま最終金額。驚きの請求は一切ありません。" },
-  { num: "03", t: "すべて持込可能", d: "料理・装花・映像・衣装、すべて外部からの持込に対応しています。" },
+  { num: "Value 01", title: "人で選ぶ", desc: "顔・想い・料金を確認してから指名できる。だから安心して任せられます。" },
+  { num: "Value 02", title: "適正価格", desc: "シミュレーターで概算価格を算出。納得度の高いクオリティで安心。" },
+  { num: "Value 03", title: "持ち込み自由", desc: "理由の見えない持込料や追加費用はかかりません。" },
+  { num: "Value 04", title: "好きな場所で", desc: "フリープランナーが担当するため、場所も自由。レストランを中心に厳選した会場もご紹介可能です。" },
 ];
 
 const FAQ_ITEMS = [
@@ -172,38 +167,12 @@ export default function ConceptPage() {
           <div className={s.cpValGrid}>
             {VALUES.map((v, i) => (
               <AnimateOnScroll key={v.num} animation="fadeUp" delay={80 + i * 80}>
-                <div className={s.cpValItem}>
-                  <div className={s.cpValNumBig}>{v.num}</div>
-                  <div>
-                    <span className={s.cpValLabel}>{v.label}</span>
-                    <div className={s.cpValT}>{v.t}</div>
-                    <div className={s.cpValD}>{v.d}</div>
+                <div className={s.cpValCard}>
+                  <div className={s.cpValNumRow}>
+                    <div className={s.cpValNum}>{v.num}</div>
+                    <div className={s.cpValTitle}>{v.title}</div>
                   </div>
-                </div>
-              </AnimateOnScroll>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Promise */}
-      <section className={s.cpPromise}>
-        <div className={s.inner}>
-          <AnimateOnScroll animation="slideRight">
-            <span className={s.secEye}>Our Promise</span>
-          </AnimateOnScroll>
-          <AnimateOnScroll animation="fadeUp" delay={80}>
-            <h2 className={s.secH2}>3つの<em>約束</em>。</h2>
-          </AnimateOnScroll>
-          <div className={s.cpPromiseGrid}>
-            {PROMISES.map((p, i) => (
-              <AnimateOnScroll key={p.num} animation="fadeUp" delay={80 + i * 80}>
-                <div className={s.cpPi}>
-                  <div className={s.cpPiNum}>{p.num}</div>
-                  <div>
-                    <div className={s.cpPiT}>{p.t}</div>
-                    <div className={s.cpPiD}>{p.d}</div>
-                  </div>
+                  <p className={s.cpValDesc}>{v.desc}</p>
                 </div>
               </AnimateOnScroll>
             ))}

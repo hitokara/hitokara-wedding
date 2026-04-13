@@ -67,8 +67,9 @@ function WaveSvg() {
 
 export default async function HomePage() {
   // Fetch from microCMS with local fallback
-  const [cmsCreators, cmsArticles] = await Promise.all([
+  const [cmsCreators, cmsArticles, cmsNews] = await Promise.all([
     getCreators({ limit: 8 }),
+    getArticles({ limit: 3, filters: "category[not_equals]66uw6z5fbn" }),
     getArticles({ limit: 3, filters: "category[equals]66uw6z5fbn" }),
   ]);
 
@@ -81,6 +82,8 @@ export default async function HomePage() {
     cmsArticles.contents.length > 0
       ? cmsArticles.contents.map((a, i) => mapCMSArticle(a, i))
       : ARTICLES.slice(0, 3);
+
+  const newsArticles = cmsNews.contents.map((a, i) => mapCMSArticle(a, i));
 
   const howToJsonLd = {
     "@context": "https://schema.org",
@@ -255,7 +258,14 @@ export default async function HomePage() {
               <AnimateOnScroll key={a.slug} animation="fadeUp" delay={80 + i * 80}>
                 <Link href={`/journal/${a.slug}`} className={s.jCard}>
                   <div className={s.jImg}>
-                    <div className={s.jImgInner} style={{ background: a.gradient }} />
+                    <div
+                      className={s.jImgInner}
+                      style={{
+                        background: a.thumbnailUrl
+                          ? `url(${a.thumbnailUrl}?w=600&h=400&fit=crop) center/cover no-repeat`
+                          : a.gradient,
+                      }}
+                    />
                   </div>
                   <div>
                     <div className={s.jCat}>{a.cat}</div>
@@ -279,7 +289,7 @@ export default async function HomePage() {
             <h2 className={s.secH2}>お知らせ</h2>
           </AnimateOnScroll>
           <div className={s.newsList}>
-            {topArticles.slice(0, 2).map((a) => (
+            {newsArticles.slice(0, 2).map((a) => (
               <AnimateOnScroll key={a.slug} animation="fadeUp" delay={120}>
                 <Link href={`/journal/${a.slug}`} className={s.newsItem}>
                   <span className={s.newsDate}>{a.date}</span>
