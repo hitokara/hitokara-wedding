@@ -247,9 +247,9 @@
 /* ===== PDF Summary ===== */
 .printSummary {
   display: none;
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
-  padding: 56px 48px;
+  padding: 36px 40px 28px;
   font-family: 'Zen Kaku Gothic New', sans-serif;
   color: #1c1c1a;
   background: #fff;
@@ -257,52 +257,52 @@
 .printHeader {
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding-bottom: 24px;
-  border-bottom: 2px solid #3a8fbf;
-  margin-bottom: 32px;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1.5px solid #3a8fbf;
+  margin-bottom: 20px;
 }
-.printLogo { height: 44px; width: auto; }
+.printLogo { height: 36px; width: auto; }
 .printHeaderRight { flex: 1; text-align: right; }
 .printHeaderTitle {
   font-family: 'Shippori Mincho', serif;
-  font-size: 22px; font-weight: 400; color: #1c1c1a;
+  font-size: 18px; font-weight: 400; color: #1c1c1a;
   letter-spacing: 0.06em;
 }
 .printHeaderSub {
-  font-size: 10px; letter-spacing: 0.22em;
-  text-transform: uppercase; color: #6a6560; margin-top: 4px;
+  font-size: 9px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: #6a6560; margin-top: 2px;
 }
 .printMeta {
-  display: flex; gap: 40px; margin-bottom: 32px;
-  padding: 18px 24px; background: #f7f4ef; border-radius: 10px;
+  display: flex; gap: 32px; margin-bottom: 18px;
+  padding: 12px 18px; background: #f7f4ef; border-radius: 8px;
 }
-.printMetaItem { display: flex; flex-direction: column; gap: 4px; }
-.printMetaLabel { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #3a8fbf; font-weight: 500; }
-.printMetaValue { font-size: 15px; color: #1c1c1a; }
+.printMetaItem { display: flex; flex-direction: column; gap: 2px; }
+.printMetaLabel { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: #3a8fbf; font-weight: 500; }
+.printMetaValue { font-size: 13px; color: #1c1c1a; }
 
-/* Card-style items */
-.printItems { margin-bottom: 28px; }
+/* Compact table items */
+.printItems { margin-bottom: 16px; }
 .printItem {
-  display: flex; align-items: flex-start; gap: 16px;
-  padding: 16px 0; border-bottom: 1px solid rgba(0,0,0,.06);
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,.05);
 }
 .printItem:first-child { padding-top: 0; }
 .printItemIdx {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 14px; font-weight: 300; font-style: italic;
-  color: rgba(58,143,191,.35); min-width: 24px; padding-top: 2px;
+  font-size: 12px; font-weight: 300; font-style: italic;
+  color: rgba(58,143,191,.3); min-width: 20px;
 }
-.printItemBody { flex: 1; min-width: 0; }
+.printItemBody { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 8px; }
 .printItemTitle {
   font-family: 'Shippori Mincho', serif;
-  font-size: 13px; font-weight: 500; color: #1c1c1a;
-  letter-spacing: .04em; margin-bottom: 3px;
+  font-size: 12px; font-weight: 500; color: #1c1c1a;
+  letter-spacing: .03em; white-space: nowrap;
 }
-.printItemLabel { font-size: 12px; color: #6a6560; line-height: 1.5; }
+.printItemLabel { font-size: 11px; color: #6a6560; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .printItemPrice {
-  font-size: 14px; font-weight: 500; color: #1c1c1a;
-  white-space: nowrap; min-width: 90px; text-align: right; padding-top: 2px;
+  font-size: 12px; font-weight: 500; color: #1c1c1a;
+  white-space: nowrap; min-width: 80px; text-align: right;
 }
 .printItemEmpty .printItemTitle { color: #c0bdb8; }
 .printItemEmpty .printItemLabel { color: #c0bdb8; font-style: italic; }
@@ -310,26 +310,26 @@
 
 .printTotalSection {
   background: linear-gradient(135deg, #1a3a4a 0%, #2a5a6a 100%);
-  border-radius: 12px;
-  padding: 28px 32px; margin-bottom: 32px; text-align: right;
+  border-radius: 10px;
+  padding: 20px 28px; margin-bottom: 20px; text-align: right;
 }
 .printTotalRow {
-  display: flex; justify-content: flex-end; align-items: baseline; gap: 16px;
+  display: flex; justify-content: flex-end; align-items: baseline; gap: 14px;
 }
 .printTotalRow span:first-child {
-  font-size: 13px; color: rgba(255,255,255,.6); letter-spacing: 0.12em;
+  font-size: 12px; color: rgba(255,255,255,.6); letter-spacing: 0.12em;
 }
 .printTotalAmount {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 44px; font-weight: 300; font-style: italic;
+  font-size: 38px; font-weight: 300; font-style: italic;
   color: #fff; line-height: 1;
 }
 .printTotalUnit {
-  font-size: 12px; color: rgba(255,255,255,.5); text-align: right; margin-top: 6px;
+  font-size: 11px; color: rgba(255,255,255,.5); text-align: right; margin-top: 4px;
 }
 .printFooter {
   display: flex; justify-content: space-between; align-items: flex-end;
-  padding-top: 24px; border-top: 1px solid rgba(0,0,0,0.06);
+  padding-top: 16px; border-top: 1px solid rgba(0,0,0,0.05);
 }
-.printFooterNote { font-size: 10px; color: #999; line-height: 1.8; }
-.printFooterBrand { font-size: 10px; color: #6a6560; text-align: right; line-height: 1.8; }
+.printFooterNote { font-size: 9px; color: #999; line-height: 1.7; }
+.printFooterBrand { font-size: 9px; color: #6a6560; text-align: right; line-height: 1.7; }

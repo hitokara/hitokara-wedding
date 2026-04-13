@@ -33,45 +33,52 @@ async function generatePdf(el: HTMLElement) {
 
   const A4_W = 210;
   const A4_H = 297;
-  const MARGIN = 16;
-  const contentW = A4_W - MARGIN * 2;
-  const contentH = A4_H - MARGIN * 2;
-
+  const M = 12;
+  const contentW = A4_W - M * 2;
   const imgW = canvas.width;
   const imgH = canvas.height;
   const scaledH = (imgH * contentW) / imgW;
+  // Always fit on 1 page: stretch A4 height or shrink content
+  const fitH = Math.min(scaledH, A4_H - M * 2);
+  const fitW = fitH === scaledH ? contentW : (imgW * fitH) / imgH;
+  const offsetX = (A4_W - fitW) / 2;
 
   const pdf = new jsPDF({ unit: "mm", format: "a4" });
-
-  if (scaledH <= contentH) {
-    pdf.addImage(canvas.toDataURL("image/png"), "PNG", MARGIN, MARGIN, contentW, scaledH);
-  } else {
-    // Multi-page: slice the canvas into A4-sized chunks
-    const sliceH = Math.floor((contentH / scaledH) * imgH);
-    let srcY = 0;
-    let page = 0;
-    while (srcY < imgH) {
-      const h = Math.min(sliceH, imgH - srcY);
-      const sliceCanvas = document.createElement("canvas");
-      sliceCanvas.width = imgW;
-      sliceCanvas.height = h;
-      sliceCanvas.getContext("2d")!.drawImage(canvas, 0, srcY, imgW, h, 0, 0, imgW, h);
-      if (page > 0) pdf.addPage();
-      const drawH = (h * contentW) / imgW;
-      pdf.addImage(sliceCanvas.toDataURL("image/png"), "PNG", MARGIN, MARGIN, contentW, drawH);
-      srcY += h;
-      page++;
-    }
-  }
+  const imgData = canvas.toDataURL("image/jpeg", 0.85);
+  pdf.addImage(imgData, "JPEG", offsetX, M, fitW, fitH);
   pdf.save("hitokara-simulation.pdf");
 }
 
 async function generateImage(el: HTMLElement) {
   const canvas = await renderPrintCanvas(el);
-  const link = document.createElement("a");
-  link.download = "hitokara-simulation.png";
-  link.href = canvas.toDataURL("image/png");
-  link.click();
+  // Convert to blob for mobile compatibility
+  const blob = await new Promise<Blob>((resolve) =>
+    canvas.toBlob((b) => resolve(b!), "image/png")
+  );
+
+  // Try Web Share API first (mobile-friendly)
+  if (navigator.share && navigator.canShare?.({ files: [new File([blob], "a.png", { type: "image/png" })] })) {
+    try {
+      await navigator.share({
+        files: [new File([blob], "hitokara-simulation.png", { type: "image/png" })],
+        title: "見積もりシミュレーション",
+      });
+      return;
+    } catch { /* user cancelled or failed, fall through */ }
+  }
+
+  // Fallback: open blob URL in new tab (works on iOS Safari)
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "hitokara-simulation.png";
+  // iOS Safari: download attribute doesn't work, so open in new tab
+  if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    window.open(url, "_blank");
+  } else {
+    a.click();
+  }
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
 }
 
 interface AccData {
