@@ -238,10 +238,12 @@ const CATEGORY_MAP: Record<string, { cat: string; catLabel: string }> = {
   "映像": { cat: "photo_movie", catLabel: "写真・映像" },
   // ヘアメイク
   "ヘアメイク": { cat: "hair", catLabel: "ヘアメイク" },
-  // 音楽（司会・音響を統合）
-  "音楽": { cat: "music", catLabel: "音楽" },
-  "司会": { cat: "music", catLabel: "音楽" },
-  "音響": { cat: "music", catLabel: "音楽" },
+  // パーティー（司会・音響・キャプテンを統合）
+  "パーティー": { cat: "party", catLabel: "パーティー" },
+  "音楽": { cat: "party", catLabel: "パーティー" },
+  "司会": { cat: "party", catLabel: "パーティー" },
+  "音響": { cat: "party", catLabel: "パーティー" },
+  "キャプテン": { cat: "party", catLabel: "パーティー" },
   // 装花
   "装花": { cat: "flower", catLabel: "装花" },
   "フラワー": { cat: "flower", catLabel: "装花" },
@@ -252,7 +254,6 @@ const CATEGORY_MAP: Record<string, { cat: string; catLabel: string }> = {
   "ギフト": { cat: "item", catLabel: "アイテム" },
   // Other
   "その他": { cat: "other", catLabel: "Other" },
-  "キャプテン": { cat: "other", catLabel: "Other" },
   "other": { cat: "other", catLabel: "Other" },
   "Other": { cat: "other", catLabel: "Other" },
 };

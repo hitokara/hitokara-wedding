@@ -17,7 +17,6 @@ async function generatePdf(el: HTMLElement) {
   const html2canvas = (await import("html2canvas-pro")).default;
   const { jsPDF } = await import("jspdf");
 
-  // Make printSummary visible for capture
   el.style.display = "block";
   el.style.position = "absolute";
   el.style.left = "-9999px";
@@ -32,7 +31,7 @@ async function generatePdf(el: HTMLElement) {
 
   const imgW = canvas.width;
   const imgH = canvas.height;
-  const pdfW = 210; // A4 mm
+  const pdfW = 210;
   const pdfH = (imgH * pdfW) / imgW;
   const pdf = new jsPDF({ unit: "mm", format: [pdfW, pdfH] });
   pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, pdfW, pdfH);
@@ -71,6 +70,169 @@ function ToggleChevSvg() {
   );
 }
 
+/* ---- Price helpers ---- */
+
+/** Resolve nominated creator price for a category */
+function nomPrice(
+  catId: string,
+  item: CategoryItem,
+  creatorNoms: Record<string, string[]>,
+  crSource: Creator[],
+): number {
+  const ids = creatorNoms[catId] ?? [];
+  if (ids.length === 0) return 0;
+  return ids.reduce((sum, id) => {
+    const cr = crSource.find((c) => c.id === id);
+    return sum + (cr?.price ?? 0);
+  }, 0);
+}
+
+function itemPrice(
+  catId: string,
+  item: CategoryItem | undefined,
+  guests: number,
+  creatorNoms: Record<string, string[]>,
+  crSource: Creator[],
+): number {
+  if (!item) return 0;
+  if (item.nom === 1) return nomPrice(catId, item, creatorNoms, crSource);
+  return item.unit === "\u4eba" ? item.price * guests : item.price;
+}
+
+/* ---- Category alias & role filter ---- */
+
+const CAT_ALIAS: Record<string, string[]> = {
+  photo_movie: ["photo_movie", "photo", "movie"],
+  photo_only: ["photo_movie"],
+  movie_only: ["photo_movie"],
+  party: ["party", "music", "mc", "sound", "captain"],
+  item: ["item", "designer", "dress"],
+  other: ["other"],
+};
+
+const ROLE_FILTER: Record<string, RegExp> = {
+  photo_only: /photo/i,
+  movie_only: /video|videograph|movie/i,
+};
+
+function catMatches(creatorCat: string, pickerCatKey: string): boolean {
+  if (creatorCat === pickerCatKey) return true;
+  const pickerAliases = CAT_ALIAS[pickerCatKey];
+  if (pickerAliases?.includes(creatorCat)) return true;
+  for (const [merged, aliases] of Object.entries(CAT_ALIAS)) {
+    if (aliases.includes(pickerCatKey) && creatorCat === merged) return true;
+  }
+  return false;
+}
+
+function filterCreators(allCreators: Creator[], catKey: string): Creator[] {
+  const matched = allCreators.filter((c) => catMatches(c.cat, catKey));
+  const roleRx = ROLE_FILTER[catKey];
+  if (!roleRx) return matched;
+  return matched.filter((c) => roleRx.test(c.role));
+}
+
+const CARD_GRADIENTS = [
+  "linear-gradient(155deg,#8ab8d0,#4a7898)",
+  "linear-gradient(155deg,#9ac8d8,#5898b8)",
+  "linear-gradient(155deg,#7aa8c0,#3a6888)",
+  "linear-gradient(155deg,#6898b8,#385878)",
+];
+
+/* ---- CreatorPicker ---- */
+
+function CreatorPicker({
+  catKey,
+  catId,
+  selectedIds,
+  onPick,
+  cmsCreators,
+  multi,
+}: {
+  catKey: string;
+  catId: string;
+  selectedIds: string[];
+  onPick: (catId: string, creatorId: string, multi: boolean) => void;
+  cmsCreators: Creator[];
+  multi: boolean;
+}) {
+  const [favSet, setFavSet] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(FAVS_STORAGE_KEY);
+      if (stored) {
+        const arr: string[] = JSON.parse(stored);
+        if (Array.isArray(arr)) setFavSet(new Set(arr));
+      }
+    } catch { /* ignore */ }
+  }, []);
+
+  const source = cmsCreators.length > 0 ? cmsCreators : CREATORS_LIST;
+  const creators = filterCreators(source, catKey).sort((a, b) => {
+    const aFav = favSet.has(a.id) ? 1 : 0;
+    const bFav = favSet.has(b.id) ? 1 : 0;
+    return bFav - aFav;
+  });
+  if (creators.length === 0) return null;
+
+  const selectedSet = new Set(selectedIds);
+
+  return (
+    <div className={s.crPicker}>
+      <div className={s.crPickerLabel}>
+        {multi ? "\u30AF\u30EA\u30A8\u30A4\u30BF\u30FC\u3092\u9078\u629E\uFF08\u8907\u6570\u53EF\uFF09" : "\u30AF\u30EA\u30A8\u30A4\u30BF\u30FC\u3092\u9078\u629E"}
+      </div>
+      <div className={s.crPickerTrack}>
+        {creators.map((cr, i) => {
+          const on = selectedSet.has(cr.id);
+          const isFav = favSet.has(cr.id);
+          const imgUrl = cr.images?.[0]?.url;
+          const bg = imgUrl
+            ? `url(${imgUrl}?w=280&h=280&fit=crop) center/cover no-repeat`
+            : CARD_GRADIENTS[i % CARD_GRADIENTS.length];
+          return (
+            <div
+              key={cr.id}
+              className={`${s.crPickerCard} ${on ? s.crPickerCardOn : ""}`}
+              onClick={() => onPick(catId, cr.id, multi)}
+            >
+              <div className={s.crPickerImgWrap}>
+                <div className={s.crPickerImg} style={{ background: bg }} />
+                {on && (
+                  <span className={s.crPickerCheck}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" width="14" height="14">
+                      <path d="M5 13l4 4L19 7" />
+                    </svg>
+                  </span>
+                )}
+                {isFav && (
+                  <span className={s.crPickerFavBadge}>
+                    <svg viewBox="0 0 24 24" fill="#e05c5c" stroke="#fff" strokeWidth="1" width="11" height="11">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                  </span>
+                )}
+              </div>
+              <div className={s.crPickerInfo}>
+                <div className={s.crPickerName}>{cr.name}</div>
+                <div className={s.crPickerRole}>{cr.role}</div>
+                <div className={s.crPickerPrice}>
+                  <span className={s.crPickerPriceUnit}>{"\u6307\u540D\u6599\u00A0"}</span>
+                  &yen;{cr.price.toLocaleString()}
+                  <span className={s.crPickerPriceUnit}>{"\u301C"}</span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ---- AccordionSection ---- */
+
 function AccordionSection({
   data,
   guests,
@@ -84,11 +246,12 @@ function AccordionSection({
   guests: number;
   selections: Record<string, string>;
   onSelect: (catId: string, itemId: string) => void;
-  creatorNoms: Record<string, string>;
-  onCreatorNom: (catId: string, creatorId: string) => void;
+  creatorNoms: Record<string, string[]>;
+  onCreatorNom: (catId: string, creatorId: string, multi: boolean) => void;
   cmsCreators: Creator[];
 }) {
   const [openCats, setOpenCats] = useState<Set<string>>(new Set());
+  const crSource = cmsCreators.length > 0 ? cmsCreators : CREATORS_LIST;
 
   const toggle = (id: string) => {
     setOpenCats((prev) => {
@@ -105,17 +268,7 @@ function AccordionSection({
         const isOpen = openCats.has(cat.id);
         const sel = selections[cat.id];
         const selItem = cat.items.find((it) => it.id === sel);
-        // For nomination items, use the nominated creator's price
-        let price = 0;
-        if (selItem) {
-          if (selItem.nom === 1 && creatorNoms[cat.id]) {
-            const crSource = cmsCreators.length > 0 ? cmsCreators : CREATORS_LIST;
-            const nominated = crSource.find((c) => c.id === creatorNoms[cat.id]);
-            price = nominated?.price ?? 0;
-          } else {
-            price = selItem.unit === "\u4eba" ? selItem.price * guests : selItem.price;
-          }
-        }
+        const price = itemPrice(cat.id, selItem, guests, creatorNoms, crSource);
 
         return (
           <div key={cat.id} className={s.accItem}>
@@ -154,14 +307,14 @@ function AccordionSection({
                             {displayPrice}
                           </div>
                         </div>
-                        {/* Creator picker when nomination is selected */}
                         {on && item.nom === 1 && item.ck && (
                           <CreatorPicker
                             catKey={item.ck}
                             catId={cat.id}
-                            selectedCreatorId={creatorNoms[cat.id] || ""}
+                            selectedIds={creatorNoms[cat.id] ?? []}
                             onPick={onCreatorNom}
                             cmsCreators={cmsCreators}
+                            multi={!!item.multi}
                           />
                         )}
                       </div>
@@ -177,119 +330,7 @@ function AccordionSection({
   );
 }
 
-const CARD_GRADIENTS = [
-  "linear-gradient(155deg,#8ab8d0,#4a7898)",
-  "linear-gradient(155deg,#9ac8d8,#5898b8)",
-  "linear-gradient(155deg,#7aa8c0,#3a6888)",
-  "linear-gradient(155deg,#6898b8,#385878)",
-];
-
-/**
- * Category alias map: supports both legacy category keys (photo, movie, mc, sound, ...)
- * and new merged keys (photo_movie, music, item) across both sides.
- */
-const CAT_ALIAS: Record<string, string[]> = {
-  photo_movie: ["photo_movie", "photo", "movie"],
-  music: ["music", "mc", "sound"],
-  item: ["item", "designer", "dress"],
-  other: ["other", "captain"],
-};
-
-function catMatches(creatorCat: string, pickerCatKey: string): boolean {
-  if (creatorCat === pickerCatKey) return true;
-  // Picker uses a merged key → match any legacy creator cat inside
-  const pickerAliases = CAT_ALIAS[pickerCatKey];
-  if (pickerAliases?.includes(creatorCat)) return true;
-  // Picker uses a legacy key → match merged creator cats whose alias list contains it
-  for (const [merged, aliases] of Object.entries(CAT_ALIAS)) {
-    if (aliases.includes(pickerCatKey) && creatorCat === merged) return true;
-  }
-  return false;
-}
-
-function CreatorPicker({
-  catKey,
-  catId,
-  selectedCreatorId,
-  onPick,
-  cmsCreators,
-}: {
-  catKey: string;
-  catId: string;
-  selectedCreatorId: string;
-  onPick: (catId: string, creatorId: string) => void;
-  cmsCreators: Creator[];
-}) {
-  const [favSet, setFavSet] = useState<Set<string>>(new Set());
-
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(FAVS_STORAGE_KEY);
-      if (stored) {
-        const arr: string[] = JSON.parse(stored);
-        if (Array.isArray(arr)) setFavSet(new Set(arr));
-      }
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  // Use CMS creators (same IDs as localStorage favs), fallback to static
-  const source = cmsCreators.length > 0 ? cmsCreators : CREATORS_LIST;
-  const allCreators = source.filter((c) => catMatches(c.cat, catKey));
-  // Sort favorited creators first
-  const creators = [...allCreators].sort((a, b) => {
-    const aFav = favSet.has(a.id) ? 1 : 0;
-    const bFav = favSet.has(b.id) ? 1 : 0;
-    return bFav - aFav;
-  });
-  if (creators.length === 0) return null;
-
-  return (
-    <div className={s.crPicker}>
-      <div className={s.crPickerLabel}>クリエイターを選択</div>
-      <div className={s.crPickerTrack}>
-        {creators.map((cr, i) => {
-          const on = selectedCreatorId === cr.id;
-          const isFav = favSet.has(cr.id);
-          return (
-            <div
-              key={cr.id}
-              className={`${s.crPickerCard} ${on ? s.crPickerCardOn : ""}`}
-              onClick={() => onPick(catId, cr.id)}
-            >
-              <div className={s.crPickerImgWrap}>
-                <div
-                  className={s.crPickerImg}
-                  style={{ background: CARD_GRADIENTS[i % CARD_GRADIENTS.length] }}
-                />
-                {isFav && (
-                  <span className={s.crPickerFavBadge}>
-                    <svg viewBox="0 0 24 24" fill="#e05c5c" stroke="#fff" strokeWidth="1" width="11" height="11">
-                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                    </svg>
-                    お気に入り
-                  </span>
-                )}
-              </div>
-              <div className={s.crPickerInfo}>
-                <div className={s.crPickerName}>
-                  {cr.name}
-                </div>
-                <div className={s.crPickerTags}>
-                  {cr.tags.slice(0, 2).map((t) => (
-                    <span key={t} className={s.crPickerTag}>{t}</span>
-                  ))}
-                </div>
-                <div className={s.crPickerPrice}><span className={s.crPickerPriceUnit}>指名料&nbsp;</span>&yen;{cr.price.toLocaleString()}<span className={s.crPickerPriceUnit}>〜</span></div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
+/* ---- Main Component ---- */
 
 export default function SimulationClient({
   categories,
@@ -303,7 +344,7 @@ export default function SimulationClient({
 
   const [guests, setGuests] = useState(40);
   const [selections, setSelections] = useState<Record<string, string>>({});
-  const [creatorNoms, setCreatorNoms] = useState<Record<string, string>>({});
+  const [creatorNoms, setCreatorNoms] = useState<Record<string, string[]>>({});
   const [breakdownOpen, setBreakdownOpen] = useState(false);
 
   // Restore from localStorage on mount
@@ -314,12 +355,18 @@ export default function SimulationClient({
         const data = JSON.parse(stored);
         if (data.guests) setGuests(data.guests);
         if (data.selections) setSelections(data.selections);
-        if (data.creatorNoms) setCreatorNoms(data.creatorNoms);
+        if (data.creatorNoms) {
+          // Migrate old format (string) to new (string[])
+          const noms: Record<string, string[]> = {};
+          for (const [k, v] of Object.entries(data.creatorNoms)) {
+            noms[k] = Array.isArray(v) ? v as string[] : [v as string];
+          }
+          setCreatorNoms(noms);
+        }
       }
     } catch { /* ignore */ }
   }, []);
 
-  // Save to localStorage on change
   useEffect(() => {
     try {
       localStorage.setItem(SIM_STORAGE_KEY, JSON.stringify({ guests, selections, creatorNoms }));
@@ -330,31 +377,39 @@ export default function SimulationClient({
 
   const onSelect = useCallback((catId: string, itemId: string) => {
     setSelections((prev) => ({ ...prev, [catId]: itemId }));
+    // Clear creator nominations when switching away from nomination option
+    setCreatorNoms((prev) => {
+      const next = { ...prev };
+      delete next[catId];
+      return next;
+    });
     trackEvent("sim_select_item", { category: catId, item: itemId });
   }, []);
 
-  const onCreatorNom = useCallback((catId: string, creatorId: string) => {
-    setCreatorNoms((prev) => ({ ...prev, [catId]: creatorId }));
+  const onCreatorNom = useCallback((catId: string, creatorId: string, multi: boolean) => {
+    setCreatorNoms((prev) => {
+      const current = prev[catId] ?? [];
+      if (multi) {
+        // Toggle: add if not present, remove if present
+        const has = current.includes(creatorId);
+        return { ...prev, [catId]: has ? current.filter((id) => id !== creatorId) : [...current, creatorId] };
+      }
+      // Single select: replace
+      return { ...prev, [catId]: [creatorId] };
+    });
     trackEvent("sim_nominate_creator", { category: catId, creator_id: creatorId });
   }, []);
 
+  const crSource = cmsCreators.length > 0 ? cmsCreators : CREATORS_LIST;
+
   const breakdown = useMemo(() => {
-    const crSource = cmsCreators.length > 0 ? cmsCreators : CREATORS_LIST;
     return accData.map((cat) => {
       const sel = selections[cat.id];
       const item = cat.items.find((it) => it.id === sel);
-      let price = 0;
-      if (item) {
-        if (item.nom === 1 && creatorNoms[cat.id]) {
-          const nominated = crSource.find((c) => c.id === creatorNoms[cat.id]);
-          price = nominated?.price ?? 0;
-        } else {
-          price = item.unit === "\u4eba" ? item.price * guests : item.price;
-        }
-      }
+      const price = itemPrice(cat.id, item, guests, creatorNoms, crSource);
       return { id: cat.id, title: cat.title, price, selected: !!sel };
     });
-  }, [accData, selections, guests, creatorNoms, cmsCreators]);
+  }, [accData, selections, guests, creatorNoms, crSource]);
 
   const total = useMemo(() => breakdown.reduce((sum, b) => sum + b.price, 0), [breakdown]);
   const maxBudget = 5000000;
@@ -366,95 +421,100 @@ export default function SimulationClient({
     generatePdf(printRef.current);
   }, [total]);
 
+  /** Resolve label + price for PDF row */
+  function pdfRow(cat: AccData) {
+    const sel = selections[cat.id];
+    const selItem = cat.items.find((it) => it.id === sel);
+    if (!selItem) return { label: "\u2014", price: 0 };
+    let label = selItem.label;
+    let price = 0;
+    if (selItem.nom === 1) {
+      const ids = creatorNoms[cat.id] ?? [];
+      const names = ids.map((id) => crSource.find((c) => c.id === id)?.name).filter(Boolean);
+      price = ids.reduce((s, id) => s + (crSource.find((c) => c.id === id)?.price ?? 0), 0);
+      if (names.length > 0) label += `\uFF08${names.join("\u3001")}\uFF09`;
+    } else {
+      price = selItem.unit === "\u4eba" ? selItem.price * guests : selItem.price;
+    }
+    return { label, price };
+  }
+
   return (
     <div className={s.simWrap}>
-      {/* Print Summary (hidden on screen, used for PDF generation) */}
+      {/* PDF Summary (hidden) */}
       <div className={s.printSummary} ref={printRef}>
         <div className={s.printHeader}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo-header.jpg" alt="ヒトカラウェディング" className={s.printLogo} />
+          <img src="/logo-header.jpg" alt="\u30D2\u30C8\u30AB\u30E9\u30A6\u30A7\u30C7\u30A3\u30F3\u30B0" className={s.printLogo} />
           <div className={s.printHeaderRight}>
-            <div className={s.printHeaderTitle}>見積もりシミュレーション</div>
+            <div className={s.printHeaderTitle}>{"\u898B\u7A4D\u3082\u308A\u30B7\u30DF\u30E5\u30EC\u30FC\u30B7\u30E7\u30F3"}</div>
             <div className={s.printHeaderSub}>Estimate Simulation</div>
           </div>
         </div>
+
         <div className={s.printMeta}>
           <div className={s.printMetaItem}>
-            <span className={s.printMetaLabel}>作成日時</span>
+            <span className={s.printMetaLabel}>{"\u4F5C\u6210\u65E5\u6642"}</span>
             <span className={s.printMetaValue}>
               {new Date().toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" })}
               {" "}{new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
             </span>
           </div>
           <div className={s.printMetaItem}>
-            <span className={s.printMetaLabel}>ゲスト人数</span>
-            <span className={s.printMetaValue}>{guests}名</span>
+            <span className={s.printMetaLabel}>{"\u30B2\u30B9\u30C8\u4EBA\u6570"}</span>
+            <span className={s.printMetaValue}>{guests}{"\u540D"}</span>
           </div>
         </div>
-        <table className={s.printTable}>
-          <thead>
-            <tr>
-              <th>カテゴリ</th>
-              <th>選択内容</th>
-              <th>金額（税別）</th>
-            </tr>
-          </thead>
-          <tbody>
-            {accData.map((cat) => {
-              const sel = selections[cat.id];
-              const selItem = cat.items.find((it) => it.id === sel);
-              let price = 0;
-              let label = "—";
-              if (selItem) {
-                label = selItem.label;
-                if (selItem.nom === 1 && creatorNoms[cat.id]) {
-                  const crSource = cmsCreators.length > 0 ? cmsCreators : CREATORS_LIST;
-            const nominated = crSource.find((c) => c.id === creatorNoms[cat.id]);
-                  price = nominated?.price ?? 0;
-                  if (nominated) label += `（${nominated.name}）`;
-                } else {
-                  price = selItem.unit === "人" ? selItem.price * guests : selItem.price;
-                }
-              }
-              return (
-                <tr key={cat.id} className={sel ? "" : s.printRowEmpty}>
-                  <td>{cat.title}</td>
-                  <td>{label}</td>
-                  <td>{sel ? `¥${price.toLocaleString()}` : "—"}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+
+        <div className={s.printItems}>
+          {accData.map((cat) => {
+            const sel = selections[cat.id];
+            const row = pdfRow(cat);
+            return (
+              <div key={cat.id} className={`${s.printItem} ${!sel ? s.printItemEmpty : ""}`}>
+                <div className={s.printItemIdx}>{cat.idx}</div>
+                <div className={s.printItemBody}>
+                  <div className={s.printItemTitle}>{cat.title}</div>
+                  <div className={s.printItemLabel}>{row.label}</div>
+                </div>
+                <div className={s.printItemPrice}>
+                  {sel ? `\u00A5${fmtP(row.price)}` : "\u2014"}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
         <div className={s.printTotalSection}>
           <div className={s.printTotalRow}>
-            <span>概算合計</span>
-            <span className={s.printTotalAmount}>¥{total.toLocaleString()}</span>
+            <span>{"\u6982\u7B97\u5408\u8A08"}</span>
+            <span className={s.printTotalAmount}>&yen;{total.toLocaleString()}</span>
           </div>
-          <div className={s.printTotalUnit}>円（税別）</div>
+          <div className={s.printTotalUnit}>{"\u5186\uFF08\u7A0E\u5225\uFF09"}</div>
         </div>
+
         <div className={s.printFooter}>
           <div className={s.printFooterNote}>
-            ※ プランニング料は含まれています。表示は参考金額です。<br />
-            ※ 実際の金額はお打ち合わせにて確定いたします。
+            {"\u203B \u30D7\u30E9\u30F3\u30CB\u30F3\u30B0\u6599\u306F\u542B\u307E\u308C\u3066\u3044\u307E\u3059\u3002\u8868\u793A\u306F\u53C2\u8003\u91D1\u984D\u3067\u3059\u3002"}<br />
+            {"\u203B \u5B9F\u969B\u306E\u91D1\u984D\u306F\u304A\u6253\u3061\u5408\u308F\u305B\u306B\u3066\u78BA\u5B9A\u3044\u305F\u3057\u307E\u3059\u3002"}
           </div>
           <div className={s.printFooterBrand}>
-            ヒトカラウェディング ｜ hitokarawedding.com<br />
-            横浜・鎌倉のウェディングプロデュース
+            {"\u30D2\u30C8\u30AB\u30E9\u30A6\u30A7\u30C7\u30A3\u30F3\u30B0 \uFF5C hitokarawedding.com"}<br />
+            {"\u6A2A\u6D5C\u30FB\u938C\u5009\u306E\u30A6\u30A7\u30C7\u30A3\u30F3\u30B0\u30D7\u30ED\u30C7\u30E5\u30FC\u30B9"}
           </div>
         </div>
       </div>
 
       {/* SP: Total Bar */}
       <div className={s.totalBar}>
-        <div className={s.totalLabel}>概算</div>
+        <div className={s.totalLabel}>{"\u6982\u7B97"}</div>
         <div className={s.totalAmountWrap}>
           <span className={s.totalNum}>{fmtP(total)}</span>
-          <span className={s.totalUnit}>&nbsp;円〜</span>
+          <span className={s.totalUnit}>&nbsp;{"\u5186\u301C"}</span>
         </div>
         <div className={s.totalCta}>
           <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.tctaLine} onClick={() => trackEvent("cta_line", { location: "simulation_sp" })}>
-            <span className={s.pip} />LINEで送る
+            <span className={s.pip} />LINE{"\u3067\u9001\u308B"}
           </a>
           <button className={s.tctaPdf} onClick={handlePdf}>PDF</button>
         </div>
@@ -465,7 +525,7 @@ export default function SimulationClient({
         className={`${s.breakdownToggle} ${breakdownOpen ? s.breakdownToggleOpen : ""}`}
         onClick={() => setBreakdownOpen(!breakdownOpen)}
       >
-        <span>内訳を確認する</span>
+        <span>{"\u5185\u8A33\u3092\u78BA\u8A8D\u3059\u308B"}</span>
         <ToggleChevSvg />
       </button>
       <div className={`${s.breakdownPanel} ${breakdownOpen ? s.breakdownPanelOpen : ""}`}>
@@ -489,15 +549,15 @@ export default function SimulationClient({
             <span className={s.pageEye}>Simulation</span>
           </AnimateOnScroll>
           <AnimateOnScroll animation="fadeUp" delay={80}>
-            <h1 className={s.pageH1}>見積もり<em>シミュレーター</em></h1>
+            <h1 className={s.pageH1}>{"\u898B\u7A4D\u3082\u308A"}<em>{"\u30B7\u30DF\u30E5\u30EC\u30FC\u30BF\u30FC"}</em></h1>
           </AnimateOnScroll>
         </div>
         <div className={s.guestsBlock}>
           <div className={s.gTop}>
-            <div className={s.gLabel}>ゲスト人数</div>
+            <div className={s.gLabel}>{"\u30B2\u30B9\u30C8\u4EBA\u6570"}</div>
             <div className={s.gValWrap}>
               <span className={s.gVal}>{guests}</span>
-              <span className={s.gUnit}>名</span>
+              <span className={s.gUnit}>{"\u540D"}</span>
             </div>
           </div>
           <input
@@ -521,15 +581,15 @@ export default function SimulationClient({
             <span className={s.pageEye}>Simulation</span>
           </AnimateOnScroll>
           <AnimateOnScroll animation="fadeUp" delay={80}>
-            <h1 className={s.pageH1}>見積もり<em>シミュレーター</em></h1>
+            <h1 className={s.pageH1}>{"\u898B\u7A4D\u3082\u308A"}<em>{"\u30B7\u30DF\u30E5\u30EC\u30FC\u30BF\u30FC"}</em></h1>
           </AnimateOnScroll>
         </div>
         <div className={s.guestsBlock}>
           <div className={s.gTop}>
-            <div className={s.gLabel}>ゲスト人数</div>
+            <div className={s.gLabel}>{"\u30B2\u30B9\u30C8\u4EBA\u6570"}</div>
             <div className={s.gValWrap}>
               <span className={s.gVal}>{guests}</span>
-              <span className={s.gUnit}>名</span>
+              <span className={s.gUnit}>{"\u540D"}</span>
             </div>
           </div>
           <input
@@ -549,19 +609,19 @@ export default function SimulationClient({
       {/* PC: Right Column */}
       <div className={s.simRight}>
         <div className={s.rightInner}>
-          <span className={s.rightLabel}>概算合計</span>
+          <span className={s.rightLabel}>{"\u6982\u7B97\u5408\u8A08"}</span>
           <div className={s.rightAmountRow}>
             <div className={s.rightAmount}>{fmtP(total)}</div>
-            <div className={s.rightUnit}>円</div>
+            <div className={s.rightUnit}>{"\u5186"}</div>
           </div>
           <div className={s.rightNote}>
-            {total === 0 ? "項目を選択すると合計が表示されます" : `ゲスト${guests}名の場合の概算です`}
+            {total === 0 ? "\u9805\u76EE\u3092\u9078\u629E\u3059\u308B\u3068\u5408\u8A08\u304C\u8868\u793A\u3055\u308C\u307E\u3059" : `\u30B2\u30B9\u30C8${guests}\u540D\u306E\u5834\u5408\u306E\u6982\u7B97\u3067\u3059`}
           </div>
           <div className={s.rightBarWrap}>
             <div className={s.rightBar} style={{ width: `${barWidth}%` }} />
           </div>
         </div>
-        <div className={s.rightBkLbl}>内訳</div>
+        <div className={s.rightBkLbl}>{"\u5185\u8A33"}</div>
         <div className={s.rightBreakdown}>
           {breakdown.map((b) => (
             <div key={b.id} className={s.rbItem}>
@@ -574,18 +634,18 @@ export default function SimulationClient({
         </div>
         <div className={s.rightCtas}>
           <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.rCtaLine} onClick={() => trackEvent("cta_line", { location: "simulation_pc" })}>
-            <span className={s.pip} />LINEで相談
+            <span className={s.pip} />LINE{"\u3067\u76F8\u8AC7"}
           </a>
-          <button className={s.rCtaConsult} onClick={handlePdf}>PDFで保存</button>
+          <button className={s.rCtaConsult} onClick={handlePdf}>PDF{"\u3067\u4FDD\u5B58"}</button>
           <a
-            href={`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : 'https://hitokarawedding.com/simulation')}&text=${encodeURIComponent(`見積もりシミュレーション結果: 合計 ¥${fmtP(total)}円（ゲスト${guests}名）`)}`}
+            href={`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : 'https://hitokarawedding.com/simulation')}&text=${encodeURIComponent(`\u898B\u7A4D\u3082\u308A\u30B7\u30DF\u30E5\u30EC\u30FC\u30B7\u30E7\u30F3\u7D50\u679C: \u5408\u8A08 \u00A5${fmtP(total)}\u5186\uFF08\u30B2\u30B9\u30C8${guests}\u540D\uFF09`)}`}
             target="_blank"
             rel="noopener noreferrer"
             className={s.rCtaPdf}
           >
-            LINEでシェア
+            LINE{"\u3067\u30B7\u30A7\u30A2"}
           </a>
-          <div className={s.rDisclaimer}>※ プランニング料は含まれています。表示は参考金額です。</div>
+          <div className={s.rDisclaimer}>{"\u203B \u30D7\u30E9\u30F3\u30CB\u30F3\u30B0\u6599\u306F\u542B\u307E\u308C\u3066\u3044\u307E\u3059\u3002\u8868\u793A\u306F\u53C2\u8003\u91D1\u984D\u3067\u3059\u3002"}</div>
         </div>
       </div>
     </div>

@@ -146,7 +146,7 @@ export const FILTER_CATS = [
   { key: "planner", label: "プランナー" },
   { key: "photo_movie", label: "写真・映像" },
   { key: "hair", label: "ヘアメイク" },
-  { key: "music", label: "音楽" },
+  { key: "party", label: "パーティー" },
   { key: "flower", label: "装花" },
   { key: "item", label: "アイテム" },
   { key: "other", label: "Other" },

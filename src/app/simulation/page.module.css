@@ -227,8 +227,19 @@
   .simMain { padding: 24px 32px 60px; }
 }
 
-/* ===== Print Summary (hidden on screen) ===== */
-/* ===== PDF Summary (hidden on screen, rendered for html2canvas capture) ===== */
+/* ===== Creator Picker extras ===== */
+.crPickerCheck {
+  position: absolute; bottom: 8px; right: 8px;
+  width: 24px; height: 24px; border-radius: 50%; background: var(--sea);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,.2);
+}
+.crPickerRole {
+  font-size: 10px; color: var(--t2); margin-bottom: 4px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ===== PDF Summary ===== */
 .printSummary {
   display: none;
   max-width: 640px;
@@ -264,24 +275,38 @@
 .printMetaItem { display: flex; flex-direction: column; gap: 4px; }
 .printMetaLabel { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #3a8fbf; font-weight: 500; }
 .printMetaValue { font-size: 15px; color: #1c1c1a; }
-.printTable {
-  width: 100%; border-collapse: collapse; margin-bottom: 28px;
+
+/* Card-style items */
+.printItems { margin-bottom: 28px; }
+.printItem {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 16px 0; border-bottom: 1px solid rgba(0,0,0,.06);
 }
-.printTable th, .printTable td {
-  padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06);
-  text-align: left; font-size: 13px; color: #1c1c1a;
+.printItem:first-child { padding-top: 0; }
+.printItemIdx {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px; font-weight: 300; font-style: italic;
+  color: rgba(58,143,191,.35); min-width: 24px; padding-top: 2px;
 }
-.printTable th {
-  font-size: 10px; font-weight: 600; color: #3a8fbf;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  border-bottom: 1.5px solid #3a8fbf; padding-bottom: 10px;
+.printItemBody { flex: 1; min-width: 0; }
+.printItemTitle {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 13px; font-weight: 500; color: #1c1c1a;
+  letter-spacing: .04em; margin-bottom: 3px;
 }
-.printTable td:last-child { text-align: right; white-space: nowrap; font-weight: 500; }
-.printTable tr:nth-child(even) { background: #fafaf8; }
-.printRowEmpty td { color: #c0bdb8; font-style: italic; }
+.printItemLabel { font-size: 12px; color: #6a6560; line-height: 1.5; }
+.printItemPrice {
+  font-size: 14px; font-weight: 500; color: #1c1c1a;
+  white-space: nowrap; min-width: 90px; text-align: right; padding-top: 2px;
+}
+.printItemEmpty .printItemTitle { color: #c0bdb8; }
+.printItemEmpty .printItemLabel { color: #c0bdb8; font-style: italic; }
+.printItemEmpty .printItemPrice { color: #c0bdb8; }
+
 .printTotalSection {
-  background: #1a3a4a; border-radius: 10px;
-  padding: 24px 28px; margin-bottom: 32px; text-align: right;
+  background: linear-gradient(135deg, #1a3a4a 0%, #2a5a6a 100%);
+  border-radius: 12px;
+  padding: 28px 32px; margin-bottom: 32px; text-align: right;
 }
 .printTotalRow {
   display: flex; justify-content: flex-end; align-items: baseline; gap: 16px;
@@ -291,7 +316,7 @@
 }
 .printTotalAmount {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 40px; font-weight: 300; font-style: italic;
+  font-size: 44px; font-weight: 300; font-style: italic;
   color: #fff; line-height: 1;
 }
 .printTotalUnit {

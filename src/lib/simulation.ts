@@ -16,6 +16,8 @@ export interface CategoryItem {
   nom?: 1;
   /** Creator category key for nomination (matches Creator.cat) */
   ck?: string;
+  /** If true, allow multiple creator nominations */
+  multi?: boolean;
 }
 
 export interface CategoryGroup {
