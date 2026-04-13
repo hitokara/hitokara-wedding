@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { getSimItems, mapCMSSimItems, getCreators, mapCMSCreator } from "@/lib/microcms";
-import type { CMSCategoryGroup } from "@/lib/microcms";
+import { getSimItems, mapCMSSimItems, getCreators, mapCMSCreator, getVenues } from "@/lib/microcms";
+import type { CMSCategoryGroup, CMSVenue } from "@/lib/microcms";
 import { CREATORS_LIST } from "@/lib/creators";
 import type { Creator } from "@/lib/creators";
 import SimulationClient from "./SimulationClient";
@@ -19,6 +19,45 @@ export const metadata: Metadata = {
 /** Fallback: build categories from local hardcoded data */
 function buildLocalCategories(): CMSCategoryGroup[] {
   return [
+    {
+      id: "venue",
+      title: "会場",
+      items: [
+        { id: "venue-consult", label: "相談して決める", price: 0, note: "プランナーと一緒に最適な会場を探します" },
+        { id: "venue-cms", label: "会場一覧から選ぶ", price: 0, vp: 1, note: "提携会場から選べます" },
+        { id: "venue-self", label: "自分で探す", price: 0, note: "ご自身で会場を手配" },
+      ],
+    },
+    {
+      id: "food",
+      title: "料理・ドリンク",
+      items: [
+        { id: "food-a", label: "スタンダード", price: 15000, unit: "人", note: "コース料理＋フリードリンク" },
+        { id: "food-b", label: "プレミアム", price: 20000, unit: "人", note: "厳選素材のコース＋プレミアムドリンク" },
+        { id: "food-c", label: "オリジナル", price: 18000, unit: "人", note: "シェフと相談してオリジナルメニュー" },
+      ],
+    },
+    {
+      id: "dress",
+      title: "衣装",
+      items: [
+        { id: "dress-wd", label: "ウェディングドレス", price: 300000 },
+        { id: "dress-cd", label: "カラードレス", price: 250000 },
+        { id: "dress-tx", label: "タキシード", price: 150000 },
+        { id: "dress-wdtx", label: "ウェディングドレス＋タキシード", price: 450000, note: "セット割引" },
+        { id: "dress-all", label: "ウェディングドレス＋カラードレス＋タキシード", price: 650000, note: "セット割引" },
+      ],
+    },
+    {
+      id: "flower",
+      title: "装花",
+      items: [
+        { id: "flower-a", label: "ナチュラル", price: 200000, note: "グリーン中心のナチュラルスタイル" },
+        { id: "flower-b", label: "モダン", price: 250000, note: "洗練されたモダンデザイン" },
+        { id: "flower-c", label: "クラシック", price: 300000, note: "華やかなクラシックスタイル" },
+        { id: "flower-nom", label: "クリエイター指名", price: 0, nom: 1, ck: "flower", note: "フラワーデザイナーを直接指名" },
+      ],
+    },
     {
       id: "planner",
       title: "プランニング料",
@@ -98,12 +137,14 @@ export default async function SimulationPage() {
   // const res = await getSimItems();
   const categories: CMSCategoryGroup[] = buildLocalCategories();
 
-  // Fetch CMS creators
-  const cmsResult = await getCreators();
+  // Fetch CMS creators and venues in parallel
+  const [cmsResult, venueResult] = await Promise.all([getCreators(), getVenues()]);
   const creators: Creator[] =
     cmsResult.contents.length > 0
       ? cmsResult.contents.map(mapCMSCreator)
       : CREATORS_LIST;
 
-  return <SimulationClient categories={categories} creators={creators} />;
+  const venues = venueResult.contents;
+
+  return <SimulationClient categories={categories} creators={creators} venues={venues} />;
 }

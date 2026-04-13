@@ -18,6 +18,8 @@ export interface CategoryItem {
   ck?: string;
   /** If true, allow multiple creator nominations */
   multi?: boolean;
+  /** If 1, this option enables venue picker */
+  vp?: 1;
 }
 
 export interface CategoryGroup {

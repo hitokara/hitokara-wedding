@@ -5,7 +5,7 @@ import { fmtP } from "@/lib/simulation";
 import { CREATORS_LIST } from "@/lib/creators";
 import type { Creator } from "@/lib/creators";
 import type { CategoryItem } from "@/lib/simulation";
-import type { CMSCategoryGroup } from "@/lib/microcms";
+import type { CMSCategoryGroup, CMSVenue } from "@/lib/microcms";
 import Breadcrumb from "@/components/Breadcrumb";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { trackEvent } from "@/lib/gtag";
@@ -231,6 +231,65 @@ function CreatorPicker({
   );
 }
 
+/* ---- VenuePicker ---- */
+
+function VenuePicker({
+  venues,
+  selectedId,
+  onPick,
+}: {
+  venues: CMSVenue[];
+  selectedId: string | null;
+  onPick: (venueId: string) => void;
+}) {
+  if (venues.length === 0) {
+    return <div className={s.crPicker}><div className={s.crPickerLabel}>登録されている会場はまだありません</div></div>;
+  }
+
+  return (
+    <div className={s.crPicker}>
+      <div className={s.crPickerLabel}>会場を選択</div>
+      <div className={s.crPickerTrack}>
+        {venues.map((v, i) => {
+          const on = selectedId === v.id;
+          const imgUrl = v.image?.url;
+          const bg = imgUrl
+            ? `url(${imgUrl}?w=280&h=280&fit=crop) center/cover no-repeat`
+            : CARD_GRADIENTS[i % CARD_GRADIENTS.length];
+          return (
+            <div
+              key={v.id}
+              className={`${s.crPickerCard} ${on ? s.crPickerCardOn : ""}`}
+              onClick={() => onPick(v.id)}
+            >
+              <div className={s.crPickerImgWrap}>
+                <div className={s.crPickerImg} style={{ background: bg }} />
+                {on && (
+                  <span className={s.crPickerCheck}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" width="14" height="14">
+                      <path d="M5 13l4 4L19 7" />
+                    </svg>
+                  </span>
+                )}
+              </div>
+              <div className={s.crPickerInfo}>
+                <div className={s.crPickerName}>{v.name}</div>
+                <div className={s.crPickerRole}>{v.area ?? ""}</div>
+                {v.capacity && (
+                  <div className={s.crPickerPrice}>
+                    <span className={s.crPickerPriceUnit}>収容 </span>
+                    {v.capacity}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /* ---- AccordionSection ---- */
 
 function AccordionSection({
@@ -241,6 +300,9 @@ function AccordionSection({
   creatorNoms,
   onCreatorNom,
   cmsCreators,
+  venues,
+  selectedVenue,
+  onVenuePick,
 }: {
   data: AccData[];
   guests: number;
@@ -249,6 +311,9 @@ function AccordionSection({
   creatorNoms: Record<string, string[]>;
   onCreatorNom: (catId: string, creatorId: string, multi: boolean) => void;
   cmsCreators: Creator[];
+  venues: CMSVenue[];
+  selectedVenue: string | null;
+  onVenuePick: (venueId: string) => void;
 }) {
   const [openCats, setOpenCats] = useState<Set<string>>(new Set());
   const crSource = cmsCreators.length > 0 ? cmsCreators : CREATORS_LIST;
@@ -317,6 +382,13 @@ function AccordionSection({
                             multi={!!item.multi}
                           />
                         )}
+                        {on && item.vp === 1 && (
+                          <VenuePicker
+                            venues={venues}
+                            selectedId={selectedVenue}
+                            onPick={onVenuePick}
+                          />
+                        )}
                       </div>
                     );
                   })}
@@ -335,9 +407,11 @@ function AccordionSection({
 export default function SimulationClient({
   categories,
   creators: cmsCreators,
+  venues = [],
 }: {
   categories: CMSCategoryGroup[];
   creators: Creator[];
+  venues?: CMSVenue[];
 }) {
   const SIM_STORAGE_KEY = "hitokara-sim";
   const printRef = useRef<HTMLDivElement>(null);
@@ -345,6 +419,7 @@ export default function SimulationClient({
   const [guests, setGuests] = useState(40);
   const [selections, setSelections] = useState<Record<string, string>>({});
   const [creatorNoms, setCreatorNoms] = useState<Record<string, string[]>>({});
+  const [selectedVenue, setSelectedVenue] = useState<string | null>(null);
   const [breakdownOpen, setBreakdownOpen] = useState(false);
 
   // Restore from localStorage on mount
@@ -363,15 +438,16 @@ export default function SimulationClient({
           }
           setCreatorNoms(noms);
         }
+        if (data.selectedVenue) setSelectedVenue(data.selectedVenue);
       }
     } catch { /* ignore */ }
   }, []);
 
   useEffect(() => {
     try {
-      localStorage.setItem(SIM_STORAGE_KEY, JSON.stringify({ guests, selections, creatorNoms }));
+      localStorage.setItem(SIM_STORAGE_KEY, JSON.stringify({ guests, selections, creatorNoms, selectedVenue }));
     } catch { /* ignore */ }
-  }, [guests, selections, creatorNoms]);
+  }, [guests, selections, creatorNoms, selectedVenue]);
 
   const accData = useMemo(() => buildAccordionData(categories), [categories]);
 
@@ -383,7 +459,14 @@ export default function SimulationClient({
       delete next[catId];
       return next;
     });
+    // Clear venue selection when switching venue options
+    if (catId === "venue") setSelectedVenue(null);
     trackEvent("sim_select_item", { category: catId, item: itemId });
+  }, []);
+
+  const onVenuePick = useCallback((venueId: string) => {
+    setSelectedVenue((prev) => (prev === venueId ? null : venueId));
+    trackEvent("sim_select_venue", { venue_id: venueId });
   }, []);
 
   const onCreatorNom = useCallback((catId: string, creatorId: string, multi: boolean) => {
@@ -433,6 +516,9 @@ export default function SimulationClient({
       const names = ids.map((id) => crSource.find((c) => c.id === id)?.name).filter(Boolean);
       price = ids.reduce((s, id) => s + (crSource.find((c) => c.id === id)?.price ?? 0), 0);
       if (names.length > 0) label += `\uFF08${names.join("\u3001")}\uFF09`;
+    } else if (selItem.vp === 1 && selectedVenue) {
+      const v = venues.find((ve) => ve.id === selectedVenue);
+      if (v) label += `\uFF08${v.name}\uFF09`;
     } else {
       price = selItem.unit === "\u4eba" ? selItem.price * guests : selItem.price;
     }
@@ -570,7 +656,7 @@ export default function SimulationClient({
             onChange={(e) => setGuests(Number(e.target.value))}
           />
         </div>
-        <AccordionSection data={accData} guests={guests} selections={selections} onSelect={onSelect} creatorNoms={creatorNoms} onCreatorNom={onCreatorNom} cmsCreators={cmsCreators} />
+        <AccordionSection data={accData} guests={guests} selections={selections} onSelect={onSelect} creatorNoms={creatorNoms} onCreatorNom={onCreatorNom} cmsCreators={cmsCreators} venues={venues} selectedVenue={selectedVenue} onVenuePick={onVenuePick} />
       </div>
 
       {/* PC: Left Column */}
@@ -603,7 +689,7 @@ export default function SimulationClient({
             style={{ width: "100%", marginBottom: 16 }}
           />
         </div>
-        <AccordionSection data={accData} guests={guests} selections={selections} onSelect={onSelect} creatorNoms={creatorNoms} onCreatorNom={onCreatorNom} cmsCreators={cmsCreators} />
+        <AccordionSection data={accData} guests={guests} selections={selections} onSelect={onSelect} creatorNoms={creatorNoms} onCreatorNom={onCreatorNom} cmsCreators={cmsCreators} venues={venues} selectedVenue={selectedVenue} onVenuePick={onVenuePick} />
       </div>
 
       {/* PC: Right Column */}
