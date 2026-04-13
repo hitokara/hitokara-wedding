@@ -20,6 +20,13 @@ export const metadata: Metadata = {
 function buildLocalCategories(): CMSCategoryGroup[] {
   return [
     {
+      id: "planner",
+      title: "プランニング",
+      items: [
+        { id: "planner-nom", label: "プランナーを選択", price: 0, nom: 1, ck: "planner", note: "担当プランナーを指名（必須）" },
+      ],
+    },
+    {
       id: "venue",
       title: "会場",
       items: [
@@ -56,13 +63,6 @@ function buildLocalCategories(): CMSCategoryGroup[] {
         { id: "flower-b", label: "モダン", price: 250000, note: "洗練されたモダンデザイン" },
         { id: "flower-c", label: "クラシック", price: 300000, note: "華やかなクラシックスタイル" },
         { id: "flower-nom", label: "クリエイター指名", price: 0, nom: 1, ck: "flower", note: "フラワーデザイナーを直接指名" },
-      ],
-    },
-    {
-      id: "planner",
-      title: "プランニング料",
-      items: [
-        { id: "planner-nom", label: "プランナーを選択", price: 0, nom: 1, ck: "planner", note: "担当プランナーを指名（必須）" },
       ],
     },
     {
