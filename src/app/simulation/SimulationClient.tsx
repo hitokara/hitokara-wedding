@@ -13,29 +13,65 @@ import s from "./page.module.css";
 
 const FAVS_STORAGE_KEY = "hitokara-favs";
 
-async function generatePdf(el: HTMLElement) {
+async function renderPrintCanvas(el: HTMLElement) {
   const html2canvas = (await import("html2canvas-pro")).default;
-  const { jsPDF } = await import("jspdf");
-
   el.style.display = "block";
   el.style.position = "absolute";
   el.style.left = "-9999px";
   el.style.width = "800px";
-
   const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: "#fff" });
-
   el.style.display = "";
   el.style.position = "";
   el.style.left = "";
   el.style.width = "";
+  return canvas;
+}
+
+async function generatePdf(el: HTMLElement) {
+  const { jsPDF } = await import("jspdf");
+  const canvas = await renderPrintCanvas(el);
+
+  const A4_W = 210;
+  const A4_H = 297;
+  const MARGIN = 16;
+  const contentW = A4_W - MARGIN * 2;
+  const contentH = A4_H - MARGIN * 2;
 
   const imgW = canvas.width;
   const imgH = canvas.height;
-  const pdfW = 210;
-  const pdfH = (imgH * pdfW) / imgW;
-  const pdf = new jsPDF({ unit: "mm", format: [pdfW, pdfH] });
-  pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, pdfW, pdfH);
+  const scaledH = (imgH * contentW) / imgW;
+
+  const pdf = new jsPDF({ unit: "mm", format: "a4" });
+
+  if (scaledH <= contentH) {
+    pdf.addImage(canvas.toDataURL("image/png"), "PNG", MARGIN, MARGIN, contentW, scaledH);
+  } else {
+    // Multi-page: slice the canvas into A4-sized chunks
+    const sliceH = Math.floor((contentH / scaledH) * imgH);
+    let srcY = 0;
+    let page = 0;
+    while (srcY < imgH) {
+      const h = Math.min(sliceH, imgH - srcY);
+      const sliceCanvas = document.createElement("canvas");
+      sliceCanvas.width = imgW;
+      sliceCanvas.height = h;
+      sliceCanvas.getContext("2d")!.drawImage(canvas, 0, srcY, imgW, h, 0, 0, imgW, h);
+      if (page > 0) pdf.addPage();
+      const drawH = (h * contentW) / imgW;
+      pdf.addImage(sliceCanvas.toDataURL("image/png"), "PNG", MARGIN, MARGIN, contentW, drawH);
+      srcY += h;
+      page++;
+    }
+  }
   pdf.save("hitokara-simulation.pdf");
+}
+
+async function generateImage(el: HTMLElement) {
+  const canvas = await renderPrintCanvas(el);
+  const link = document.createElement("a");
+  link.download = "hitokara-simulation.png";
+  link.href = canvas.toDataURL("image/png");
+  link.click();
 }
 
 interface AccData {
@@ -504,6 +540,12 @@ export default function SimulationClient({
     generatePdf(printRef.current);
   }, [total]);
 
+  const handleImage = useCallback(() => {
+    if (!printRef.current) return;
+    trackEvent("sim_image_save", { total });
+    generateImage(printRef.current);
+  }, [total]);
+
   /** Resolve label + price for PDF row */
   function pdfRow(cat: AccData) {
     const sel = selections[cat.id];
@@ -593,16 +635,21 @@ export default function SimulationClient({
 
       {/* SP: Total Bar */}
       <div className={s.totalBar}>
-        <div className={s.totalLabel}>{"\u6982\u7B97"}</div>
-        <div className={s.totalAmountWrap}>
-          <span className={s.totalNum}>{fmtP(total)}</span>
-          <span className={s.totalUnit}>&nbsp;{"\u5186\u301C"}</span>
+        <div className={s.totalBarLeft}>
+          <div className={s.totalLabel}>概算</div>
+          <div className={s.totalAmountWrap}>
+            <span className={s.totalNum}>{fmtP(total)}</span>
+            <span className={s.totalUnit}>&nbsp;円〜</span>
+          </div>
         </div>
         <div className={s.totalCta}>
           <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.tctaLine} onClick={() => trackEvent("cta_line", { location: "simulation_sp" })}>
-            <span className={s.pip} />LINE{"\u3067\u9001\u308B"}
+            <span className={s.pip} />LINE相談
           </a>
-          <button className={s.tctaPdf} onClick={handlePdf}>PDF</button>
+          <button className={s.tctaSave} onClick={handleImage}>
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" width="14" height="14"><path d="M3 13v3a1 1 0 001 1h12a1 1 0 001-1v-3M10 3v10m0 0l-3.5-3.5M10 13l3.5-3.5"/></svg>
+            保存
+          </button>
         </div>
       </div>
 
@@ -720,18 +767,24 @@ export default function SimulationClient({
         </div>
         <div className={s.rightCtas}>
           <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.rCtaLine} onClick={() => trackEvent("cta_line", { location: "simulation_pc" })}>
-            <span className={s.pip} />LINE{"\u3067\u76F8\u8AC7"}
+            <span className={s.pip} />LINEで相談
           </a>
-          <button className={s.rCtaConsult} onClick={handlePdf}>PDF{"\u3067\u4FDD\u5B58"}</button>
-          <a
-            href={`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : 'https://hitokarawedding.com/simulation')}&text=${encodeURIComponent(`\u898B\u7A4D\u3082\u308A\u30B7\u30DF\u30E5\u30EC\u30FC\u30B7\u30E7\u30F3\u7D50\u679C: \u5408\u8A08 \u00A5${fmtP(total)}\u5186\uFF08\u30B2\u30B9\u30C8${guests}\u540D\uFF09`)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={s.rCtaPdf}
-          >
-            LINE{"\u3067\u30B7\u30A7\u30A2"}
-          </a>
-          <div className={s.rDisclaimer}>{"\u203B \u30D7\u30E9\u30F3\u30CB\u30F3\u30B0\u6599\u306F\u542B\u307E\u308C\u3066\u3044\u307E\u3059\u3002\u8868\u793A\u306F\u53C2\u8003\u91D1\u984D\u3067\u3059\u3002"}</div>
+          <div className={s.rCtaRow}>
+            <button className={s.rCtaSave} onClick={handlePdf}>
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" width="14" height="14"><path d="M6 2h8v5H6zM3 7h14v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/><path d="M10 10v5m0 0l-2-2m2 2l2-2"/></svg>
+              PDFで保存
+            </button>
+            <a
+              href={`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : 'https://hitokarawedding.com/simulation')}&text=${encodeURIComponent(`見積もりシミュレーション結果: 合計 ¥${fmtP(total)}円（ゲスト${guests}名）`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={s.rCtaShare}
+            >
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" width="14" height="14"><path d="M15 8a3 3 0 100-6 3 3 0 000 6zM5 13a3 3 0 100-6 3 3 0 000 6zM15 18a3 3 0 100-6 3 3 0 000 6zM7.5 11.5l5-3M7.5 8.5l5 3"/></svg>
+              シェア
+            </a>
+          </div>
+          <div className={s.rDisclaimer}>※ プランニング料は含まれています。表示は参考金額です。</div>
         </div>
       </div>
     </div>

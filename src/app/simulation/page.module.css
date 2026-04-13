@@ -7,27 +7,29 @@
 
 /* ===== SP Total Bar ===== */
 .totalBar {
-  background: var(--seal); border-bottom: 0.5px solid var(--seam); padding: 12px 20px;
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: var(--seal); border-bottom: 0.5px solid var(--seam); padding: 10px 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
   position: sticky; top: var(--hdr-h); z-index: 10; flex-shrink: 0;
 }
-.totalLabel { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--sead); flex-shrink: 0; }
-.totalAmountWrap { display: flex; align-items: baseline; gap: 4px; flex: 1; }
-.totalNum { font-family: var(--num); font-size: 32px; color: var(--sead); font-style: italic; font-weight: 300; line-height: 1; }
-.totalUnit { font-size: 12px; color: var(--sead); }
-.totalCta { flex-shrink: 0; }
+.totalBarLeft { flex: 1; min-width: 0; }
+.totalLabel { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--t2); margin-bottom: 2px; }
+.totalAmountWrap { display: flex; align-items: baseline; gap: 2px; }
+.totalNum { font-family: var(--num); font-size: 28px; color: var(--sead); font-style: italic; font-weight: 300; line-height: 1; }
+.totalUnit { font-size: 11px; color: var(--t2); }
+.totalCta { flex-shrink: 0; display: flex; align-items: center; gap: 6px; }
 .tctaLine {
-  height: 36px; border-radius: 18px; padding: 0 14px; border: none; background: var(--sea); color: #fff;
-  font-size: 12px; font-family: var(--gothic); display: flex; align-items: center; gap: 5px; cursor: pointer; white-space: nowrap;
-  transition: opacity .2s;
+  height: 38px; border-radius: 19px; padding: 0 16px; border: none; background: var(--sea); color: #fff;
+  font-size: 12px; font-weight: 500; font-family: var(--gothic); display: flex; align-items: center; gap: 5px; cursor: pointer; white-space: nowrap;
+  transition: background .2s; letter-spacing: .03em;
 }
-.tctaLine:hover { opacity: .85; }
-.tctaPdf {
-  height: 36px; border-radius: 18px; padding: 0 14px; border: 0.5px solid var(--border2);
-  background: var(--bg); color: var(--t1); font-size: 12px; font-family: var(--gothic);
-  cursor: pointer; white-space: nowrap; transition: opacity .2s;
+.tctaLine:hover { background: var(--sead); }
+.tctaSave {
+  height: 38px; border-radius: 19px; padding: 0 14px; border: 1px solid var(--seam);
+  background: #fff; color: var(--sead); font-size: 12px; font-weight: 500; font-family: var(--gothic);
+  cursor: pointer; white-space: nowrap; transition: all .2s;
+  display: flex; align-items: center; gap: 4px;
 }
-.tctaPdf:hover { opacity: .85; }
+.tctaSave:hover { background: var(--seal); border-color: var(--sea); }
 .pip { width: 7px; height: 7px; background: #7ee8a2; border-radius: 50%; flex-shrink: 0; display: block; }
 
 /* ===== SP Breakdown Toggle ===== */
@@ -197,31 +199,34 @@
   .rbPrice { color: var(--t1); min-width: 76px; text-align: right; white-space: nowrap; }
   .rbPricePending { color: var(--t2); font-size: 12px; }
   .rightCtas {
-    padding: 18px 28px 22px; background: var(--bg); border-top: 0.5px solid var(--border);
-    display: flex; flex-direction: column; gap: 8px; flex-shrink: 0;
+    padding: 20px 28px 24px; background: var(--bg); border-top: 0.5px solid var(--border);
+    display: flex; flex-direction: column; gap: 10px; flex-shrink: 0;
   }
   .rCtaLine {
-    display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%;
-    background: var(--sea); color: #fff; border: none; padding: 13px; border-radius: 22px;
-    font-size: 13px; letter-spacing: .07em; cursor: pointer; font-family: var(--gothic);
-    transition: opacity .2s;
-  }
-  .rCtaLine:hover { opacity: .85; }
-  .rCtaConsult {
-    width: 100%; background: var(--bark); color: #f5ece0; border: none; padding: 12px;
-    border-radius: 22px; font-size: 13px; letter-spacing: .06em; cursor: pointer; font-family: var(--gothic);
-    display: flex; align-items: center; justify-content: center; text-align: center;
-    transition: opacity .2s;
-  }
-  .rCtaConsult:hover { opacity: .85; }
-  .rCtaPdf {
-    width: 100%; background: var(--sand); color: var(--t2); border: none; padding: 10px;
-    border-radius: 22px; font-size: 12px; cursor: pointer; font-family: var(--gothic);
-    display: flex; align-items: center; justify-content: center; text-align: center;
+    display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%;
+    background: var(--sea); color: #fff; border: none; padding: 14px; border-radius: 24px;
+    font-size: 14px; font-weight: 500; letter-spacing: .06em; cursor: pointer; font-family: var(--gothic);
     transition: background .2s;
   }
-  .rCtaPdf:hover { background: var(--seam); }
-  .rDisclaimer { font-size: 11px; color: var(--t2); line-height: 1.6; margin-top: 10px; padding: 0 4px; }
+  .rCtaLine:hover { background: var(--sead); }
+  .rCtaRow {
+    display: flex; gap: 8px;
+  }
+  .rCtaSave {
+    flex: 1; background: #fff; color: var(--sead); border: 1px solid var(--seam); padding: 11px 0;
+    border-radius: 22px; font-size: 12px; font-weight: 500; cursor: pointer; font-family: var(--gothic);
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    transition: all .2s;
+  }
+  .rCtaSave:hover { background: var(--seal); border-color: var(--sea); }
+  .rCtaShare {
+    flex: 1; background: #fff; color: var(--t2); border: 1px solid var(--seam); padding: 11px 0;
+    border-radius: 22px; font-size: 12px; font-weight: 500; cursor: pointer; font-family: var(--gothic);
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    transition: all .2s;
+  }
+  .rCtaShare:hover { background: var(--seal); border-color: var(--sea); color: var(--sead); }
+  .rDisclaimer { font-size: 11px; color: var(--t2); line-height: 1.6; margin-top: 6px; padding: 0 4px; }
 }
 @media (min-width: 768px) and (max-width: 1023px) {
   .simMain { padding: 24px 32px 60px; }
@@ -242,9 +247,9 @@
 /* ===== PDF Summary ===== */
 .printSummary {
   display: none;
-  max-width: 640px;
+  max-width: 720px;
   margin: 0 auto;
-  padding: 48px 40px;
+  padding: 56px 48px;
   font-family: 'Zen Kaku Gothic New', sans-serif;
   color: #1c1c1a;
   background: #fff;
