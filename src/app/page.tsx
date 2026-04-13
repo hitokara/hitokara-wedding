@@ -331,7 +331,7 @@ export default async function HomePage() {
               <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.ctaLine}>
                 <span className={s.pip} />LINEで無料相談
               </a>
-              <Link href="#contact" className={s.ctaConsult}>相談を予約する</Link>
+              <a href="https://calendar.app.google/ZN4YAQ4EKw7BZNDx9" target="_blank" rel="noopener noreferrer" className={s.ctaConsult}>相談を予約する</a>
             </div>
           </AnimateOnScroll>
         </div>
