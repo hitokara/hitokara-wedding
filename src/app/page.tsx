@@ -23,6 +23,13 @@ const VALUES = [
   { num: "Value 01", title: "人で選ぶ", desc: "顔・想い・料金を確認してから指名できる。だから安心して任せられます。" },
   { num: "Value 02", title: "適正価格", desc: "シミュレーターで概算価格を算出。納得度の高いクオリティで安心。" },
   { num: "Value 03", title: "持ち込み自由", desc: "理由の見えない持込料や追加費用はかかりません。" },
+  { num: "Value 04", title: "好きな場所で", desc: "フリープランナーが担当するため、場所も自由。レストランを中心に厳選した会場もご紹介可能です。" },
+];
+
+const HERO_SLIDES = [
+  "linear-gradient(155deg, #8ab8d0 0%, #5898b8 50%, #3a6888 100%)",
+  "linear-gradient(155deg, #7aa8c0 0%, #3a6888 50%, #2a5878 100%)",
+  "linear-gradient(155deg, #9ac8d8 0%, #6898b8 50%, #4a7898 100%)",
 ];
 
 const STEPS = [
@@ -62,7 +69,7 @@ export default async function HomePage() {
   // Fetch from microCMS with local fallback
   const [cmsCreators, cmsArticles] = await Promise.all([
     getCreators({ limit: 8 }),
-    getArticles({ limit: 3 }),
+    getArticles({ limit: 3, filters: "category[equals]66uw6z5fbn" }),
   ]);
 
   const creators =
@@ -95,10 +102,16 @@ export default async function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
       />
-      {/* Hero */}
+      {/* Hero (slideshow) */}
       <section className={s.hero} aria-label="ヒトカラウェディング - 横浜・鎌倉のウェディングプロデュース">
         <div className={s.heroImgArea}>
-          <div className={s.heroImg} />
+          {HERO_SLIDES.map((bg, i) => (
+            <div
+              key={i}
+              className={s.heroSlide}
+              style={{ background: bg, animationDelay: `${i * 5}s` }}
+            />
+          ))}
           <div className={s.heroOverlay} />
         </div>
         <div className={s.heroWave}><WaveSvg /></div>
@@ -108,9 +121,8 @@ export default async function HomePage() {
           </AnimateOnScroll>
           <AnimateOnScroll animation="fadeUp" delay={80}>
             <h1 className={s.heroH1}>
-              <span style={{display:'inline-block', whiteSpace:'nowrap'}}>横浜・鎌倉で</span><br />
-              <span style={{display:'inline-block', whiteSpace:'nowrap'}}><em>ふたりらしい結婚式</em>を、</span><br />
-              <span style={{display:'inline-block', whiteSpace:'nowrap'}}>人から選ぶ。</span>
+              <span style={{display:'inline-block', whiteSpace:'nowrap'}}>人から選ぶ、</span><br />
+              <span style={{display:'inline-block', whiteSpace:'nowrap'}}><em>ふたりらしい結婚式</em></span>
             </h1>
           </AnimateOnScroll>
           <AnimateOnScroll animation="fadeUp" delay={160}>
@@ -149,13 +161,22 @@ export default async function HomePage() {
             {VALUES.map((v, i) => (
               <AnimateOnScroll key={v.num} animation="fadeUp" delay={160 + i * 80}>
                 <div className={s.valCard}>
-                  <div className={s.valNum}>{v.num}</div>
-                  <div className={s.valTitle}>{v.title}</div>
+                  <div className={s.valNumRow}>
+                    <div className={s.valNum}>{v.num}</div>
+                    <div className={s.valTitle}>{v.title}</div>
+                  </div>
                   <p className={s.valDesc}>{v.desc}</p>
                 </div>
               </AnimateOnScroll>
             ))}
           </div>
+          <AnimateOnScroll animation="fadeUp" delay={500}>
+            <div className={s.valCta}>
+              <Link href="/concept" className={s.valCtaLink}>
+                ヒトカラウェディングのこだわり &rarr;
+              </Link>
+            </div>
+          </AnimateOnScroll>
         </div>
       </section>
 

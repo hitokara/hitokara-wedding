@@ -42,6 +42,21 @@
   color: var(--sea);
 }
 
+.social {
+  display: flex;
+  gap: 16px;
+}
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--t2);
+  letter-spacing: .04em;
+  transition: color .2s;
+}
+.socialLink:hover { color: var(--sea); }
+
 .bottom {
   border-top: 1px solid var(--border);
   padding-top: 24px;

@@ -38,6 +38,22 @@ export default function Footer() {
             ))}
           </nav>
         </div>
+        <div className={styles.social}>
+          <a
+            href="https://www.instagram.com/hitokara_wedding/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.socialLink}
+            aria-label="Instagram"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" />
+              <circle cx="12" cy="12" r="5" />
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+            </svg>
+            <span>@hitokara_wedding</span>
+          </a>
+        </div>
         <div className={styles.bottom}>
           <p className={styles.copyright}>
             &copy; {new Date().getFullYear()} HITOKARA WEDDING Inc. All rights

@@ -245,14 +245,16 @@ const CATEGORY_MAP: Record<string, { cat: string; catLabel: string }> = {
   // 装花
   "装花": { cat: "flower", catLabel: "装花" },
   "フラワー": { cat: "flower", catLabel: "装花" },
-  // アイテム（ドレス・デザイナー等を統合）
+  // アイテム（ドレス・デザイナー・ギフト等を統合）
   "アイテム": { cat: "item", catLabel: "アイテム" },
   "ドレス": { cat: "item", catLabel: "アイテム" },
   "デザイナー": { cat: "item", catLabel: "アイテム" },
+  "ギフト": { cat: "item", catLabel: "アイテム" },
   // Other
   "その他": { cat: "other", catLabel: "Other" },
   "キャプテン": { cat: "other", catLabel: "Other" },
   "other": { cat: "other", catLabel: "Other" },
+  "Other": { cat: "other", catLabel: "Other" },
 };
 
 const ARTICLE_GRADIENTS = [
