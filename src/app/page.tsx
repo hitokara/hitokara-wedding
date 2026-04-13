@@ -94,7 +94,7 @@ export default async function HomePage() {
           bg: v.image?.url
             ? `url(${v.image.url}?w=600&h=400&fit=crop) center/cover no-repeat`
             : GRADIENTS[i % GRADIENTS.length],
-          desc: [v.description, v.capacity ? `収容${v.capacity}` : ""].filter(Boolean).join("。"),
+          desc: [v.description?.replace(/。+$/, ""), v.capacity ? `収容${v.capacity}` : ""].filter(Boolean).join("。"),
         }))
       : VENUES_FALLBACK;
 
