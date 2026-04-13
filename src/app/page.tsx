@@ -5,7 +5,7 @@ import CreatorTrack from "@/components/CreatorTrack";
 import VenueGrid from "@/components/VenueGrid";
 import { CREATORS_LIST } from "@/lib/creators";
 import { ARTICLES } from "@/lib/articles";
-import { getCreators, getArticles, mapCMSCreator, mapCMSArticle } from "@/lib/microcms";
+import { getCreators, getArticles, getVenues, mapCMSCreator, mapCMSArticle } from "@/lib/microcms";
 import s from "./page.module.css";
 
 export const revalidate = 60;
@@ -39,7 +39,7 @@ const STEPS = [
   { n: 4, done: false, t: "チームを組んで準備スタート", d: "指名したクリエイターとふたりで一緒に作る、世界に一つの式。" },
 ];
 
-const VENUES = [
+const VENUES_FALLBACK = [
   { name: "横浜ベイサイド", area: "YOKOHAMA", bg: "linear-gradient(155deg,#8ab8d0,#4a7898)", desc: "海を望むベイエリアのリゾート空間。着席30〜120名" },
   { name: "鎌倉 古民家", area: "KAMAKURA", bg: "linear-gradient(155deg,#9ac8d8,#5898b8)", desc: "鎌倉の歴史ある古民家を貸切。着席20〜60名" },
   { name: "逗子マリーナ", area: "ZUSHI", bg: "linear-gradient(155deg,#7aa8c0,#3a6888)", desc: "南仏風リゾートで海辺のウェディング。着席30〜80名" },
@@ -67,10 +67,11 @@ function WaveSvg() {
 
 export default async function HomePage() {
   // Fetch from microCMS with local fallback
-  const [cmsCreators, cmsArticles, cmsNews] = await Promise.all([
+  const [cmsCreators, cmsArticles, cmsNews, cmsVenues] = await Promise.all([
     getCreators({ limit: 8 }),
     getArticles({ limit: 3, filters: "category[not_equals]66uw6z5fbn" }),
     getArticles({ limit: 3, filters: "category[equals]66uw6z5fbn" }),
+    getVenues({ limit: 6 }),
   ]);
 
   const creators =
@@ -84,6 +85,18 @@ export default async function HomePage() {
       : ARTICLES.slice(0, 3);
 
   const newsArticles = cmsNews.contents.map((a, i) => mapCMSArticle(a, i));
+
+  const venues =
+    cmsVenues.contents.length > 0
+      ? cmsVenues.contents.map((v, i) => ({
+          name: v.name,
+          area: v.area?.toUpperCase() ?? "",
+          bg: v.image?.url
+            ? `url(${v.image.url}?w=600&h=400&fit=crop) center/cover no-repeat`
+            : GRADIENTS[i % GRADIENTS.length],
+          desc: [v.description, v.capacity ? `収容${v.capacity}` : ""].filter(Boolean).join("。"),
+        }))
+      : VENUES_FALLBACK;
 
   const howToJsonLd = {
     "@context": "https://schema.org",
@@ -240,7 +253,7 @@ export default async function HomePage() {
           <AnimateOnScroll animation="fadeUp" delay={80}>
             <h2 className={s.secH2}>選べる<em>会場</em>。</h2>
           </AnimateOnScroll>
-          <VenueGrid venues={VENUES} styles={s} />
+          <VenueGrid venues={venues} styles={s} />
         </div>
       </section>
 
