@@ -27,9 +27,9 @@ const VALUES = [
 ];
 
 const HERO_SLIDES = [
-  "linear-gradient(155deg, #8ab8d0 0%, #5898b8 50%, #3a6888 100%)",
-  "linear-gradient(155deg, #7aa8c0 0%, #3a6888 50%, #2a5878 100%)",
-  "linear-gradient(155deg, #9ac8d8 0%, #6898b8 50%, #4a7898 100%)",
+  "url(/hero-1.jpg) center/cover no-repeat",
+  "url(/hero-2.jpg) center/cover no-repeat",
+  "url(/hero-3.jpg) center/cover no-repeat",
 ];
 
 const STEPS = [
