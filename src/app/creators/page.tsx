@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { CREATORS_LIST } from "@/lib/creators";
 import { getCreators, mapCMSCreator } from "@/lib/microcms";
 import CreatorsClient from "./CreatorsClient";
@@ -35,5 +36,9 @@ export default async function CreatorsPage() {
         })
       : CREATORS_LIST;
 
-  return <CreatorsClient creators={creators} />;
+  return (
+    <Suspense>
+      <CreatorsClient creators={creators} />
+    </Suspense>
+  );
 }
