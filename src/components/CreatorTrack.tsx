@@ -9,6 +9,7 @@ interface CreatorData {
   role: string;
   catLabel: string;
   tags: string[];
+  images?: { url: string }[];
 }
 
 interface CreatorTrackProps {
@@ -24,20 +25,26 @@ export default function CreatorTrack({ creators, gradients, styles: s }: Creator
   return (
     <div className={styles.trackWrapper}>
       <div className={styles.trackInner}>
-        {doubled.map((cr, i) => (
-          <Link href="/creators" key={`${cr.id}-${i}`} className={s.crCard}>
-            <div className={s.crImgWrap}>
-              <div className={s.crImgBg} style={{ background: gradients[i % gradients.length] }} />
-              <div className={s.crGrad} />
-              <span className={s.crCatLabel}>{cr.catLabel}</span>
-            </div>
-            <div className={s.crRole}>{cr.role}</div>
-            <div className={s.crName}>{cr.name}</div>
-            <div className={s.crTags}>
-              {cr.tags.map((t) => <span key={t} className={s.crTag}>{t}</span>)}
-            </div>
-          </Link>
-        ))}
+        {doubled.map((cr, i) => {
+          const imgUrl = cr.images?.[0]?.url;
+          const bg = imgUrl
+            ? `url(${imgUrl}?w=400&h=500&fit=crop) center/cover no-repeat`
+            : gradients[i % gradients.length];
+          return (
+            <Link href={`/creators?id=${cr.id}`} key={`${cr.id}-${i}`} className={s.crCard}>
+              <div className={s.crImgWrap}>
+                <div className={s.crImgBg} style={{ background: bg }} />
+                <div className={s.crGrad} />
+                <span className={s.crCatLabel}>{cr.catLabel}</span>
+              </div>
+              <div className={s.crRole}>{cr.role}</div>
+              <div className={s.crName}>{cr.name}</div>
+              <div className={s.crTags}>
+                {cr.tags.map((t) => <span key={t} className={s.crTag}>{t}</span>)}
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

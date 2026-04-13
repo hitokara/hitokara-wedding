@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import { FILTER_CATS } from "@/lib/creators";
 import type { Creator } from "@/lib/creators";
 import Breadcrumb from "@/components/Breadcrumb";
@@ -292,6 +293,16 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
       // ignore parse errors
     }
   }, []);
+
+  // Auto-open creator modal from ?id= query param (e.g. from top page link)
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const id = searchParams.get("id");
+    if (id && creators.some((c) => c.id === id)) {
+      setSelected(id);
+      setModalOpen(true);
+    }
+  }, [searchParams, creators]);
 
   const toggleFav = useCallback((id: string) => {
     setFavs((prev) => {
