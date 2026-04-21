@@ -8,6 +8,7 @@ interface Venue {
   area: string;
   bg: string;
   desc: string;
+  price?: number;
 }
 
 interface VenueGridProps {
@@ -32,6 +33,13 @@ export default function VenueGrid({ venues, styles: s }: VenueGridProps) {
             <div className={s.vInfo}>
               <div className={s.vName}>{v.name}</div>
               <div className={s.vArea}>{v.area}</div>
+              {typeof v.price === "number" && v.price > 0 && (
+                <div className={s.vPrice}>
+                  <span className={s.vPriceUnit}>¥</span>
+                  {v.price.toLocaleString()}
+                  <span className={s.vPriceTilde}>〜</span>
+                </div>
+              )}
               {expanded === v.name && (
                 <div className={s.vDesc}>{v.desc}</div>
               )}

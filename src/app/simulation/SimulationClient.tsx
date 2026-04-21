@@ -150,9 +150,18 @@ function itemPrice(
   creatorNoms: Record<string, string[]>,
   crSource: Creator[],
   menuSels: MenuSelMap,
+  venues: CMSVenue[],
+  selectedVenue: string | null,
 ): number {
   if (!item) return 0;
   if (item.nom === 1) return nomPrice(catId, item, creatorNoms, crSource, menuSels);
+  if (item.vp === 1) {
+    if (selectedVenue) {
+      const v = venues.find((ve) => ve.id === selectedVenue);
+      return v?.price ?? 0;
+    }
+    return 0;
+  }
   return item.unit === "\u4eba" ? item.price * guests : item.price;
 }
 
@@ -331,11 +340,13 @@ function VenuePicker({
               </div>
               <div className={s.crPickerInfo}>
                 <div className={s.crPickerName}>{v.name}</div>
-                <div className={s.crPickerRole}>{v.area ?? ""}</div>
-                {v.capacity && (
+                <div className={s.crPickerRole}>
+                  {[v.area, v.capacity ? `〜${v.capacity}` : ""].filter(Boolean).join(" / ")}
+                </div>
+                {typeof v.price === "number" && v.price > 0 && (
                   <div className={s.crPickerPrice}>
-                    <span className={s.crPickerPriceUnit}>収容 </span>
-                    {v.capacity}
+                    &yen;{v.price.toLocaleString()}
+                    <span className={s.crPickerPriceUnit}>{"\u00A0〜"}</span>
                   </div>
                 )}
               </div>
@@ -394,7 +405,8 @@ function AccordionSection({
         const isOpen = openCats.has(cat.id);
         const sel = selections[cat.id];
         const selItem = cat.items.find((it) => it.id === sel);
-        const price = itemPrice(cat.id, selItem, guests, creatorNoms, crSource, menuSels);
+        const price = itemPrice(cat.id, selItem, guests, creatorNoms, crSource, menuSels, venues, selectedVenue);
+        const isVenueRow = selItem?.vp === 1 && selectedVenue && price > 0;
 
         return (
           <div key={cat.id} className={s.accItem}>
@@ -402,7 +414,7 @@ function AccordionSection({
               <span className={s.accIdx}>{cat.idx}</span>
               <span className={s.accLabel}>{cat.title}</span>
               <span className={`${s.accPrice} ${!sel ? s.accPricePending : ""}`}>
-                {sel ? `\u00a5${fmtP(price)}` : "\u672a\u9078\u629e"}
+                {sel ? `\u00a5${fmtP(price)}${isVenueRow ? "\u301C" : ""}` : "\u672a\u9078\u629e"}
               </span>
               <ChevSvg open={isOpen} />
             </div>
@@ -624,10 +636,11 @@ export default function SimulationClient({
     return accData.map((cat) => {
       const sel = selections[cat.id];
       const item = cat.items.find((it) => it.id === sel);
-      const price = itemPrice(cat.id, item, guests, creatorNoms, crSource, menuSels);
-      return { id: cat.id, title: cat.title, price, selected: !!sel };
+      const price = itemPrice(cat.id, item, guests, creatorNoms, crSource, menuSels, venues, selectedVenue);
+      const variable = item?.vp === 1 && !!selectedVenue && price > 0;
+      return { id: cat.id, title: cat.title, price, selected: !!sel, variable };
     });
-  }, [accData, selections, guests, creatorNoms, crSource, menuSels]);
+  }, [accData, selections, guests, creatorNoms, crSource, menuSels, venues, selectedVenue]);
 
   const total = useMemo(() => breakdown.reduce((sum, b) => sum + b.price, 0), [breakdown]);
   const maxBudget = 5000000;
@@ -669,9 +682,14 @@ export default function SimulationClient({
         return s + cr.price;
       }, 0);
       if (parts.length > 0) label += `\uFF08${parts.join("\u3001")}\uFF09`;
-    } else if (selItem.vp === 1 && selectedVenue) {
-      const v = venues.find((ve) => ve.id === selectedVenue);
-      if (v) label += `\uFF08${v.name}\uFF09`;
+    } else if (selItem.vp === 1) {
+      if (selectedVenue) {
+        const v = venues.find((ve) => ve.id === selectedVenue);
+        if (v) {
+          label += `\uFF08${v.name}\uFF09`;
+          price = v.price ?? 0;
+        }
+      }
     } else {
       price = selItem.unit === "\u4eba" ? selItem.price * guests : selItem.price;
     }
@@ -708,7 +726,9 @@ export default function SimulationClient({
         <div className={s.printItems}>
           {accData.map((cat) => {
             const sel = selections[cat.id];
+            const selItem = cat.items.find((it) => it.id === sel);
             const row = pdfRow(cat);
+            const variable = selItem?.vp === 1 && !!selectedVenue && row.price > 0;
             return (
               <div key={cat.id} className={`${s.printItem} ${!sel ? s.printItemEmpty : ""}`}>
                 <div className={s.printItemIdx}>{cat.idx}</div>
@@ -717,7 +737,7 @@ export default function SimulationClient({
                   <div className={s.printItemLabel}>{row.label}</div>
                 </div>
                 <div className={s.printItemPrice}>
-                  {sel ? `\u00A5${fmtP(row.price)}` : "\u2014"}
+                  {sel ? `\u00A5${fmtP(row.price)}${variable ? "\u301C" : ""}` : "\u2014"}
                 </div>
               </div>
             );
@@ -778,7 +798,7 @@ export default function SimulationClient({
             <div key={b.id} className={s.bkItem}>
               <span className={s.bkLabel}>{b.title}</span>
               <span className={`${s.bkPrice} ${!b.selected ? s.bkPricePending : ""}`}>
-                {b.selected ? `\u00a5${fmtP(b.price)}` : "\u672a\u9078\u629e"}
+                {b.selected ? `\u00a5${fmtP(b.price)}${b.variable ? "\u301C" : ""}` : "\u672a\u9078\u629e"}
               </span>
             </div>
           ))}
@@ -871,7 +891,7 @@ export default function SimulationClient({
             <div key={b.id} className={s.rbItem}>
               <span className={s.rbLabel}>{b.title}</span>
               <span className={`${s.rbPrice} ${!b.selected ? s.rbPricePending : ""}`}>
-                {b.selected ? `\u00a5${fmtP(b.price)}` : "\u672a\u9078\u629e"}
+                {b.selected ? `\u00a5${fmtP(b.price)}${b.variable ? "\u301C" : ""}` : "\u672a\u9078\u629e"}
               </span>
             </div>
           ))}

@@ -79,6 +79,7 @@ export interface CMSVenue extends MicroCMSContent {
   image?: MicroCMSImage;
   capacity?: string;
   description?: string;
+  price?: number;
 }
 
 // ---------- News ----------

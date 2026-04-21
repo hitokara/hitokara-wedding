@@ -53,10 +53,10 @@ const HERO_SLIDES = [
 ];
 
 const STEPS = [
-  { n: 1, done: true, t: "クリエイターを探す", d: "カテゴリ・スタイルで絞り込み、気になるクリエイターをお気に入りに。" },
-  { n: 2, done: true, t: "シミュレーターで概算確認", d: "人数・プランを選ぶだけでリアルタイムに合計が出ます。" },
-  { n: 3, done: true, t: "LINEで無料相談", d: "気になることを気軽に。担当プランナーが丁寧に回答します。" },
-  { n: 4, done: false, t: "チームを組んで準備スタート", d: "指名したクリエイターとふたりで一緒に作る、世界に一つの式。" },
+  { n: 1, t: "クリエイターを探す", d: "カテゴリ・スタイルで絞り込み、気になるクリエイターをお気に入りに。" },
+  { n: 2, t: "シミュレーターで概算確認", d: "人数・プランを選ぶだけでリアルタイムに合計が出ます。" },
+  { n: 3, t: "LINEで無料相談", d: "気になることを気軽に。担当プランナーが丁寧に回答します。" },
+  { n: 4, t: "チームを組んで準備スタート", d: "指名したクリエイターとふたりで一緒に作る、世界に一つの式。" },
 ];
 
 const VENUES_FALLBACK = [
@@ -115,6 +115,7 @@ export default async function HomePage() {
             ? `url(${v.image.url}?w=600&h=400&fit=crop) center/cover no-repeat`
             : GRADIENTS[i % GRADIENTS.length],
           desc: [v.description?.replace(/。+$/, ""), v.capacity ? `収容${v.capacity}` : ""].filter(Boolean).join("。"),
+          price: v.price,
         }))
       : VENUES_FALLBACK;
 
@@ -254,8 +255,11 @@ export default async function HomePage() {
           <div className={s.steps}>
             {STEPS.map((st, i) => (
               <AnimateOnScroll key={st.n} animation="fadeUp" delay={80 + i * 80}>
-                <div className={s.step}>
-                  <div className={`${s.sDot} ${st.done ? s.sDotDone : s.sDotPending}`}>{st.n}</div>
+                <div className={s.step} style={{ ['--step-i' as string]: i } as React.CSSProperties}>
+                  <div className={s.sDot}>
+                    <span className={s.sDotLabel}>Step</span>
+                    <span className={s.sDotNum}>{String(st.n).padStart(2, "0")}</span>
+                  </div>
                   <div>
                     <div className={s.sTitle}>{st.t}</div>
                     <p className={s.sDesc}>{st.d}</p>
