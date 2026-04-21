@@ -153,6 +153,60 @@
   .crPickerCard { width: 150px; }
 }
 
+/* ===== Menu Picker (nested under creator) ===== */
+.menuSelBox {
+  margin: 8px 28px 14px;
+  padding: 12px 14px 10px;
+  background: var(--seal);
+  border-radius: 10px;
+  border-left: 3px solid var(--sea);
+}
+.menuSelHead {
+  display: flex; align-items: baseline; gap: 10px;
+  margin-bottom: 8px; padding-bottom: 6px;
+  border-bottom: 0.5px solid rgba(184,221,240,.4);
+}
+.menuSelCrName {
+  font-family: var(--mincho); font-size: 13px; color: var(--t1);
+  letter-spacing: .04em; font-weight: 500;
+}
+.menuSelLabel {
+  font-size: 10px; letter-spacing: .1em;
+  color: var(--sead); text-transform: uppercase;
+}
+.menuSelList { display: flex; flex-direction: column; gap: 6px; }
+.menuSelItem {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 8px;
+  background: #fff; cursor: pointer;
+  transition: background .15s, border-color .15s;
+  border: 1px solid transparent;
+}
+.menuSelItem:hover { border-color: var(--seam); }
+.menuSelItemOn { background: #eaf5fc; border-color: var(--sea); }
+.menuSelCheck {
+  width: 18px; height: 18px; border-radius: 4px;
+  border: 1.5px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; background: #fff;
+}
+.menuSelItemOn .menuSelCheck { background: var(--sea); border-color: var(--sea); }
+.menuSelInfo { flex: 1; min-width: 0; }
+.menuSelName {
+  font-size: 13px; color: var(--t1); font-family: var(--mincho);
+  letter-spacing: .03em; line-height: 1.4;
+}
+.menuSelIncludes {
+  font-size: 11px; color: var(--t2);
+  margin-top: 2px; line-height: 1.5;
+  overflow: hidden; text-overflow: ellipsis;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+}
+.menuSelPrice {
+  font-family: var(--num); font-size: 15px; color: var(--sead);
+  font-style: italic; font-weight: 400; white-space: nowrap;
+}
+
 /* ===== PC Layout ===== */
 @media (min-width: 1024px) {
   .simWrap {

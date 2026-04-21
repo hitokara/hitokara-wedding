@@ -1,3 +1,11 @@
+export interface CreatorMenu {
+  id: string;
+  name: string;
+  price: number;
+  includes?: string; // 含まれるもの（改行区切りの文字列）
+  note?: string;
+}
+
 export interface Creator {
   id: string;
   name: string;
@@ -15,6 +23,7 @@ export interface Creator {
   sampleVideoTitle?: string;
   images?: { url: string }[];
   works?: { url: string }[];
+  menus?: CreatorMenu[];
   fav: boolean;
 }
 

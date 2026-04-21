@@ -112,7 +112,7 @@ function CreatorDetail({ cr, favs, toggleFav, gradient, onOpenVideo }: {
             <div className={s.modalRole}>{cr.role}</div>
           </div>
           <div className={s.modalPriceChip}>
-            <span className={s.modalPriceLbl}>指名料</span>
+            <span className={s.modalPriceLbl}>料金</span>
             <span className={s.modalPriceVal}>&yen;{cr.price.toLocaleString()}</span>
             <span className={s.modalPriceUnit}>〜</span>
           </div>
@@ -172,6 +172,37 @@ function CreatorDetail({ cr, favs, toggleFav, gradient, onOpenVideo }: {
             <div className={s.modalThoughtDeco}>&ldquo;</div>
             <span className={s.modalThoughtLbl}>結婚式への想い</span>
             <p className={s.modalThoughtTxt}>{cr.weddingThought}</p>
+          </div>
+        )}
+
+        {cr.menus && cr.menus.length > 0 && (
+          <div className={s.menuSec}>
+            <div className={s.menuSecHead}>
+              <span className={s.menuSecEye}>Menu</span>
+              <h3 className={s.menuSecTitle}>メニュー・料金</h3>
+            </div>
+            <div className={s.menuList}>
+              {cr.menus.map((m) => (
+                <div key={m.id} className={s.menuItem}>
+                  <div className={s.menuItemHead}>
+                    <div className={s.menuItemName}>{m.name}</div>
+                    <div className={s.menuItemPrice}>
+                      <span className={s.menuItemPriceUnit}>¥</span>
+                      {m.price.toLocaleString()}
+                    </div>
+                  </div>
+                  {m.includes && (
+                    <ul className={s.menuItemIncludes}>
+                      {m.includes.split(/[\n、,]/).map((line, idx) => {
+                        const t = line.trim();
+                        return t ? <li key={idx}>{t}</li> : null;
+                      })}
+                    </ul>
+                  )}
+                  {m.note && <p className={s.menuItemNote}>{m.note}</p>}
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -385,7 +416,7 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
                   <div className={s.crCardBody}>
                     <div className={s.crCardRole}>{cr.role}</div>
                     <div className={s.crCardName}>{cr.name}</div>
-                    <div className={s.crCardPrice}>指名料 &yen;{cr.price.toLocaleString()}〜</div>
+                    <div className={s.crCardPrice}>料金 &yen;{cr.price.toLocaleString()}〜</div>
                     <div className={s.crCardTags}>
                       {cr.tags.map((t) => <span key={t} className={s.crCardTag}>{t}</span>)}
                     </div>

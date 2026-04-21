@@ -115,18 +115,31 @@ function ToggleChevSvg() {
 
 /* ---- Price helpers ---- */
 
-/** Resolve nominated creator price for a category */
+/** Menu selection map: catId -> creatorId -> menuIds[] */
+type MenuSelMap = Record<string, Record<string, string[]>>;
+
+/** Resolve nominated creator price for a category (considering menu selection) */
 function nomPrice(
   catId: string,
   item: CategoryItem,
   creatorNoms: Record<string, string[]>,
   crSource: Creator[],
+  menuSels: MenuSelMap,
 ): number {
   const ids = creatorNoms[catId] ?? [];
   if (ids.length === 0) return 0;
   return ids.reduce((sum, id) => {
     const cr = crSource.find((c) => c.id === id);
-    return sum + (cr?.price ?? 0);
+    if (!cr) return sum;
+    const selMenus = menuSels[catId]?.[id] ?? [];
+    if (cr.menus && cr.menus.length > 0 && selMenus.length > 0) {
+      const menuTotal = selMenus.reduce((s, mid) => {
+        const menu = cr.menus!.find((m) => m.id === mid);
+        return s + (menu?.price ?? 0);
+      }, 0);
+      return sum + menuTotal;
+    }
+    return sum + cr.price;
   }, 0);
 }
 
@@ -136,9 +149,10 @@ function itemPrice(
   guests: number,
   creatorNoms: Record<string, string[]>,
   crSource: Creator[],
+  menuSels: MenuSelMap,
 ): number {
   if (!item) return 0;
-  if (item.nom === 1) return nomPrice(catId, item, creatorNoms, crSource);
+  if (item.nom === 1) return nomPrice(catId, item, creatorNoms, crSource, menuSels);
   return item.unit === "\u4eba" ? item.price * guests : item.price;
 }
 
@@ -261,7 +275,7 @@ function CreatorPicker({
                 <div className={s.crPickerName}>{cr.name}</div>
                 <div className={s.crPickerRole}>{cr.role}</div>
                 <div className={s.crPickerPrice}>
-                  <span className={s.crPickerPriceUnit}>{"\u6307\u540D\u6599\u00A0"}</span>
+                  <span className={s.crPickerPriceUnit}>{"\u6599\u91D1\u00A0"}</span>
                   &yen;{cr.price.toLocaleString()}
                   <span className={s.crPickerPriceUnit}>{"\u301C"}</span>
                 </div>
@@ -346,6 +360,8 @@ function AccordionSection({
   venues,
   selectedVenue,
   onVenuePick,
+  menuSels,
+  onMenuToggle,
 }: {
   data: AccData[];
   guests: number;
@@ -357,6 +373,8 @@ function AccordionSection({
   venues: CMSVenue[];
   selectedVenue: string | null;
   onVenuePick: (venueId: string) => void;
+  menuSels: MenuSelMap;
+  onMenuToggle: (catId: string, creatorId: string, menuId: string) => void;
 }) {
   const [openCats, setOpenCats] = useState<Set<string>>(new Set());
   const crSource = cmsCreators.length > 0 ? cmsCreators : CREATORS_LIST;
@@ -376,7 +394,7 @@ function AccordionSection({
         const isOpen = openCats.has(cat.id);
         const sel = selections[cat.id];
         const selItem = cat.items.find((it) => it.id === sel);
-        const price = itemPrice(cat.id, selItem, guests, creatorNoms, crSource);
+        const price = itemPrice(cat.id, selItem, guests, creatorNoms, crSource, menuSels);
 
         return (
           <div key={cat.id} className={s.accItem}>
@@ -416,14 +434,58 @@ function AccordionSection({
                           </div>
                         </div>
                         {on && item.nom === 1 && item.ck && (
-                          <CreatorPicker
-                            catKey={item.ck}
-                            catId={cat.id}
-                            selectedIds={creatorNoms[cat.id] ?? []}
-                            onPick={onCreatorNom}
-                            cmsCreators={cmsCreators}
-                            multi={!!item.multi}
-                          />
+                          <>
+                            <CreatorPicker
+                              catKey={item.ck}
+                              catId={cat.id}
+                              selectedIds={creatorNoms[cat.id] ?? []}
+                              onPick={onCreatorNom}
+                              cmsCreators={cmsCreators}
+                              multi={!!item.multi}
+                            />
+                            {(creatorNoms[cat.id] ?? []).map((crId) => {
+                              const cr = crSource.find((c) => c.id === crId);
+                              if (!cr || !cr.menus || cr.menus.length === 0) return null;
+                              const selMenus = menuSels[cat.id]?.[crId] ?? [];
+                              return (
+                                <div key={crId} className={s.menuSelBox}>
+                                  <div className={s.menuSelHead}>
+                                    <span className={s.menuSelCrName}>{cr.name}</span>
+                                    <span className={s.menuSelLabel}>メニューを選択（複数可）</span>
+                                  </div>
+                                  <div className={s.menuSelList}>
+                                    {cr.menus.map((m) => {
+                                      const on2 = selMenus.includes(m.id);
+                                      return (
+                                        <label
+                                          key={m.id}
+                                          className={`${s.menuSelItem} ${on2 ? s.menuSelItemOn : ""}`}
+                                          onClick={(e) => { e.preventDefault(); onMenuToggle(cat.id, crId, m.id); }}
+                                        >
+                                          <span className={s.menuSelCheck}>
+                                            {on2 && (
+                                              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" width="10" height="10">
+                                                <path d="M5 13l4 4L19 7" />
+                                              </svg>
+                                            )}
+                                          </span>
+                                          <div className={s.menuSelInfo}>
+                                            <div className={s.menuSelName}>{m.name}</div>
+                                            {m.includes && (
+                                              <div className={s.menuSelIncludes}>
+                                                {m.includes.split(/[\n、,]/).map((t) => t.trim()).filter(Boolean).join(" / ")}
+                                              </div>
+                                            )}
+                                          </div>
+                                          <div className={s.menuSelPrice}>¥{m.price.toLocaleString()}</div>
+                                        </label>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </>
                         )}
                         {on && item.vp === 1 && (
                           <VenuePicker
@@ -462,6 +524,7 @@ export default function SimulationClient({
   const [guests, setGuests] = useState(40);
   const [selections, setSelections] = useState<Record<string, string>>({});
   const [creatorNoms, setCreatorNoms] = useState<Record<string, string[]>>({});
+  const [menuSels, setMenuSels] = useState<MenuSelMap>({});
   const [selectedVenue, setSelectedVenue] = useState<string | null>(null);
   const [breakdownOpen, setBreakdownOpen] = useState(false);
 
@@ -482,22 +545,28 @@ export default function SimulationClient({
           setCreatorNoms(noms);
         }
         if (data.selectedVenue) setSelectedVenue(data.selectedVenue);
+        if (data.menuSels) setMenuSels(data.menuSels);
       }
     } catch { /* ignore */ }
   }, []);
 
   useEffect(() => {
     try {
-      localStorage.setItem(SIM_STORAGE_KEY, JSON.stringify({ guests, selections, creatorNoms, selectedVenue }));
+      localStorage.setItem(SIM_STORAGE_KEY, JSON.stringify({ guests, selections, creatorNoms, selectedVenue, menuSels }));
     } catch { /* ignore */ }
-  }, [guests, selections, creatorNoms, selectedVenue]);
+  }, [guests, selections, creatorNoms, selectedVenue, menuSels]);
 
   const accData = useMemo(() => buildAccordionData(categories), [categories]);
 
   const onSelect = useCallback((catId: string, itemId: string) => {
     setSelections((prev) => ({ ...prev, [catId]: itemId }));
-    // Clear creator nominations when switching away from nomination option
+    // Clear creator nominations & menu selections when switching
     setCreatorNoms((prev) => {
+      const next = { ...prev };
+      delete next[catId];
+      return next;
+    });
+    setMenuSels((prev) => {
       const next = { ...prev };
       delete next[catId];
       return next;
@@ -505,6 +574,17 @@ export default function SimulationClient({
     // Clear venue selection when switching venue options
     if (catId === "venue") setSelectedVenue(null);
     trackEvent("sim_select_item", { category: catId, item: itemId });
+  }, []);
+
+  const onMenuToggle = useCallback((catId: string, creatorId: string, menuId: string) => {
+    setMenuSels((prev) => {
+      const catMap = { ...(prev[catId] ?? {}) };
+      const current = catMap[creatorId] ?? [];
+      const has = current.includes(menuId);
+      catMap[creatorId] = has ? current.filter((id) => id !== menuId) : [...current, menuId];
+      return { ...prev, [catId]: catMap };
+    });
+    trackEvent("sim_select_menu", { category: catId, creator_id: creatorId, menu_id: menuId });
   }, []);
 
   const onVenuePick = useCallback((venueId: string) => {
@@ -523,8 +603,20 @@ export default function SimulationClient({
       // Single select: replace
       return { ...prev, [catId]: [creatorId] };
     });
+    // When single-select replaces or toggle-removes, clear associated menu selection
+    setMenuSels((prev) => {
+      const catMap = { ...(prev[catId] ?? {}) };
+      const current = creatorNoms[catId] ?? [];
+      if (multi) {
+        if (current.includes(creatorId)) delete catMap[creatorId];
+      } else {
+        // single: clear all menu selections under this category
+        return { ...prev, [catId]: {} };
+      }
+      return { ...prev, [catId]: catMap };
+    });
     trackEvent("sim_nominate_creator", { category: catId, creator_id: creatorId });
-  }, []);
+  }, [creatorNoms]);
 
   const crSource = cmsCreators.length > 0 ? cmsCreators : CREATORS_LIST;
 
@@ -532,10 +624,10 @@ export default function SimulationClient({
     return accData.map((cat) => {
       const sel = selections[cat.id];
       const item = cat.items.find((it) => it.id === sel);
-      const price = itemPrice(cat.id, item, guests, creatorNoms, crSource);
+      const price = itemPrice(cat.id, item, guests, creatorNoms, crSource, menuSels);
       return { id: cat.id, title: cat.title, price, selected: !!sel };
     });
-  }, [accData, selections, guests, creatorNoms, crSource]);
+  }, [accData, selections, guests, creatorNoms, crSource, menuSels]);
 
   const total = useMemo(() => breakdown.reduce((sum, b) => sum + b.price, 0), [breakdown]);
   const maxBudget = 5000000;
@@ -562,9 +654,21 @@ export default function SimulationClient({
     let price = 0;
     if (selItem.nom === 1) {
       const ids = creatorNoms[cat.id] ?? [];
-      const names = ids.map((id) => crSource.find((c) => c.id === id)?.name).filter(Boolean);
-      price = ids.reduce((s, id) => s + (crSource.find((c) => c.id === id)?.price ?? 0), 0);
-      if (names.length > 0) label += `\uFF08${names.join("\u3001")}\uFF09`;
+      const parts: string[] = [];
+      price = ids.reduce((s, id) => {
+        const cr = crSource.find((c) => c.id === id);
+        if (!cr) return s;
+        const selMenus = menuSels[cat.id]?.[id] ?? [];
+        if (cr.menus && cr.menus.length > 0 && selMenus.length > 0) {
+          const menuNames = selMenus.map((mid) => cr.menus!.find((m) => m.id === mid)?.name).filter(Boolean);
+          const sub = selMenus.reduce((ss, mid) => ss + (cr.menus!.find((m) => m.id === mid)?.price ?? 0), 0);
+          parts.push(`${cr.name}・${menuNames.join("/")}`);
+          return s + sub;
+        }
+        parts.push(cr.name);
+        return s + cr.price;
+      }, 0);
+      if (parts.length > 0) label += `\uFF08${parts.join("\u3001")}\uFF09`;
     } else if (selItem.vp === 1 && selectedVenue) {
       const v = venues.find((ve) => ve.id === selectedVenue);
       if (v) label += `\uFF08${v.name}\uFF09`;
@@ -710,7 +814,7 @@ export default function SimulationClient({
             onChange={(e) => setGuests(Number(e.target.value))}
           />
         </div>
-        <AccordionSection data={accData} guests={guests} selections={selections} onSelect={onSelect} creatorNoms={creatorNoms} onCreatorNom={onCreatorNom} cmsCreators={cmsCreators} venues={venues} selectedVenue={selectedVenue} onVenuePick={onVenuePick} />
+        <AccordionSection data={accData} guests={guests} selections={selections} onSelect={onSelect} creatorNoms={creatorNoms} onCreatorNom={onCreatorNom} cmsCreators={cmsCreators} venues={venues} selectedVenue={selectedVenue} onVenuePick={onVenuePick} menuSels={menuSels} onMenuToggle={onMenuToggle} />
       </div>
 
       {/* PC: Left Column */}
@@ -743,7 +847,7 @@ export default function SimulationClient({
             style={{ width: "100%", marginBottom: 16 }}
           />
         </div>
-        <AccordionSection data={accData} guests={guests} selections={selections} onSelect={onSelect} creatorNoms={creatorNoms} onCreatorNom={onCreatorNom} cmsCreators={cmsCreators} venues={venues} selectedVenue={selectedVenue} onVenuePick={onVenuePick} />
+        <AccordionSection data={accData} guests={guests} selections={selections} onSelect={onSelect} creatorNoms={creatorNoms} onCreatorNom={onCreatorNom} cmsCreators={cmsCreators} venues={venues} selectedVenue={selectedVenue} onVenuePick={onVenuePick} menuSels={menuSels} onMenuToggle={onMenuToggle} />
       </div>
 
       {/* PC: Right Column */}

@@ -48,6 +48,16 @@ export interface CMSCreator extends MicroCMSContent {
   sampleVideoTitle?: string;     // 動画タイトル（任意）
   images?: MicroCMSImage;        // 単一画像フィールド
   works?: MicroCMSImage[];       // 複数画像フィールド
+  menus?: CMSCreatorMenu[];      // メニュー（繰り返しフィールド）
+}
+
+// Creator menu item (repeating field)
+export interface CMSCreatorMenu {
+  fieldId: string;               // "menus"
+  name: string;
+  price: number;
+  includes?: string;             // 含まれるもの
+  note?: string;
 }
 
 // ---------- Journal Article ----------
@@ -293,6 +303,15 @@ export function mapCMSCreator(c: CMSCreator): Creator {
     sampleVideoTitle: c.sampleVideoTitle,
     images: c.images ? [{ url: c.images.url }] : undefined,
     works: Array.isArray(c.works) ? c.works.map((img) => ({ url: img.url })) : undefined,
+    menus: Array.isArray(c.menus)
+      ? c.menus.map((m, i) => ({
+          id: `${c.id}-m${i}`,
+          name: m.name,
+          price: m.price ?? 0,
+          includes: m.includes,
+          note: m.note,
+        }))
+      : undefined,
     fav: false,
   };
 }
