@@ -156,9 +156,10 @@ export const FILTER_CATS = [
   { key: "photo", label: "写真" },
   { key: "movie", label: "映像" },
   { key: "hair", label: "ヘアメイク" },
-  { key: "party", label: "パーティー" },
+  { key: "mc", label: "司会" },
   { key: "flower", label: "装花" },
   { key: "dress", label: "ドレス" },
+  { key: "gift", label: "ギフト" },
   { key: "item", label: "アイテム" },
-  { key: "other", label: "Other" },
+  { key: "other", label: "その他" },
 ];

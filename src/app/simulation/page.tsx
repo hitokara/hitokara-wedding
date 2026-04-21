@@ -80,7 +80,7 @@ function buildLocalCategories(): CMSCategoryGroup[] {
       title: "司会",
       items: [
         { id: "mc-std", label: "おまかせ", price: 100000, note: "経験豊富な司会者を手配" },
-        { id: "mc-nom", label: "クリエイター指名", price: 0, nom: 1, ck: "party", note: "気になる司会者を直接指名" },
+        { id: "mc-nom", label: "クリエイター指名", price: 0, nom: 1, ck: "mc", note: "気になる司会者を直接指名" },
         { id: "mc-bring", label: "持ち込み", price: 0, note: "ご自身で手配" },
       ],
     },
@@ -109,7 +109,7 @@ function buildLocalCategories(): CMSCategoryGroup[] {
       title: "引出物・引菓子",
       items: [
         { id: "gift-std", label: "おまかせ", price: 5000, unit: "人", note: "ゲスト人数分" },
-        { id: "gift-nom", label: "クリエイター指名", price: 0, nom: 1, ck: "item", note: "こだわりのギフトプランナーを指名" },
+        { id: "gift-nom", label: "クリエイター指名", price: 0, nom: 1, ck: "gift", note: "こだわりのギフトプランナーを指名" },
         { id: "gift-bring", label: "持ち込み", price: 0, note: "ご自身で手配" },
       ],
     },
@@ -118,7 +118,6 @@ function buildLocalCategories(): CMSCategoryGroup[] {
       title: "ペーパーアイテム",
       items: [
         { id: "paper-std", label: "おまかせ", price: 1500, unit: "人", note: "招待状・席次表・席札など" },
-        { id: "paper-nom", label: "クリエイター指名", price: 0, nom: 1, ck: "item", note: "デザイナーを直接指名" },
         { id: "paper-bring", label: "持ち込み", price: 0, note: "ご自身で手配" },
       ],
     },
@@ -127,7 +126,7 @@ function buildLocalCategories(): CMSCategoryGroup[] {
       title: "結婚式を、もっと豊かな時間にしてくれるクリエイターたち",
       items: [
         { id: "party-none", label: "指名しない", price: 0, note: "この項目をスキップ" },
-        { id: "party-nom", label: "クリエイター指名", price: 0, nom: 1, ck: "party", multi: true, note: "パーティーを彩るクリエイターを複数指名" },
+        { id: "party-nom", label: "クリエイター指名", price: 0, nom: 1, ck: "other", multi: true, note: "結婚式を彩るクリエイターを複数指名" },
       ],
     },
   ];

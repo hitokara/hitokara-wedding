@@ -254,22 +254,27 @@ const CATEGORY_MAP: Record<string, { cat: string; catLabel: string }> = {
   "写真・映像": { cat: "photo", catLabel: "写真" },
   // ヘアメイク
   "ヘアメイク": { cat: "hair", catLabel: "ヘアメイク" },
-  // パーティー（司会・音響・キャプテンを統合）
-  "パーティー": { cat: "party", catLabel: "パーティー" },
-  "音楽": { cat: "party", catLabel: "パーティー" },
-  "司会": { cat: "party", catLabel: "パーティー" },
-  "音響": { cat: "party", catLabel: "パーティー" },
-  "キャプテン": { cat: "party", catLabel: "パーティー" },
+  // 司会（MCのみ）
+  "司会": { cat: "mc", catLabel: "司会" },
+  "MC": { cat: "mc", catLabel: "司会" },
+  // その他（音響・キャプテン・イラストレーター等、式を豊かにする役割）
+  "音楽": { cat: "other", catLabel: "その他" },
+  "音響": { cat: "other", catLabel: "その他" },
+  "キャプテン": { cat: "other", catLabel: "その他" },
+  "イラストレーター": { cat: "other", catLabel: "その他" },
+  "パーティー": { cat: "other", catLabel: "その他" },
   // 装花
   "装花": { cat: "flower", catLabel: "装花" },
   "フラワー": { cat: "flower", catLabel: "装花" },
   // ドレス・スタイリスト
   "ドレス": { cat: "dress", catLabel: "ドレス" },
   "スタイリスト": { cat: "dress", catLabel: "ドレス" },
-  // アイテム（デザイナー・ギフト等）
+  // ギフト（引出物・引菓子）
+  "ギフト": { cat: "gift", catLabel: "ギフト" },
+  "GIFT": { cat: "gift", catLabel: "ギフト" },
+  // アイテム（デザイナー等のペーパーアイテム系）
   "アイテム": { cat: "item", catLabel: "アイテム" },
   "デザイナー": { cat: "item", catLabel: "アイテム" },
-  "ギフト": { cat: "item", catLabel: "アイテム" },
   // Other
   "その他": { cat: "other", catLabel: "Other" },
   "other": { cat: "other", catLabel: "Other" },

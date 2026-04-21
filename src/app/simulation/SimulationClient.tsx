@@ -170,10 +170,11 @@ function itemPrice(
 const CAT_ALIAS: Record<string, string[]> = {
   photo: ["photo", "photo_movie"],
   movie: ["movie", "photo_movie"],
-  party: ["party", "music", "mc", "sound", "captain"],
+  mc: ["mc"],
+  gift: ["gift"],
   dress: ["dress", "stylist"],
-  item: ["item", "designer", "gift"],
-  other: ["other"],
+  item: ["item", "designer"],
+  other: ["other", "party", "music", "sound", "captain"],
 };
 
 const ROLE_FILTER: Record<string, RegExp> = {
