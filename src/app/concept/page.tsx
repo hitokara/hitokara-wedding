@@ -125,9 +125,7 @@ export default function ConceptPage() {
 
       {/* Brand Story */}
       <section className={s.cpBrand} aria-label="ブランドストーリー">
-        <div className={s.cpBrandImg}>
-          <span className={s.cpBrandImgLabel}>PHOTO AREA</span>
-        </div>
+        <div className={s.cpBrandImg} aria-hidden="true" />
         <div className={s.cpBrandBody}>
           <AnimateOnScroll animation="slideRight">
             <span className={s.cpBrandEyebrow}>Brand Story</span>
