@@ -220,7 +220,8 @@ export default function ConceptPage() {
                   自分たちの式を経験して、強くそう感じました。式に関わるすべての人を「人」として知れる仕組みが、もっと当たり前になってほしい。そのためにヒトカラウェディングを始めました。
                 </p>
                 <div className={s.cpMsgSig}>
-                  <div className={s.cpMsgAv}>大</div>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/symbol-mark.jpg" alt="ヒトカラウェディング" className={s.cpMsgAv} />
                   <div>
                     <div className={s.cpMsgName}>大久保 雄治</div>
                     <div className={s.cpMsgTitle}>代表 / u.g.partners</div>
