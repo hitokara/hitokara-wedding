@@ -53,6 +53,7 @@ function buildLocalCategories(): CMSCategoryGroup[] {
         { id: "dress-tx", label: "タキシード", price: 150000 },
         { id: "dress-wdtx", label: "ウェディングドレス＋タキシード", price: 450000, note: "セット割引" },
         { id: "dress-all", label: "ウェディングドレス＋カラードレス＋タキシード", price: 650000, note: "セット割引" },
+        { id: "dress-nom", label: "ドレスショップを指名", price: 0, nom: 1, ck: "dress", note: "提携ドレスショップから選ぶ" },
       ],
     },
     {
@@ -88,7 +89,7 @@ function buildLocalCategories(): CMSCategoryGroup[] {
       title: "写真",
       items: [
         { id: "photo-std", label: "おまかせ", price: 200000, note: "スタイル希望に合わせて手配" },
-        { id: "photo-nom", label: "クリエイター指名", price: 0, nom: 1, ck: "photo_only", note: "気になるカメラマンを直接指名" },
+        { id: "photo-nom", label: "クリエイター指名", price: 0, nom: 1, ck: "photo", note: "気になるカメラマンを直接指名" },
         { id: "photo-bring", label: "持ち込み", price: 0, note: "ご自身で手配" },
         { id: "photo-none", label: "なし", price: 0 },
       ],
@@ -98,7 +99,7 @@ function buildLocalCategories(): CMSCategoryGroup[] {
       title: "映像",
       items: [
         { id: "video-std", label: "おまかせ", price: 250000, note: "スタイル希望に合わせて手配" },
-        { id: "video-nom", label: "クリエイター指名", price: 0, nom: 1, ck: "movie_only", note: "気になる映像クリエイターを直接指名" },
+        { id: "video-nom", label: "クリエイター指名", price: 0, nom: 1, ck: "movie", note: "気になる映像クリエイターを直接指名" },
         { id: "video-bring", label: "持ち込み", price: 0, note: "ご自身で手配" },
         { id: "video-none", label: "なし", price: 0 },
       ],

@@ -144,10 +144,12 @@ export const CREATORS_LIST: Creator[] = [
 export const FILTER_CATS = [
   { key: "all", label: "すべて" },
   { key: "planner", label: "プランナー" },
-  { key: "photo_movie", label: "写真・映像" },
+  { key: "photo", label: "写真" },
+  { key: "movie", label: "映像" },
   { key: "hair", label: "ヘアメイク" },
   { key: "party", label: "パーティー" },
   { key: "flower", label: "装花" },
+  { key: "dress", label: "ドレス" },
   { key: "item", label: "アイテム" },
   { key: "other", label: "Other" },
 ];

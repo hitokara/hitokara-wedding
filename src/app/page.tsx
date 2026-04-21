@@ -20,10 +20,30 @@ export const metadata: Metadata = {
 };
 
 const VALUES = [
-  { num: "Value 01", title: "人で選ぶ", desc: "顔・想い・料金を確認してから指名できる。だから安心して任せられます。" },
-  { num: "Value 02", title: "適正価格", desc: "シミュレーターで概算価格を算出。納得度の高いクオリティで安心。" },
-  { num: "Value 03", title: "持ち込み自由", desc: "理由の見えない持込料や追加費用はかかりません。" },
-  { num: "Value 04", title: "好きな場所で", desc: "フリープランナーが担当するため、場所も自由。レストランを中心に厳選した会場もご紹介可能です。" },
+  {
+    num: "Value 01",
+    title: "人で選ぶ",
+    lead: "「当日初めまして」のない、安心の結婚式を。",
+    desc: "プロフィールや料金を比較し、事前に面談してからクリエイターを決定できます。想いに共感できるパートナーを自分たちで選べるからこそ、準備期間から当日まで、最高のチームで過ごせます。",
+  },
+  {
+    num: "Value 02",
+    title: "適正価格",
+    lead: "「最終的にいくらになるかわからない」という不安を解消するため、シミュレーターで精度の高い概算を算出。",
+    desc: "無駄なオプションを省いて必要なものだけを選べる透明性の高いプランニングで、初期見積もりからの大幅なランクアップを防ぎ、予算内での理想の結婚式を叶えます。",
+  },
+  {
+    num: "Value 03",
+    title: "持込自由",
+    lead: "持ち込み料や不透明な追加費用はかかりません。",
+    desc: "予算を抑えられる部分はプロの視点で一緒に考え、こだわりたいポイントに賢く予算を充てる。そんな「理想のバランス」を形にします。",
+  },
+  {
+    num: "Value 04",
+    title: "好きな場所で",
+    lead: "決まった会場はありません。おふたりの思い出の場所や、普段は結婚式を行わない場所でも、フリープランナーが理想の空間に仕立て上げます。",
+    desc: "もちろん、おもてなしに最適な厳選レストランのご紹介も可能。しきたりに縛られない、世界にひとつだけの舞台選びからスタートしましょう。",
+  },
 ];
 
 const HERO_SLIDES = [
@@ -137,8 +157,10 @@ export default async function HomePage() {
           </AnimateOnScroll>
           <AnimateOnScroll animation="fadeUp" delay={80}>
             <h1 className={s.heroH1}>
-              <span style={{display:'inline-block', whiteSpace:'nowrap'}}>人から選ぶ、</span><br />
-              <span style={{display:'inline-block', whiteSpace:'nowrap'}}><em>ふたりらしい結婚式</em></span>
+              <span style={{display:'inline-block', whiteSpace:'nowrap'}}>結婚する相手は、大好きな人。</span><br />
+              <span style={{display:'inline-block', whiteSpace:'nowrap'}}>招くのも、大好きな人たち。</span><br />
+              <span style={{display:'inline-block', whiteSpace:'nowrap'}}>だからこそ、</span><br />
+              <span style={{display:'inline-block', whiteSpace:'nowrap'}}>結婚式も<em>&ldquo;人&rdquo;で選びたい</em></span>
             </h1>
           </AnimateOnScroll>
           <AnimateOnScroll animation="fadeUp" delay={160}>
@@ -181,6 +203,7 @@ export default async function HomePage() {
                     <div className={s.valNum}>{v.num}</div>
                     <div className={s.valTitle}>{v.title}</div>
                   </div>
+                  <p className={s.valLead}>{v.lead}</p>
                   <p className={s.valDesc}>{v.desc}</p>
                 </div>
               </AnimateOnScroll>

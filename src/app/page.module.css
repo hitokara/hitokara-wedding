@@ -259,10 +259,18 @@
   color: var(--t1);
   letter-spacing: .04em;
 }
-.valDesc {
+.valLead {
   font-size: 14px;
-  color: var(--t2);
+  color: var(--t1);
   line-height: 1.85;
+  font-family: var(--mincho);
+  letter-spacing: .03em;
+  margin-bottom: 10px;
+}
+.valDesc {
+  font-size: 13px;
+  color: var(--t2);
+  line-height: 1.9;
 }
 .valCta {
   text-align: center;

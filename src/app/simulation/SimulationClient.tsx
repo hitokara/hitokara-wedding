@@ -145,17 +145,17 @@ function itemPrice(
 /* ---- Category alias & role filter ---- */
 
 const CAT_ALIAS: Record<string, string[]> = {
-  photo_movie: ["photo_movie", "photo", "movie"],
-  photo_only: ["photo_movie"],
-  movie_only: ["photo_movie"],
+  photo: ["photo", "photo_movie"],
+  movie: ["movie", "photo_movie"],
   party: ["party", "music", "mc", "sound", "captain"],
-  item: ["item", "designer", "dress"],
+  dress: ["dress", "stylist"],
+  item: ["item", "designer", "gift"],
   other: ["other"],
 };
 
 const ROLE_FILTER: Record<string, RegExp> = {
-  photo_only: /photo/i,
-  movie_only: /video|videograph|movie/i,
+  photo: /photo|camera|photograph/i,
+  movie: /video|videograph|movie|cinema/i,
 };
 
 function catMatches(creatorCat: string, pickerCatKey: string): boolean {

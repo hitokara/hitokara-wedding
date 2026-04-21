@@ -231,11 +231,16 @@ import type { CategoryItem, CategoryGroup } from "@/lib/simulation";
 const CATEGORY_MAP: Record<string, { cat: string; catLabel: string }> = {
   // プランナー
   "プランナー": { cat: "planner", catLabel: "プランナー" },
-  // 写真・映像（カメラマン＋映像を統合）
-  "写真・映像": { cat: "photo_movie", catLabel: "写真・映像" },
-  "カメラマン": { cat: "photo_movie", catLabel: "写真・映像" },
-  "写真": { cat: "photo_movie", catLabel: "写真・映像" },
-  "映像": { cat: "photo_movie", catLabel: "写真・映像" },
+  // 写真
+  "写真": { cat: "photo", catLabel: "写真" },
+  "カメラマン": { cat: "photo", catLabel: "写真" },
+  "フォトグラファー": { cat: "photo", catLabel: "写真" },
+  // 映像
+  "映像": { cat: "movie", catLabel: "映像" },
+  "ビデオ": { cat: "movie", catLabel: "映像" },
+  "ビデオグラファー": { cat: "movie", catLabel: "映像" },
+  // 写真・映像（旧統合カテゴリ → 写真を既定に）
+  "写真・映像": { cat: "photo", catLabel: "写真" },
   // ヘアメイク
   "ヘアメイク": { cat: "hair", catLabel: "ヘアメイク" },
   // パーティー（司会・音響・キャプテンを統合）
@@ -247,9 +252,11 @@ const CATEGORY_MAP: Record<string, { cat: string; catLabel: string }> = {
   // 装花
   "装花": { cat: "flower", catLabel: "装花" },
   "フラワー": { cat: "flower", catLabel: "装花" },
-  // アイテム（ドレス・デザイナー・ギフト等を統合）
+  // ドレス・スタイリスト
+  "ドレス": { cat: "dress", catLabel: "ドレス" },
+  "スタイリスト": { cat: "dress", catLabel: "ドレス" },
+  // アイテム（デザイナー・ギフト等）
   "アイテム": { cat: "item", catLabel: "アイテム" },
-  "ドレス": { cat: "item", catLabel: "アイテム" },
   "デザイナー": { cat: "item", catLabel: "アイテム" },
   "ギフト": { cat: "item", catLabel: "アイテム" },
   // Other
