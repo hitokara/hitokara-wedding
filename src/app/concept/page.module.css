@@ -165,19 +165,10 @@
   height: 60vw;
   min-height: 240px;
   max-height: 480px;
-  background: linear-gradient(155deg, #6898b8, #3a5878);
+  background: url("/concept-brand.jpg") center/cover no-repeat;
   flex-shrink: 0;
   position: relative;
-  display: flex;
-  align-items: flex-end;
-  padding: 24px;
   overflow: hidden;
-}
-.cpBrandImgLabel {
-  font-size: 11px;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,.4);
 }
 .cpBrandBody {
   padding: 48px 22px 56px;
