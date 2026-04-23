@@ -53,11 +53,13 @@
   min-height: 100svh;
   display: flex;
   align-items: flex-end;
+  background: var(--bg);
 }
 .heroImgArea {
   position: absolute;
   inset: 0;
   overflow: hidden;
+  background: #0f2130;
 }
 /* Single slide (stacked absolutely, crossfade via heroSlide keyframes) */
 .heroSlide {
@@ -69,15 +71,16 @@
   opacity: 0;
 }
 .heroSlide:first-child { opacity: 1; }
+/* SP: vertical gradient for text readability */
 .heroOverlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(0,0,0,.10) 0%,
-    rgba(0,0,0,.15) 30%,
-    rgba(0,0,0,.40) 65%,
-    rgba(0,0,0,.62) 100%
+    rgba(15,33,48,.25) 0%,
+    rgba(15,33,48,.35) 40%,
+    rgba(15,33,48,.65) 75%,
+    rgba(15,33,48,.85) 100%
   );
 }
 .heroWave {
@@ -190,17 +193,54 @@
 
 @media (min-width: 768px) {
   .hero { min-height: 100vh; align-items: center; }
+  /* PC: Image shows only on right half */
+  .heroImgArea {
+    left: 50%;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    inset: auto;
+    position: absolute;
+    width: 50%;
+    overflow: hidden;
+    background: #0f2130;
+  }
+  /* Overlay becomes a soft horizontal fade from bg color on left edge into photo */
+  .heroOverlay {
+    background: linear-gradient(
+      to right,
+      var(--bg) 0%,
+      rgba(247, 244, 239, .6) 20%,
+      rgba(247, 244, 239, 0) 45%,
+      rgba(247, 244, 239, 0) 100%
+    );
+  }
+  /* Left text area — darker text on bg for PC (since photo moved) */
   .heroLeft {
     width: 56%; max-width: 620px;
     padding: 0 48px 0;
     align-items: flex-start;
   }
+  .heroEye { color: var(--sea); }
+  .heroH1 { color: var(--t1); }
+  .heroH1 em { color: var(--sead); }
+  .heroSub { color: var(--t2); }
+  .heroSimLink { color: var(--sead); }
+  .heroSimLink:hover { color: var(--sea); }
+
   .heroBtns { flex-direction: row; gap: 12px; }
   .btnMain, .btnSub { width: auto; padding: 0 32px; }
+  .btnSub {
+    background: rgba(255,255,255,.6);
+    border: 0.5px solid var(--border2);
+    color: var(--t1);
+  }
+  .btnSub:hover { background: #fff; }
   .heroSimLink { text-align: left; }
 }
 @media (min-width: 1024px) {
   .heroLeft { width: 52%; padding: 0 64px 0; }
+  .heroImgArea { width: 50%; left: 50%; }
 }
 
 /* ===== Section Common ===== */

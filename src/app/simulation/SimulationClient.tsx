@@ -118,16 +118,27 @@ function ToggleChevSvg() {
 /** Menu selection map: catId -> creatorId -> menuIds[] */
 type MenuSelMap = Record<string, Record<string, string[]>>;
 
-/** Resolve nominated creator price for a category (considering menu selection) */
+/** Compute number of tables from guest count: ceil((guests + 6) / 8) */
+function tableCount(guests: number): number {
+  return Math.ceil((guests + 6) / 8);
+}
+
+/** Resolve base price for a nom item when no creator is selected */
+function baseNomPrice(item: CategoryItem, guests: number): number {
+  return item.unit === "\u4eba" ? item.price * guests : item.price;
+}
+
+/** Resolve nominated creator price (creator price overrides base; menu selection overrides creator price) */
 function nomPrice(
   catId: string,
   item: CategoryItem,
+  guests: number,
   creatorNoms: Record<string, string[]>,
   crSource: Creator[],
   menuSels: MenuSelMap,
 ): number {
   const ids = creatorNoms[catId] ?? [];
-  if (ids.length === 0) return 0;
+  if (ids.length === 0) return baseNomPrice(item, guests); // base price when no creator
   return ids.reduce((sum, id) => {
     const cr = crSource.find((c) => c.id === id);
     if (!cr) return sum;
@@ -154,13 +165,18 @@ function itemPrice(
   selectedVenue: string | null,
 ): number {
   if (!item) return 0;
-  if (item.nom === 1) return nomPrice(catId, item, creatorNoms, crSource, menuSels);
+  if (item.nom === 1) return nomPrice(catId, item, guests, creatorNoms, crSource, menuSels);
   if (item.vp === 1) {
     if (selectedVenue) {
       const v = venues.find((ve) => ve.id === selectedVenue);
-      return v?.price ?? 0;
+      // If venue has explicit price, use it. Otherwise fall back to item base.
+      return v?.price ?? item.price;
     }
-    return 0;
+    return item.price;
+  }
+  // Special: 装花 flower_set = メイン 100k + ゲスト 10k × 卓数 + ブーケ 50k
+  if (item.unit === "flower_set") {
+    return 100000 + 10000 * tableCount(guests) + 50000;
   }
   return item.unit === "\u4eba" ? item.price * guests : item.price;
 }
@@ -425,10 +441,14 @@ function AccordionSection({
                   {cat.items.map((item) => {
                     const on = sel === item.id;
                     const displayPrice = item.nom === 1
-                      ? "\u6307\u540d"
+                      ? (item.price > 0
+                          ? (item.unit === "\u4eba" ? `\u00a5${fmtP(item.price)}/\u4eba〜` : `\u00a5${fmtP(item.price)}〜`)
+                          : "\u6307\u540d")
                       : item.unit === "\u4eba"
                         ? `\u00a5${fmtP(item.price)}/\u4eba`
-                        : `\u00a5${fmtP(item.price)}`;
+                        : item.unit === "flower_set"
+                          ? `\u00a5${fmtP(100000 + 10000 * Math.ceil((guests + 6) / 8) + 50000)}`
+                          : `\u00a5${fmtP(item.price)}`;
                     return (
                       <div key={item.id}>
                         <div
@@ -668,29 +688,38 @@ export default function SimulationClient({
     let price = 0;
     if (selItem.nom === 1) {
       const ids = creatorNoms[cat.id] ?? [];
-      const parts: string[] = [];
-      price = ids.reduce((s, id) => {
-        const cr = crSource.find((c) => c.id === id);
-        if (!cr) return s;
-        const selMenus = menuSels[cat.id]?.[id] ?? [];
-        if (cr.menus && cr.menus.length > 0 && selMenus.length > 0) {
-          const menuNames = selMenus.map((mid) => cr.menus!.find((m) => m.id === mid)?.name).filter(Boolean);
-          const sub = selMenus.reduce((ss, mid) => ss + (cr.menus!.find((m) => m.id === mid)?.price ?? 0), 0);
-          parts.push(`${cr.name}・${menuNames.join("/")}`);
-          return s + sub;
-        }
-        parts.push(cr.name);
-        return s + cr.price;
-      }, 0);
-      if (parts.length > 0) label += `\uFF08${parts.join("\u3001")}\uFF09`;
+      if (ids.length === 0) {
+        // No creator selected: use base price
+        price = selItem.unit === "\u4eba" ? selItem.price * guests : selItem.price;
+      } else {
+        const parts: string[] = [];
+        price = ids.reduce((s, id) => {
+          const cr = crSource.find((c) => c.id === id);
+          if (!cr) return s;
+          const selMenus = menuSels[cat.id]?.[id] ?? [];
+          if (cr.menus && cr.menus.length > 0 && selMenus.length > 0) {
+            const menuNames = selMenus.map((mid) => cr.menus!.find((m) => m.id === mid)?.name).filter(Boolean);
+            const sub = selMenus.reduce((ss, mid) => ss + (cr.menus!.find((m) => m.id === mid)?.price ?? 0), 0);
+            parts.push(`${cr.name}・${menuNames.join("/")}`);
+            return s + sub;
+          }
+          parts.push(cr.name);
+          return s + cr.price;
+        }, 0);
+        if (parts.length > 0) label += `\uFF08${parts.join("\u3001")}\uFF09`;
+      }
     } else if (selItem.vp === 1) {
       if (selectedVenue) {
         const v = venues.find((ve) => ve.id === selectedVenue);
         if (v) {
           label += `\uFF08${v.name}\uFF09`;
-          price = v.price ?? 0;
+          price = v.price ?? selItem.price;
         }
+      } else {
+        price = selItem.price;
       }
+    } else if (selItem.unit === "flower_set") {
+      price = 100000 + 10000 * Math.ceil((guests + 6) / 8) + 50000;
     } else {
       price = selItem.unit === "\u4eba" ? selItem.price * guests : selItem.price;
     }

@@ -47,9 +47,10 @@ const VALUES = [
 ];
 
 const HERO_SLIDES = [
-  "url(/hero-1.jpg) center/cover no-repeat",
-  "url(/hero-2.jpg) center/cover no-repeat",
-  "url(/hero-3.jpg) center/cover no-repeat",
+  "url(/hero-portrait-1.jpg) center/cover no-repeat",
+  "url(/hero-portrait-2.jpg) center/cover no-repeat",
+  "url(/hero-portrait-3.jpg) center/cover no-repeat",
+  "url(/hero-portrait-4.jpg) center/cover no-repeat",
 ];
 
 const STEPS = [
