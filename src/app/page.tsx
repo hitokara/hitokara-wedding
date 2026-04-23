@@ -4,7 +4,6 @@ import AnimateOnScroll from "@/components/AnimateOnScroll";
 import CreatorTrack from "@/components/CreatorTrack";
 import VenueGrid from "@/components/VenueGrid";
 import { CREATORS_LIST } from "@/lib/creators";
-import { ARTICLES } from "@/lib/articles";
 import { getCreators, getArticles, getVenues, mapCMSCreator, mapCMSArticle } from "@/lib/microcms";
 import { AREA_LABEL_SHORT, AREA_LABEL_FULL, SITE_URL } from "@/lib/areas";
 import s from "./page.module.css";
@@ -102,11 +101,8 @@ export default async function HomePage() {
       ? cmsCreators.contents.map(mapCMSCreator)
       : CREATORS_LIST;
 
-  const topArticles =
-    cmsArticles.contents.length > 0
-      ? cmsArticles.contents.map((a, i) => mapCMSArticle(a, i))
-      : ARTICLES.slice(0, 3);
-
+  // CMS-only: show empty state when CMS has no published articles.
+  const topArticles = cmsArticles.contents.map((a, i) => mapCMSArticle(a, i));
   const newsArticles = cmsNews.contents.map((a, i) => mapCMSArticle(a, i));
 
   const venues =
