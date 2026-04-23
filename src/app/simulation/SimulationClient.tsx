@@ -13,72 +13,129 @@ import s from "./page.module.css";
 
 const FAVS_STORAGE_KEY = "hitokara-favs";
 
-async function renderPrintCanvas(el: HTMLElement) {
+/** Wait until all <img> inside el have loaded (or errored) so html2canvas snapshots complete images */
+async function waitForImages(el: HTMLElement): Promise<void> {
+  const imgs = Array.from(el.querySelectorAll("img"));
+  await Promise.all(
+    imgs.map(
+      (img) =>
+        new Promise<void>((resolve) => {
+          if (img.complete && img.naturalHeight > 0) return resolve();
+          const done = () => resolve();
+          img.addEventListener("load", done, { once: true });
+          img.addEventListener("error", done, { once: true });
+          // Safety timeout
+          setTimeout(done, 4000);
+        })
+    )
+  );
+}
+
+async function renderPrintCanvas(el: HTMLElement): Promise<HTMLCanvasElement> {
   const html2canvas = (await import("html2canvas-pro")).default;
+  // Mobile: lower scale to avoid iOS Safari canvas-size / memory limits
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const scale = isMobile ? 1.5 : 2;
+
   el.style.display = "block";
   el.style.position = "absolute";
   el.style.left = "-9999px";
+  el.style.top = "0";
   el.style.width = "800px";
-  const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: "#fff" });
-  el.style.display = "";
-  el.style.position = "";
-  el.style.left = "";
-  el.style.width = "";
-  return canvas;
+  try {
+    await waitForImages(el);
+    const canvas = await html2canvas(el, {
+      scale,
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: "#fff",
+      logging: false,
+    });
+    return canvas;
+  } finally {
+    el.style.display = "";
+    el.style.position = "";
+    el.style.left = "";
+    el.style.top = "";
+    el.style.width = "";
+  }
 }
 
-async function generatePdf(el: HTMLElement) {
-  const { jsPDF } = await import("jspdf");
-  const canvas = await renderPrintCanvas(el);
+/** Download or share a Blob robustly across desktop/iOS/Android */
+async function shareOrDownload(blob: Blob, filename: string, mime: string, title: string): Promise<void> {
+  const file = new File([blob], filename, { type: mime });
 
-  const A4_W = 210;
-  const A4_H = 297;
-  const M = 12;
-  const contentW = A4_W - M * 2;
-  const imgW = canvas.width;
-  const imgH = canvas.height;
-  const scaledH = (imgH * contentW) / imgW;
-  // Always fit on 1 page: stretch A4 height or shrink content
-  const fitH = Math.min(scaledH, A4_H - M * 2);
-  const fitW = fitH === scaledH ? contentW : (imgW * fitH) / imgH;
-  const offsetX = (A4_W - fitW) / 2;
-
-  const pdf = new jsPDF({ unit: "mm", format: "a4" });
-  const imgData = canvas.toDataURL("image/jpeg", 0.85);
-  pdf.addImage(imgData, "JPEG", offsetX, M, fitW, fitH);
-  pdf.save("hitokara-simulation.pdf");
-}
-
-async function generateImage(el: HTMLElement) {
-  const canvas = await renderPrintCanvas(el);
-  // Convert to blob for mobile compatibility
-  const blob = await new Promise<Blob>((resolve) =>
-    canvas.toBlob((b) => resolve(b!), "image/png")
-  );
-
-  // Try Web Share API first (mobile-friendly)
-  if (navigator.share && navigator.canShare?.({ files: [new File([blob], "a.png", { type: "image/png" })] })) {
+  // 1) Web Share API (iOS 15+, Android Chrome): opens native share sheet (Save to Files/Photos etc.)
+  if (typeof navigator !== "undefined" && navigator.share && navigator.canShare?.({ files: [file] })) {
     try {
-      await navigator.share({
-        files: [new File([blob], "hitokara-simulation.png", { type: "image/png" })],
-        title: "見積もりシミュレーション",
-      });
+      await navigator.share({ files: [file], title });
       return;
-    } catch { /* user cancelled or failed, fall through */ }
+    } catch (e) {
+      const name = (e as { name?: string })?.name;
+      if (name === "AbortError") return; // User cancelled
+      // Other errors: fall through to download fallback
+    }
   }
 
-  // Fallback: open blob URL in new tab (works on iOS Safari)
+  // 2) Fallback: blob URL
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "hitokara-simulation.png";
-  // iOS Safari: download attribute doesn't work, so open in new tab
-  if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+  const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
+  const isIOS = /iPhone|iPad|iPod/i.test(ua);
+  if (isIOS) {
+    // iOS Safari: open in new tab; user uses Safari's share button to save
     window.open(url, "_blank");
   } else {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.rel = "noopener";
+    document.body.appendChild(a);
     a.click();
+    a.remove();
   }
-  setTimeout(() => URL.revokeObjectURL(url), 5000);
+  setTimeout(() => URL.revokeObjectURL(url), 15000);
+}
+
+async function generatePdf(el: HTMLElement): Promise<void> {
+  try {
+    const { jsPDF } = await import("jspdf");
+    const canvas = await renderPrintCanvas(el);
+
+    const A4_W = 210;
+    const A4_H = 297;
+    const M = 12;
+    const contentW = A4_W - M * 2;
+    const imgW = canvas.width;
+    const imgH = canvas.height;
+    if (imgW === 0 || imgH === 0) throw new Error("canvas is empty");
+    const scaledH = (imgH * contentW) / imgW;
+    const fitH = Math.min(scaledH, A4_H - M * 2);
+    const fitW = fitH === scaledH ? contentW : (imgW * fitH) / imgH;
+    const offsetX = (A4_W - fitW) / 2;
+
+    const pdf = new jsPDF({ unit: "mm", format: "a4", compress: true });
+    const imgData = canvas.toDataURL("image/jpeg", 0.85);
+    pdf.addImage(imgData, "JPEG", offsetX, M, fitW, fitH);
+    const blob = pdf.output("blob");
+    await shareOrDownload(blob, "hitokara-simulation.pdf", "application/pdf", "見積もりシミュレーション");
+  } catch (e) {
+    console.error("PDF save error:", e);
+    alert("PDFの保存に失敗しました。通信状況を確認して、もう一度お試しください。");
+  }
+}
+
+async function generateImage(el: HTMLElement): Promise<void> {
+  try {
+    const canvas = await renderPrintCanvas(el);
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob((b) => resolve(b), "image/jpeg", 0.88)
+    );
+    if (!blob) throw new Error("toBlob returned null");
+    await shareOrDownload(blob, "hitokara-simulation.jpg", "image/jpeg", "見積もりシミュレーション");
+  } catch (e) {
+    console.error("Image save error:", e);
+    alert("画像の保存に失敗しました。通信状況を確認して、もう一度お試しください。");
+  }
 }
 
 interface AccData {
@@ -674,11 +731,8 @@ export default function SimulationClient({
     generatePdf(printRef.current);
   }, [total]);
 
-  const handleImage = useCallback(() => {
-    if (!printRef.current) return;
-    trackEvent("sim_image_save", { total });
-    generateImage(printRef.current);
-  }, [total]);
+  // Image-save fallback kept for future use. Currently SP/PC both use PDF.
+  void generateImage;
 
   /** Resolve label + price for PDF row */
   function pdfRow(cat: AccData) {
@@ -808,9 +862,9 @@ export default function SimulationClient({
           <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.tctaLine} onClick={() => trackEvent("cta_line", { location: "simulation_sp" })}>
             <span className={s.pip} />LINE相談
           </a>
-          <button className={s.tctaSave} onClick={handleImage}>
+          <button className={s.tctaSave} onClick={handlePdf} aria-label="PDFで保存">
             <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" width="14" height="14"><path d="M3 13v3a1 1 0 001 1h12a1 1 0 001-1v-3M10 3v10m0 0l-3.5-3.5M10 13l3.5-3.5"/></svg>
-            保存
+            PDF
           </button>
         </div>
       </div>
