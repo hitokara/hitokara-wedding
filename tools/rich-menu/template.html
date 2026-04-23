@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>ヒトカラウェディング Rich Menu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f4ef;
+      --ink: #1c1c1a;
+      --muted: #6a6560;
+      --sea: #3a8fbf;
+      --sead: #2a6e94;
+      --seal: #eaf5fc;
+      --seam: #b8ddf0;
+      --bark: #1a3a4a;
+      --sand: #ede7db;
+      --hairline: rgba(26, 58, 74, 0.1);
+      --mincho: 'Shippori Mincho', serif;
+      --gothic: 'Zen Kaku Gothic New', sans-serif;
+      --num: 'Cormorant Garamond', serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 2500px;
+      height: 1686px;
+      background: var(--bg);
+      font-family: var(--gothic);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .menu {
+      width: 2500px;
+      height: 1686px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      position: relative;
+      background: var(--bg);
+    }
+
+    /* Cell separators (subtle hairline lines) */
+    .divider-v, .divider-h {
+      position: absolute;
+      background: var(--hairline);
+      pointer-events: none;
+    }
+    .divider-v { top: 64px; bottom: 64px; width: 1px; }
+    .divider-v.v1 { left: calc(2500px / 3); }
+    .divider-v.v2 { left: calc(2500px * 2 / 3); }
+    .divider-h { left: 64px; right: 64px; top: 50%; height: 1px; }
+
+    .cell {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 24px;
+      gap: 36px;
+    }
+
+    /* Icon circle */
+    .icon {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: var(--seal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+
+    .cell--accent .icon {
+      background: linear-gradient(155deg, var(--sea), var(--sead));
+    }
+    .cell--accent .icon svg { stroke: #fff; }
+
+    .icon svg {
+      width: 134px;
+      height: 134px;
+      stroke: var(--sead);
+      stroke-width: 1.4;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Text block */
+    .text {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .eyebrow {
+      font-family: var(--num);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 42px;
+      letter-spacing: 0.12em;
+      color: var(--sea);
+      text-transform: uppercase;
+    }
+
+    .title {
+      font-family: var(--mincho);
+      font-weight: 500;
+      font-size: 86px;
+      letter-spacing: 0.06em;
+      color: var(--ink);
+      line-height: 1.15;
+    }
+
+    .sub {
+      font-family: var(--gothic);
+      font-weight: 400;
+      font-size: 34px;
+      letter-spacing: 0.03em;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* Accent cell (相談予約) */
+    .cell--accent .title { color: var(--bark); }
+    .cell--accent .eyebrow { color: var(--sea); }
+
+    /* Corner brand mark (top-left of top-left cell) */
+    .brand-mark {
+      position: absolute;
+      top: 48px;
+      left: 52px;
+      font-family: var(--num);
+      font-style: italic;
+      font-size: 30px;
+      color: var(--sea);
+      letter-spacing: 0.14em;
+      opacity: 0.55;
+    }
+  </style>
+</head>
+<body>
+  <div class="menu">
+    <span class="divider-v v1"></span>
+    <span class="divider-v v2"></span>
+    <span class="divider-h"></span>
+    <!-- 1. Simulation -->
+    <div class="cell">
+      <span class="brand-mark">HITOKARA WEDDING</span>
+      <div class="icon">
+        <!-- Receipt / calc -->
+        <svg viewBox="0 0 64 64">
+          <rect x="14" y="10" width="36" height="44" rx="3"/>
+          <line x1="20" y1="20" x2="44" y2="20"/>
+          <line x1="20" y1="28" x2="44" y2="28"/>
+          <line x1="20" y1="36" x2="34" y2="36"/>
+          <line x1="20" y1="44" x2="30" y2="44"/>
+          <circle cx="42" cy="44" r="3.5"/>
+        </svg>
+      </div>
+      <div class="text">
+        <span class="eyebrow">Simulation</span>
+        <span class="title">見積もり試算</span>
+        <span class="sub">リアルタイム概算</span>
+      </div>
+    </div>
+
+    <!-- 2. Creators -->
+    <div class="cell">
+      <div class="icon">
+        <!-- People -->
+        <svg viewBox="0 0 64 64">
+          <circle cx="24" cy="22" r="9"/>
+          <path d="M10 52 c0-9 6-15 14-15 s14 6 14 15"/>
+          <circle cx="44" cy="24" r="7"/>
+          <path d="M38 52 c0-8 4-13 11-13 c4 0 7 2 9 5"/>
+        </svg>
+      </div>
+      <div class="text">
+        <span class="eyebrow">Creators</span>
+        <span class="title">クリエイター</span>
+        <span class="sub">顔と実績で指名</span>
+      </div>
+    </div>
+
+    <!-- 3. Venues -->
+    <div class="cell">
+      <div class="icon">
+        <!-- Venue / building -->
+        <svg viewBox="0 0 64 64">
+          <path d="M12 52 L12 28 L32 14 L52 28 L52 52 Z"/>
+          <line x1="12" y1="52" x2="52" y2="52"/>
+          <rect x="27" y="36" width="10" height="16"/>
+          <line x1="19" y1="32" x2="23" y2="32"/>
+          <line x1="41" y1="32" x2="45" y2="32"/>
+          <line x1="19" y1="40" x2="23" y2="40"/>
+          <line x1="41" y1="40" x2="45" y2="40"/>
+        </svg>
+      </div>
+      <div class="text">
+        <span class="eyebrow">Venues</span>
+        <span class="title">会場</span>
+        <span class="sub">横浜・鎌倉・東京</span>
+      </div>
+    </div>
+
+    <!-- 4. Concept -->
+    <div class="cell">
+      <div class="icon">
+        <!-- Hearts (concept) -->
+        <svg viewBox="0 0 64 64">
+          <path d="M32 50 C20 42 12 34 12 24 C12 18 17 14 22 14 C26 14 30 16 32 20 C34 16 38 14 42 14 C47 14 52 18 52 24 C52 34 44 42 32 50 Z"/>
+        </svg>
+      </div>
+      <div class="text">
+        <span class="eyebrow">Concept</span>
+        <span class="title">ヒトカラとは</span>
+        <span class="sub">私たちのこだわり</span>
+      </div>
+    </div>
+
+    <!-- 5. Journal -->
+    <div class="cell">
+      <div class="icon">
+        <!-- Book -->
+        <svg viewBox="0 0 64 64">
+          <path d="M12 14 L32 18 L52 14 L52 50 L32 54 L12 50 Z"/>
+          <line x1="32" y1="18" x2="32" y2="54"/>
+          <line x1="18" y1="24" x2="26" y2="25"/>
+          <line x1="18" y1="32" x2="26" y2="33"/>
+          <line x1="18" y1="40" x2="26" y2="41"/>
+          <line x1="38" y1="25" x2="46" y2="24"/>
+          <line x1="38" y1="33" x2="46" y2="32"/>
+        </svg>
+      </div>
+      <div class="text">
+        <span class="eyebrow">Journal</span>
+        <span class="title">ジャーナル</span>
+        <span class="sub">準備のヒント</span>
+      </div>
+    </div>
+
+    <!-- 6. Book consultation (ACCENT) -->
+    <div class="cell cell--accent">
+      <div class="icon">
+        <!-- Calendar -->
+        <svg viewBox="0 0 64 64">
+          <rect x="10" y="14" width="44" height="40" rx="3"/>
+          <line x1="10" y1="24" x2="54" y2="24"/>
+          <line x1="20" y1="10" x2="20" y2="18"/>
+          <line x1="44" y1="10" x2="44" y2="18"/>
+          <circle cx="20" cy="36" r="2.2" fill="currentColor" stroke="none"/>
+          <circle cx="32" cy="36" r="2.2" fill="currentColor" stroke="none"/>
+          <circle cx="44" cy="36" r="2.2" fill="currentColor" stroke="none"/>
+          <circle cx="20" cy="44" r="2.2" fill="currentColor" stroke="none"/>
+          <circle cx="32" cy="44" r="2.2" fill="currentColor" stroke="none"/>
+        </svg>
+      </div>
+      <div class="text">
+        <span class="eyebrow">Book a Meeting</span>
+        <span class="title">相談を予約</span>
+        <span class="sub">無料・オンライン対応</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
