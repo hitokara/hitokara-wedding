@@ -40,31 +40,47 @@
     .right {
       position: absolute;
       top: 0;
-      bottom: 0;
       right: 0;
       width: 440px;
+      height: 630px;
       background:
-        linear-gradient(270deg, rgba(0,0,0,0) 0%, rgba(247,244,239,0) 62%, var(--bg) 100%),
-        url("https://hitokarawedding.com/hero-portrait-1.jpg") center 18% / cover no-repeat,
+        linear-gradient(270deg, rgba(247,244,239,0) 0%, rgba(247,244,239,0) 70%, var(--bg) 100%),
+        url("logo.png"), /* dummy never shown; keep as placeholder */
         linear-gradient(155deg, #8ab8d0 0%, #4a7898 55%, #2a5878 100%);
+      overflow: hidden;
+    }
+    .right::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("hero-portrait-1.jpg") center 28% / cover no-repeat;
+    }
+    .right::after {
+      /* Left-edge fade to cream */
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(270deg, rgba(247,244,239,0) 0%, rgba(247,244,239,0) 72%, var(--bg) 100%);
     }
 
     /* Brand logo (top-left) */
     .brand-logo {
       position: absolute;
-      top: 48px;
+      top: 52px;
       left: 60px;
-      height: 58px;
+      height: 56px;
       width: auto;
       display: block;
+      z-index: 3;
     }
 
-    /* Headline block */
+    /* Headline block (vertically centered) */
     .headline-wrap {
       position: absolute;
       left: 60px;
       right: 480px;
-      top: 210px;
+      top: 215px;
+      z-index: 3;
     }
     .headline {
       font-family: var(--mincho);
@@ -86,11 +102,11 @@
       margin-top: 20px;
     }
 
-    /* Bottom footer */
+    /* Bottom footer (balanced with logo: ~52px from edge) */
     .footer {
       position: absolute;
       left: 60px;
-      top: 500px;
+      top: 525px;
       display: flex;
       align-items: center;
       gap: 14px;

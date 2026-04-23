@@ -16,8 +16,8 @@ echo "▶ Rendering $HTML → $OUT_PNG"
   --no-sandbox \
   --hide-scrollbars \
   --force-device-scale-factor=1 \
-  --window-size=1200,630 \
-  --virtual-time-budget=5000 \
+  --window-size=1200,700 \
+  --virtual-time-budget=8000 \
   --screenshot="$OUT_PNG" \
   "$URL" 2>/dev/null
 
@@ -25,7 +25,8 @@ if [ ! -f "$OUT_PNG" ]; then
   echo "❌ Render failed"; exit 1
 fi
 
-# Convert PNG → JPEG q88 for smaller file (SNS prefers <1MB)
+# Crop to exactly 1200x630 (in case window-size produced extra rows) + convert to JPEG q88
+sips --cropToHeightWidth 630 1200 "$OUT_PNG" --out "$OUT_PNG" >/dev/null 2>&1 || true
 sips -s format jpeg -s formatOptions 88 "$OUT_PNG" --out "$OUT_JPG" >/dev/null
 
 SIZE=$(stat -f%z "$OUT_JPG")
