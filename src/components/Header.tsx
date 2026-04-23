@@ -36,7 +36,7 @@ export default function Header() {
           <div className={styles.logo}>
             <Link href="/">
               <Image
-                src="/logo-header.jpg"
+                src="/logo.png"
                 alt="ヒトカラウェディング"
                 width={200}
                 height={40}

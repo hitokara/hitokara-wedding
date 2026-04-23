@@ -18,7 +18,7 @@ export default function Footer() {
           <div className={styles.logo}>
             <Link href="/">
               <Image
-                src="/logo-header.jpg"
+                src="/logo.png"
                 alt="ヒトカラウェディング"
                 width={180}
                 height={36}

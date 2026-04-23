@@ -836,7 +836,7 @@ export default function SimulationClient({
       <div className={s.printSummary} ref={printRef}>
         <div className={s.printHeader}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo-header.jpg" alt="\u30D2\u30C8\u30AB\u30E9\u30A6\u30A7\u30C7\u30A3\u30F3\u30B0" className={s.printLogo} />
+          <img src="/logo.png" alt="\u30D2\u30C8\u30AB\u30E9\u30A6\u30A7\u30C7\u30A3\u30F3\u30B0" className={s.printLogo} />
           <div className={s.printHeaderRight}>
             <div className={s.printHeaderTitle}>{"\u898B\u7A4D\u3082\u308A\u30B7\u30DF\u30E5\u30EC\u30FC\u30B7\u30E7\u30F3"}</div>
             <div className={s.printHeaderSub}>Estimate Simulation</div>

@@ -141,7 +141,7 @@ export default async function JournalArticlePage({ params }: Props) {
       url: "https://hitokarawedding.com",
       logo: {
         "@type": "ImageObject" as const,
-        url: "https://hitokarawedding.com/logo-header.jpg",
+        url: "https://hitokarawedding.com/logo.png",
       },
     },
     ...(thumbnailUrl

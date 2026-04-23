@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>ヒトカラウェディング OG Image</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f4ef;
+      --ink: #1c1c1a;
+      --muted: #6a6560;
+      --sea: #3a8fbf;
+      --sead: #2a6e94;
+      --seal: #eaf5fc;
+      --bark: #1a3a4a;
+      --mincho: 'Shippori Mincho', serif;
+      --gothic: 'Zen Kaku Gothic New', sans-serif;
+      --num: 'Cormorant Garamond', serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 1200px;
+      height: 630px;
+      overflow: hidden;
+      font-family: var(--gothic);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+    .og {
+      width: 1200px;
+      height: 630px;
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Right visual panel (image) */
+    .right {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 440px;
+      background:
+        linear-gradient(270deg, rgba(0,0,0,0) 0%, rgba(247,244,239,0) 62%, var(--bg) 100%),
+        url("https://hitokarawedding.com/hero-portrait-1.jpg") center 18% / cover no-repeat,
+        linear-gradient(155deg, #8ab8d0 0%, #4a7898 55%, #2a5878 100%);
+    }
+
+    /* Brand logo (top-left) */
+    .brand-logo {
+      position: absolute;
+      top: 48px;
+      left: 60px;
+      height: 58px;
+      width: auto;
+      display: block;
+    }
+
+    /* Headline block */
+    .headline-wrap {
+      position: absolute;
+      left: 60px;
+      right: 480px;
+      top: 210px;
+    }
+    .headline {
+      font-family: var(--mincho);
+      font-size: 52px;
+      font-weight: 500;
+      line-height: 1.3;
+      letter-spacing: 0.06em;
+      color: var(--ink);
+    }
+    .headline em {
+      font-style: normal;
+      color: var(--sead);
+    }
+    .sub {
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      margin-top: 20px;
+    }
+
+    /* Bottom footer */
+    .footer {
+      position: absolute;
+      left: 60px;
+      top: 500px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      z-index: 5;
+    }
+    .area-chip {
+      font-family: var(--num);
+      font-style: italic;
+      font-size: 17px;
+      letter-spacing: 0.18em;
+      color: var(--sea);
+      text-transform: uppercase;
+      padding: 7px 18px;
+      border: 1px solid var(--sea);
+      border-radius: 999px;
+      white-space: nowrap;
+      line-height: 1.1;
+    }
+    .url {
+      font-family: var(--gothic);
+      font-size: 15px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      line-height: 1.1;
+    }
+  </style>
+</head>
+<body>
+  <div class="og">
+    <div class="right"></div>
+
+    <img class="brand-logo" src="logo.png" alt="ヒトカラウェディング" />
+
+    <div class="headline-wrap">
+      <h1 class="headline">
+        人から選ぶ、<br>
+        <em>ふたりらしい結婚式</em>
+      </h1>
+      <p class="sub">
+        持ち込み自由・適正価格のウェディングプロデュース。<br>
+        クリエイターを顔と実績で指名できる、新しい結婚式の形。
+      </p>
+    </div>
+
+    <div class="footer">
+      <span class="area-chip">Yokohama / Kamakura / Tokyo</span>
+      <span class="url">hitokarawedding.com</span>
+    </div>
+  </div>
+</body>
+</html>
