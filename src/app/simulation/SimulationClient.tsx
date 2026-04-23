@@ -187,10 +187,11 @@ const CAT_ALIAS: Record<string, string[]> = {
   photo: ["photo", "photo_movie"],
   movie: ["movie", "photo_movie"],
   mc: ["mc"],
+  sound: ["sound", "music"],
   gift: ["gift"],
   dress: ["dress", "stylist"],
   item: ["item", "designer"],
-  other: ["other", "party", "music", "sound", "captain"],
+  other: ["other", "party", "captain"],
 };
 
 const ROLE_FILTER: Record<string, RegExp> = {

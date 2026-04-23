@@ -157,6 +157,7 @@ export const FILTER_CATS = [
   { key: "movie", label: "映像" },
   { key: "hair", label: "ヘアメイク" },
   { key: "mc", label: "司会" },
+  { key: "sound", label: "音響・生演奏" },
   { key: "flower", label: "装花" },
   { key: "dress", label: "ドレス" },
   { key: "gift", label: "ギフト" },

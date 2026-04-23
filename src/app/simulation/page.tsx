@@ -89,7 +89,7 @@ function buildLocalCategories(): CMSCategoryGroup[] {
       title: "音響・生演奏",
       items: [
         { id: "sound-std", label: "おまかせ", price: 100100, note: "音響オペレーター手配" },
-        { id: "sound-nom", label: "クリエイター指名", price: 100100, nom: 1, ck: "other", note: "ピアニスト・演奏者を指名。指名時はクリエイター料金を適用。" },
+        { id: "sound-nom", label: "クリエイター指名", price: 100100, nom: 1, ck: "sound", note: "ピアニスト・演奏者を指名。指名時はクリエイター料金を適用。" },
         { id: "sound-none", label: "なし", price: 0 },
       ],
     },

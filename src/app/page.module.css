@@ -195,13 +195,12 @@
   .hero { min-height: 100vh; align-items: center; }
   /* PC: Image shows only on right half */
   .heroImgArea {
-    left: 50%;
-    right: 0;
+    position: absolute;
     top: 0;
     bottom: 0;
-    inset: auto;
-    position: absolute;
-    width: 50%;
+    left: 50%;
+    right: 0;
+    width: auto;
     overflow: hidden;
     background: #0f2130;
   }
@@ -240,7 +239,6 @@
 }
 @media (min-width: 1024px) {
   .heroLeft { width: 52%; padding: 0 64px 0; }
-  .heroImgArea { width: 50%; left: 50%; }
 }
 
 /* ===== Section Common ===== */

@@ -257,9 +257,12 @@ const CATEGORY_MAP: Record<string, { cat: string; catLabel: string }> = {
   // 司会（MCのみ）
   "司会": { cat: "mc", catLabel: "司会" },
   "MC": { cat: "mc", catLabel: "司会" },
-  // その他（音響・キャプテン・イラストレーター等、式を豊かにする役割）
-  "音楽": { cat: "other", catLabel: "その他" },
-  "音響": { cat: "other", catLabel: "その他" },
+  // 音響・生演奏
+  "音響・生演奏": { cat: "sound", catLabel: "音響・生演奏" },
+  "音響": { cat: "sound", catLabel: "音響・生演奏" },
+  "音楽": { cat: "sound", catLabel: "音響・生演奏" },
+  "生演奏": { cat: "sound", catLabel: "音響・生演奏" },
+  // その他（キャプテン・イラストレーター等、式を豊かにする役割）
   "キャプテン": { cat: "other", catLabel: "その他" },
   "イラストレーター": { cat: "other", catLabel: "その他" },
   "パーティー": { cat: "other", catLabel: "その他" },
