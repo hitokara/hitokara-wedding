@@ -3,6 +3,7 @@ import { getSimItems, mapCMSSimItems, getCreators, mapCMSCreator, getVenues } fr
 import type { CMSCategoryGroup, CMSVenue } from "@/lib/microcms";
 import { CREATORS_LIST } from "@/lib/creators";
 import type { Creator } from "@/lib/creators";
+import { AREA_LABEL_SHORT, SITE_URL } from "@/lib/areas";
 import SimulationClient from "./SimulationClient";
 
 export const revalidate = 60;
@@ -10,9 +11,9 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: "見積もりシミュレーター - 結婚式費用を簡単シミュレーション",
   description:
-    "横浜・鎌倉の結婚式費用をシミュレーション。プランナー・カメラマン・ヘアメイクなどクリエイターを自分で選び、見積もりをリアルタイムで確認。持ち込み自由・適正価格のヒトカラウェディング。",
+    `${AREA_LABEL_SHORT}の結婚式費用をシミュレーション。プランナー・カメラマン・ヘアメイクなどクリエイターを自分で選び、見積もりをリアルタイムで確認。持ち込み自由・適正価格のヒトカラウェディング。`,
   alternates: {
-    canonical: "https://hitokarawedding.com/simulation",
+    canonical: `${SITE_URL}/simulation`,
   },
 };
 

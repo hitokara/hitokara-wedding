@@ -28,7 +28,7 @@ export default function CreatorTrack({ creators, gradients, styles: s }: Creator
         {doubled.map((cr, i) => {
           const imgUrl = cr.images?.[0]?.url;
           const bg = imgUrl
-            ? `url(${imgUrl}?w=400&h=500&fit=crop) center/cover no-repeat`
+            ? `url(${imgUrl}?w=640&h=800&fit=crop&fm=webp&q=85) center/cover no-repeat`
             : gradients[i % gradients.length];
           return (
             <Link href={`/creators?id=${cr.id}`} key={`${cr.id}-${i}`} className={s.crCard}>

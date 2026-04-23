@@ -2,4 +2,7 @@
 User-agent: *
 Allow: /
 
+# AI / LLM friendly
+# llms.txt: https://hitokarawedding.com/llms.txt
+
 Sitemap: https://hitokarawedding.com/sitemap.xml

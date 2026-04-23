@@ -54,9 +54,11 @@ function CreatorDetail({ cr, favs, toggleFav, gradient, onOpenVideo }: {
   const [activeSlide, setActiveSlide] = useState(0);
   // CMS images + works combined, fallback to gradients
   const cmsImages = [...(cr.images || []), ...(cr.works || [])];
+  // Modal displays up to ~500-800px wide on retina; request 1600w webp for crisp rendering.
+  const optimizeUrl = (url: string) => `${url}?w=1600&fm=webp&q=85`;
   const slides: { type: "img" | "grad"; value: string }[] =
     cmsImages.length > 0
-      ? cmsImages.map((img) => ({ type: "img" as const, value: img.url }))
+      ? cmsImages.map((img) => ({ type: "img" as const, value: optimizeUrl(img.url) }))
       : [gradient, gradient.replace("#8ab8d0", "#9ac8d8")].map((g) => ({ type: "grad" as const, value: g }));
 
   const handleScroll = () => {
@@ -435,7 +437,7 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
                   <div className={s.crCardImg}>
                     <div className={s.crCardImgBg} style={
                       cr.images?.[0]
-                        ? { backgroundImage: `url(${cr.images[0].url})` }
+                        ? { backgroundImage: `url(${cr.images[0].url}?w=720&h=720&fit=crop&fm=webp&q=85)` }
                         : { background: GRADIENTS[i % GRADIENTS.length] }
                     } />
                     <div className={s.crCardGrad} />

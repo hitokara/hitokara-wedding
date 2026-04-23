@@ -4,8 +4,14 @@ import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-
-const SITE_URL = "https://hitokarawedding.com";
+import AnalyticsEnhancer from "@/components/AnalyticsEnhancer";
+import {
+  SITE_URL,
+  AREA_LABEL_SHORT,
+  AREA_LABEL_FULL,
+  SEO_KEYWORDS,
+  schemaAreaServedExtended,
+} from "@/lib/areas";
 
 const shipporiMincho = Shippori_Mincho({
   weight: ["400", "500", "600", "700"],
@@ -38,40 +44,26 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | ヒトカラウェディング - 横浜・鎌倉のウェディングプロデュース",
-    default: "ヒトカラウェディング | 人から選ぶ、ふたりらしい結婚式 - 横浜・鎌倉",
+    template: `%s | ヒトカラウェディング - ${AREA_LABEL_SHORT}のウェディングプロデュース`,
+    default: `ヒトカラウェディング | 人から選ぶ、ふたりらしい結婚式 - ${AREA_LABEL_SHORT}`,
   },
   description:
-    "ヒトカラウェディングは横浜・鎌倉エリアを中心に、クリエイターを自分で選べるウェディングプロデュースブランドです。持ち込み自由・適正価格・透明な見積もりで、ふたりらしい結婚式を実現。鶴岡八幡宮・鎌倉宮での神前式にも対応。フリーランスのカメラマン・プランナー・ヘアメイクを顔と実績で指名できます。",
-  keywords: [
-    "横浜 結婚式",
-    "鎌倉 結婚式",
-    "結婚式 適正価格",
-    "持ち込み自由 結婚式",
-    "クリエイター 結婚式",
-    "ウェディングプランナー 横浜",
-    "鶴岡八幡宮 結婚式",
-    "鎌倉宮 結婚式",
-    "ふたりらしい結婚式",
-    "ウェディングプロデュース",
-    "フリーランス カメラマン 結婚式",
-    "ブライダル 見積もり シミュレーション",
-    "結婚式 費用 相場",
-  ],
+    `ヒトカラウェディングは${AREA_LABEL_FULL}でクリエイターを自分で選べるウェディングプロデュースブランドです。持ち込み自由・適正価格・透明な見積もりで、ふたりらしい結婚式を実現。鶴岡八幡宮・鎌倉宮での神前式にも対応。フリーランスのカメラマン・プランナー・ヘアメイクを顔と実績で指名できます。`,
+  keywords: SEO_KEYWORDS,
   openGraph: {
-    title: "ヒトカラウェディング | 人から選ぶ、ふたりらしい結婚式 - 横浜・鎌倉",
+    title: `ヒトカラウェディング | 人から選ぶ、ふたりらしい結婚式 - ${AREA_LABEL_SHORT}`,
     description:
-      "横浜・鎌倉で、クリエイターを自分で選べるウェディングプロデュース。持ち込み自由・適正価格・透明な見積もりで、ふたりらしい結婚式を。",
+      `${AREA_LABEL_FULL}で、クリエイターを自分で選べるウェディングプロデュース。持ち込み自由・適正価格・透明な見積もりで、ふたりらしい結婚式を。`,
     locale: "ja_JP",
     type: "website",
     siteName: "ヒトカラウェディング",
     url: SITE_URL,
     images: [
       {
-        url: "https://hitokarawedding.com/og-default.jpg",
+        url: `${SITE_URL}/og-default.jpg`,
         width: 1200,
         height: 630,
-        alt: "ヒトカラウェディング - 横浜・鎌倉のウェディングプロデュース",
+        alt: `ヒトカラウェディング - ${AREA_LABEL_SHORT}のウェディングプロデュース`,
       },
     ],
   },
@@ -79,7 +71,16 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "ヒトカラウェディング | 人から選ぶ、ふたりらしい結婚式",
     description:
-      "横浜・鎌倉で、クリエイターを自分で選べるウェディングプロデュース。持ち込み自由・適正価格。",
+      `${AREA_LABEL_SHORT}で、クリエイターを自分で選べるウェディングプロデュース。持ち込み自由・適正価格。`,
+    images: [
+      {
+        url: `${SITE_URL}/og-default.jpg`,
+        alt: "ヒトカラウェディング",
+      },
+    ],
+  },
+  other: {
+    "format-detection": "telephone=no",
   },
   robots: {
     index: true,
@@ -109,51 +110,83 @@ export const metadata: Metadata = {
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
+  "@id": `${SITE_URL}#org`,
   name: "ヒトカラウェディング",
-  alternateName: "HITOKARA WEDDING",
+  alternateName: ["HITOKARA WEDDING", "ヒトカラ", "hitokara wedding"],
   url: SITE_URL,
+  logo: {
+    "@type": "ImageObject",
+    url: `${SITE_URL}/logo-header.jpg`,
+    width: 512,
+    height: 512,
+  },
+  image: `${SITE_URL}/og-default.jpg`,
   description:
-    "横浜・鎌倉エリアを中心に、クリエイターを自分で選べるウェディングプロデュースブランド。持ち込み自由・適正価格・透明な見積もり。",
-  areaServed: [
-    { "@type": "City", name: "横浜市", addressCountry: "JP" },
-    { "@type": "City", name: "鎌倉市", addressCountry: "JP" },
-    { "@type": "City", name: "逗子市", addressCountry: "JP" },
-    { "@type": "City", name: "葉山町", addressCountry: "JP" },
+    `${AREA_LABEL_FULL}で、クリエイターを自分で選べるウェディングプロデュースブランド。持ち込み自由・適正価格・透明な見積もり。`,
+  foundingDate: "2024",
+  areaServed: schemaAreaServedExtended(),
+  contactPoint: [
+    {
+      "@type": "ContactPoint",
+      contactType: "customer support",
+      url: "https://lin.ee/tRn0iPk",
+      availableLanguage: ["Japanese", "ja"],
+      areaServed: "JP",
+    },
   ],
-  sameAs: ["https://lin.ee/tRn0iPk"],
+  sameAs: [
+    "https://lin.ee/tRn0iPk",
+    "https://www.instagram.com/hitokara_wedding",
+  ],
 };
 
 const localBusinessJsonLd = {
   "@context": "https://schema.org",
   "@type": "WeddingService" as const,
+  "@id": `${SITE_URL}#business`,
   name: "ヒトカラウェディング",
   description:
-    "横浜・鎌倉エリアのウェディングプロデュース。プランナー・カメラマン・ヘアメイクなどクリエイターを自分で選び、持ち込み自由・適正価格で結婚式を実現。鶴岡八幡宮・鎌倉宮での神前式にも対応。",
+    `${AREA_LABEL_FULL}のウェディングプロデュース。プランナー・カメラマン・ヘアメイクなどクリエイターを自分で選び、持ち込み自由・適正価格で結婚式を実現。鶴岡八幡宮・鎌倉宮での神前式にも対応。`,
   url: SITE_URL,
+  image: `${SITE_URL}/og-default.jpg`,
+  parentOrganization: { "@id": `${SITE_URL}#org` },
   address: {
     "@type": "PostalAddress",
     addressRegion: "神奈川県",
     addressLocality: "横浜市",
     addressCountry: "JP",
   },
-  areaServed: [
-    { "@type": "City", name: "横浜市" },
-    { "@type": "City", name: "鎌倉市" },
+  areaServed: schemaAreaServedExtended(),
+  priceRange: "¥¥",
+  knowsAbout: [
+    "結婚式", "ウェディング", "ウェディングプロデュース", "神前式",
+    "持ち込み自由", "適正価格ウェディング", "フリーランスクリエイター",
+    "鶴岡八幡宮", "鎌倉宮",
   ],
-  priceRange: "$$",
   openingHoursSpecification: {
     "@type": "OpeningHoursSpecification",
     dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
     opens: "10:00",
     closes: "20:00",
   },
+  makesOffer: {
+    "@type": "Offer",
+    name: "ウェディングプロデュース",
+    priceCurrency: "JPY",
+    description: "クリエイター指名制・持ち込み自由のウェディングプロデュース",
+    url: `${SITE_URL}/simulation`,
+  },
 };
 
 const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
+  "@id": `${SITE_URL}#website`,
   name: "ヒトカラウェディング",
+  alternateName: "HITOKARA WEDDING",
   url: SITE_URL,
+  inLanguage: "ja-JP",
+  publisher: { "@id": `${SITE_URL}#org` },
   potentialAction: {
     "@type": "SearchAction",
     target: {
@@ -194,6 +227,7 @@ export default function RootLayout({
         <Script id="ga4-init" strategy="afterInteractive">
           {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QPV9CZRY9H');`}
         </Script>
+        <AnalyticsEnhancer />
         <Header />
         <main>{children}</main>
         <Footer />

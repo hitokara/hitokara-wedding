@@ -40,8 +40,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = cms?.title ?? local?.title ?? slug;
   const excerpt = cms?.excerpt ?? local?.excerpt;
   const description = excerpt
-    ? `${excerpt} | 横浜・鎌倉のウェディングプロデュース ヒトカラウェディングのジャーナル。`
-    : `${title} - 横浜・鎌倉の結婚式に関する記事。ヒトカラウェディングジャーナル。`;
+    ? `${excerpt} | 横浜・鎌倉・東京のウェディングプロデュース ヒトカラウェディングのジャーナル。`
+    : `${title} - 横浜・鎌倉・東京の結婚式に関する記事。ヒトカラウェディングジャーナル。`;
   const thumbnailUrl = cms?.thumbnail?.url;
   return {
     title,
@@ -118,23 +118,50 @@ export default async function JournalArticlePage({ params }: Props) {
     ? { backgroundImage: `url(${thumbnailUrl})` }
     : { background: gradient };
 
+  const pageUrl = `https://hitokarawedding.com/journal/${slug}`;
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
+    "@id": `${pageUrl}#article`,
     headline: title,
     description: excerptText,
     datePublished: date.replace(/\./g, "-"),
-    author: { "@type": "Person" as const, name: author },
+    dateModified: (cms?.updatedAt ?? cms?.publishedAt ?? date).replace(/\./g, "-"),
+    articleSection: cat,
+    keywords: [cat, "結婚式", "横浜", "鎌倉", "東京", "関東", "ウェディング"].join(", "),
+    author: {
+      "@type": "Person" as const,
+      name: author,
+      ...(author === "大久保 雄治" ? { url: "https://hitokarawedding.com/concept" } : {}),
+    },
     publisher: {
       "@type": "Organization" as const,
+      "@id": "https://hitokarawedding.com#org",
       name: "ヒトカラウェディング",
       url: "https://hitokarawedding.com",
+      logo: {
+        "@type": "ImageObject" as const,
+        url: "https://hitokarawedding.com/logo-header.jpg",
+      },
     },
-    ...(thumbnailUrl ? { image: thumbnailUrl } : {}),
+    ...(thumbnailUrl
+      ? { image: { "@type": "ImageObject" as const, url: thumbnailUrl, width: 1200, height: 630 } }
+      : {}),
     mainEntityOfPage: {
       "@type": "WebPage" as const,
-      "@id": `https://hitokarawedding.com/journal/${slug}`,
+      "@id": pageUrl,
     },
+    inLanguage: "ja-JP",
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "トップ", item: "https://hitokarawedding.com" },
+      { "@type": "ListItem", position: 2, name: "ジャーナル", item: "https://hitokarawedding.com/journal" },
+      { "@type": "ListItem", position: 3, name: title, item: pageUrl },
+    ],
   };
 
   return (
@@ -142,6 +169,10 @@ export default async function JournalArticlePage({ params }: Props) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <div className={s.jMain}>
         <Breadcrumb items={[{ label: "Journal", href: "/journal" }, { label: title }]} />

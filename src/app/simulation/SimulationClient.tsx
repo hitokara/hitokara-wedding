@@ -330,7 +330,7 @@ function CreatorPicker({
           const isFav = favSet.has(cr.id);
           const imgUrl = cr.images?.[0]?.url;
           const bg = imgUrl
-            ? `url(${imgUrl}?w=280&h=280&fit=crop) center/cover no-repeat`
+            ? `url(${imgUrl}?w=480&h=480&fit=crop&fm=webp&q=85) center/cover no-repeat`
             : CARD_GRADIENTS[i % CARD_GRADIENTS.length];
           return (
             <div
@@ -395,7 +395,7 @@ function VenuePicker({
           const on = selectedId === v.id;
           const imgUrl = v.image?.url;
           const bg = imgUrl
-            ? `url(${imgUrl}?w=280&h=280&fit=crop) center/cover no-repeat`
+            ? `url(${imgUrl}?w=480&h=480&fit=crop&fm=webp&q=85) center/cover no-repeat`
             : CARD_GRADIENTS[i % CARD_GRADIENTS.length];
           return (
             <div
@@ -618,6 +618,8 @@ export default function SimulationClient({
   const [menuSels, setMenuSels] = useState<MenuSelMap>({});
   const [selectedVenue, setSelectedVenue] = useState<string | null>(null);
   const [breakdownOpen, setBreakdownOpen] = useState(false);
+  const hasTrackedStartRef = useRef(false);
+  const completedMilestonesRef = useRef<Set<number>>(new Set());
 
   // Restore from localStorage on mount
   useEffect(() => {
@@ -650,7 +652,14 @@ export default function SimulationClient({
   const accData = useMemo(() => buildAccordionData(categories), [categories]);
 
   const onSelect = useCallback((catId: string, itemId: string) => {
-    setSelections((prev) => ({ ...prev, [catId]: itemId }));
+    setSelections((prev) => {
+      // Fire sim_start only on the first selection of the session
+      if (!hasTrackedStartRef.current && Object.keys(prev).length === 0) {
+        trackEvent("sim_start", { guests });
+        hasTrackedStartRef.current = true;
+      }
+      return { ...prev, [catId]: itemId };
+    });
     // Clear creator nominations & menu selections when switching
     setCreatorNoms((prev) => {
       const next = { ...prev };
@@ -665,7 +674,7 @@ export default function SimulationClient({
     // Clear venue selection when switching venue options
     if (catId === "venue") setSelectedVenue(null);
     trackEvent("sim_select_item", { category: catId, item: itemId });
-  }, []);
+  }, [guests]);
 
   const onMenuToggle = useCallback((catId: string, creatorId: string, menuId: string) => {
     setMenuSels((prev) => {
@@ -725,11 +734,51 @@ export default function SimulationClient({
   const maxBudget = 5000000;
   const barWidth = Math.min((total / maxBudget) * 100, 100);
 
+  // Completion milestone events (25% / 50% / 75% / 100% of categories filled)
+  useEffect(() => {
+    const total = accData.length || 1;
+    const filled = breakdown.filter((b) => b.selected).length;
+    const pct = Math.round((filled / total) * 100);
+    const thresholds = [25, 50, 75, 100];
+    for (const t of thresholds) {
+      if (pct >= t && !completedMilestonesRef.current.has(t)) {
+        completedMilestonesRef.current.add(t);
+        trackEvent("sim_progress", {
+          percent: t,
+          filled,
+          total_categories: total,
+        });
+      }
+    }
+    if (filled === total && !completedMilestonesRef.current.has(999)) {
+      completedMilestonesRef.current.add(999);
+      const nomCount = Object.values(creatorNoms).reduce((s, ids) => s + ids.length, 0);
+      trackEvent("sim_complete", {
+        total_price: total,
+        guests,
+        creators_nominated: nomCount,
+      });
+    }
+  }, [breakdown, accData.length, creatorNoms, guests]);
+
   const handlePdf = useCallback(() => {
     if (!printRef.current) return;
+    const filled = breakdown.filter((b) => b.selected).length;
+    const nomCount = Object.values(creatorNoms).reduce((s, ids) => s + ids.length, 0);
+    const nomIds = Object.values(creatorNoms).flat().join(",");
+    trackEvent("sim_pdf_download", {
+      total_price: total,
+      guests,
+      categories_filled: filled,
+      categories_total: accData.length,
+      creators_nominated: nomCount,
+      creator_ids: nomIds.slice(0, 100), // GA4 param cap 100 chars
+      has_venue: selectedVenue ? 1 : 0,
+    });
+    // Keep legacy event for backward compatibility
     trackEvent("sim_pdf_save", { total });
     generatePdf(printRef.current);
-  }, [total]);
+  }, [total, breakdown, creatorNoms, guests, accData.length, selectedVenue]);
 
   // Image-save fallback kept for future use. Currently SP/PC both use PDF.
   void generateImage;
@@ -916,7 +965,7 @@ export default function SimulationClient({
             max={100}
             value={guests}
             step={1}
-            onChange={(e) => setGuests(Number(e.target.value))}
+            onChange={(e) => setGuests(Number(e.target.value))} onPointerUp={() => trackEvent("sim_guests_change", { guests })} onBlur={() => trackEvent("sim_guests_change", { guests })}
           />
         </div>
         <AccordionSection data={accData} guests={guests} selections={selections} onSelect={onSelect} creatorNoms={creatorNoms} onCreatorNom={onCreatorNom} cmsCreators={cmsCreators} venues={venues} selectedVenue={selectedVenue} onVenuePick={onVenuePick} menuSels={menuSels} onMenuToggle={onMenuToggle} />
@@ -948,7 +997,7 @@ export default function SimulationClient({
             max={100}
             value={guests}
             step={1}
-            onChange={(e) => setGuests(Number(e.target.value))}
+            onChange={(e) => setGuests(Number(e.target.value))} onPointerUp={() => trackEvent("sim_guests_change", { guests })} onBlur={() => trackEvent("sim_guests_change", { guests })}
             style={{ width: "100%", marginBottom: 16 }}
           />
         </div>

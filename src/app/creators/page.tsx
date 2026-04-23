@@ -2,16 +2,17 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { CREATORS_LIST } from "@/lib/creators";
 import { getCreators, mapCMSCreator } from "@/lib/microcms";
+import { AREA_LABEL_SHORT, AREA_LABEL_FULL, SITE_URL } from "@/lib/areas";
 import CreatorsClient from "./CreatorsClient";
 
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "クリエイター一覧 - 横浜・鎌倉のウェディングクリエイター",
+  title: `クリエイター一覧 - ${AREA_LABEL_SHORT}のウェディングクリエイター`,
   description:
-    "横浜・鎌倉エリアで活躍するウェディングクリエイター一覧。プランナー・カメラマン・ヘアメイク・映像・司会・フラワーを顔と実績で選べます。",
+    `${AREA_LABEL_FULL}で活躍するウェディングクリエイター一覧。プランナー・カメラマン・ヘアメイク・映像・司会・フラワーを顔と実績で選べます。`,
   alternates: {
-    canonical: "https://hitokarawedding.com/creators",
+    canonical: `${SITE_URL}/creators`,
   },
 };
 

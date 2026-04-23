@@ -1,5 +1,6 @@
 import { ARTICLES } from "@/lib/articles";
 import { getArticles, mapCMSArticle } from "@/lib/microcms";
+import { AREA_LABEL_SHORT, AREA_LABEL_FULL, SITE_URL } from "@/lib/areas";
 import JournalClient from "@/components/JournalClient";
 import s from "./page.module.css";
 
@@ -8,11 +9,11 @@ import type { Metadata } from "next";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "ジャーナル - 結婚式準備のヒントと横浜・鎌倉の会場情報",
+  title: `ジャーナル - 結婚式準備のヒントと${AREA_LABEL_SHORT}の会場情報`,
   description:
-    "横浜・鎌倉エリアの結婚式に関するジャーナル。会場レポート、クリエイター紹介、費用・見積もりのノウハウ、持ち込み自由のウェディングスタイルなど、ふたりらしい結婚式づくりのヒントをお届けします。",
+    `${AREA_LABEL_FULL}の結婚式に関するジャーナル。会場レポート、クリエイター紹介、費用・見積もりのノウハウ、持ち込み自由のウェディングスタイルなど、ふたりらしい結婚式づくりのヒントをお届けします。`,
   alternates: {
-    canonical: "https://hitokarawedding.com/journal",
+    canonical: `${SITE_URL}/journal`,
   },
 };
 

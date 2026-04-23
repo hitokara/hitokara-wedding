@@ -6,16 +6,17 @@ import VenueGrid from "@/components/VenueGrid";
 import { CREATORS_LIST } from "@/lib/creators";
 import { ARTICLES } from "@/lib/articles";
 import { getCreators, getArticles, getVenues, mapCMSCreator, mapCMSArticle } from "@/lib/microcms";
+import { AREA_LABEL_SHORT, AREA_LABEL_FULL, SITE_URL } from "@/lib/areas";
 import s from "./page.module.css";
 
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "横浜・鎌倉で、ふたりらしい結婚式を | ヒトカラウェディング",
+  title: `${AREA_LABEL_SHORT}で、ふたりらしい結婚式を | ヒトカラウェディング`,
   description:
-    "横浜・鎌倉エリアで、クリエイターを自分で選べるウェディングプロデュース。持ち込み自由・適正価格の結婚式。カメラマン・プランナー・ヘアメイクを顔と実績で指名。鶴岡八幡宮・鎌倉宮での神前式にも対応。見積もりシミュレーターで費用をリアルタイム試算。",
+    `${AREA_LABEL_FULL}で、クリエイターを自分で選べるウェディングプロデュース。持ち込み自由・適正価格の結婚式。カメラマン・プランナー・ヘアメイクを顔と実績で指名。鶴岡八幡宮・鎌倉宮での神前式にも対応。見積もりシミュレーターで費用をリアルタイム試算。`,
   alternates: {
-    canonical: "https://hitokarawedding.com",
+    canonical: SITE_URL,
   },
 };
 
