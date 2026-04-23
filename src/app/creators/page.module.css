@@ -25,10 +25,67 @@
   white-space: nowrap; flex-shrink: 0; font-family: var(--gothic); transition: all .15s;
 }
 .fBtnOn { background: var(--sea); color: #fff; border-color: var(--sea); }
+.fBtnEmpty { color: var(--border2); border-color: var(--border); opacity: .6; }
+.fBtnEmpty.fBtnOn { background: var(--border); color: var(--t2); border-color: var(--border); opacity: 1; }
 
 /* ===== Grid ===== */
 .gridArea { padding: 16px 20px 48px; flex: 1; }
 .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
+/* ===== Empty State (category has no creators) ===== */
+.emptyState {
+  padding: 48px 24px 64px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 520px;
+  margin: 0 auto;
+}
+.emptyStateIcon {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: var(--seal); color: var(--sea);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 4px;
+}
+.emptyStateLabel {
+  font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--sea); font-weight: 500;
+}
+.emptyStateTitle {
+  font-family: var(--mincho); font-size: 20px; font-weight: 400;
+  color: var(--t1); letter-spacing: .05em; margin: 0;
+}
+.emptyStateLead {
+  font-size: 13px; color: var(--t2); line-height: 1.9;
+  margin: 4px 0 20px; letter-spacing: .03em;
+}
+.emptyStateCta {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  width: 100%;
+}
+.emptyStateBtn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--sea); color: #fff;
+  padding: 13px 28px; border-radius: 26px;
+  font-size: 13px; font-family: var(--gothic); letter-spacing: .06em;
+  text-decoration: none;
+  transition: background .2s;
+  max-width: 360px; width: 100%;
+}
+.emptyStateBtn:hover { background: var(--sead); }
+.emptyStateBtnPip {
+  width: 7px; height: 7px; border-radius: 50%; background: #7ee8a2;
+}
+.emptyStateNote {
+  font-size: 11px; color: var(--t2); letter-spacing: .05em;
+}
+@media (min-width: 768px) {
+  .emptyState { padding: 72px 40px 96px; }
+  .emptyStateTitle { font-size: 24px; }
+  .emptyStateLead { font-size: 14px; }
+}
 
 /* ===== Creator Card ===== */
 .crCard {

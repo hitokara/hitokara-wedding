@@ -377,18 +377,54 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
           </div>
 
           <div className={s.filterBar}>
-            {FILTER_CATS.map((fc) => (
-              <button
-                key={fc.key}
-                className={`${s.fBtn} ${filter === fc.key ? s.fBtnOn : ""}`}
-                onClick={() => setFilter(fc.key)}
-              >
-                {fc.label}
-              </button>
-            ))}
+            {FILTER_CATS.map((fc) => {
+              const count = fc.key === "all" ? creators.length : creators.filter((c) => c.cat === fc.key).length;
+              const empty = fc.key !== "all" && count === 0;
+              return (
+                <button
+                  key={fc.key}
+                  className={`${s.fBtn} ${filter === fc.key ? s.fBtnOn : ""} ${empty ? s.fBtnEmpty : ""}`}
+                  onClick={() => setFilter(fc.key)}
+                >
+                  {fc.label}
+                </button>
+              );
+            })}
           </div>
 
           <div className={s.gridArea}>
+            {filter !== "all" && filtered.length === 0 ? (
+              <div className={s.emptyState}>
+                <div className={s.emptyStateIcon}>
+                  <svg viewBox="0 0 48 48" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="24" cy="18" r="8" />
+                    <path d="M8 40c2-8 9-12 16-12s14 4 16 12" />
+                    <path d="M36 14l4 4m0-4l-4 4" opacity=".45" />
+                  </svg>
+                </div>
+                <div className={s.emptyStateLabel}>
+                  {FILTER_CATS.find((f) => f.key === filter)?.label} カテゴリのクリエイター
+                </div>
+                <h3 className={s.emptyStateTitle}>現在準備中です</h3>
+                <p className={s.emptyStateLead}>
+                  このカテゴリで活動されているクリエイターの方、<br />
+                  ヒトカラウェディングとの提携をお待ちしています。
+                </p>
+                <div className={s.emptyStateCta}>
+                  <a
+                    href="https://lin.ee/tRn0iPk"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={s.emptyStateBtn}
+                    onClick={() => trackEvent("creator_partner_cta", { category: filter })}
+                  >
+                    <span className={s.emptyStateBtnPip} />
+                    提携をご希望のクリエイターの方へ
+                  </a>
+                  <div className={s.emptyStateNote}>LINE からお気軽にお問い合わせください</div>
+                </div>
+              </div>
+            ) : (
             <div className={s.grid}>
               {filtered.map((cr, i) => (
                 <div
@@ -424,6 +460,7 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
                 </div>
               ))}
             </div>
+            )}
           </div>
         </div>
 

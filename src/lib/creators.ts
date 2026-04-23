@@ -161,6 +161,5 @@ export const FILTER_CATS = [
   { key: "flower", label: "装花" },
   { key: "dress", label: "ドレス" },
   { key: "gift", label: "ギフト" },
-  { key: "item", label: "アイテム" },
   { key: "other", label: "その他" },
 ];
