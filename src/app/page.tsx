@@ -299,29 +299,50 @@ export default async function HomePage() {
           <AnimateOnScroll animation="fadeUp" delay={80}>
             <h2 className={s.secH2}>結婚式の<em>ヒント</em>と物語。</h2>
           </AnimateOnScroll>
-          <div className={s.jGrid}>
-            {topArticles.map((a, i) => (
-              <AnimateOnScroll key={a.slug} animation="fadeUp" delay={80 + i * 80}>
-                <Link href={`/journal/${a.slug}`} className={s.jCard}>
-                  <div className={s.jImg}>
-                    <div
-                      className={s.jImgInner}
-                      style={{
-                        background: a.thumbnailUrl
-                          ? `url(${a.thumbnailUrl}?w=600&h=400&fit=crop) center/cover no-repeat`
-                          : a.gradient,
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <div className={s.jCat}>{a.cat}</div>
-                    <div className={s.jTitle}>{a.title}</div>
-                    <div className={s.jDate}>{a.date}</div>
-                  </div>
-                </Link>
-              </AnimateOnScroll>
-            ))}
-          </div>
+          {topArticles.length === 0 ? (
+            <AnimateOnScroll animation="fadeUp" delay={80}>
+              <div className={s.jEmpty}>
+                <div className={s.jEmptyDeco}>
+                  <svg viewBox="0 0 64 64" width="48" height="48" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 14h28v36H14z" />
+                    <path d="M42 14l8 8v28h-8" />
+                    <path d="M20 22h16M20 30h16M20 38h10" />
+                  </svg>
+                </div>
+                <div className={s.jEmptyLabel}>Coming Soon</div>
+                <h3 className={s.jEmptyTitle}>ジャーナル、準備中です。</h3>
+                <p className={s.jEmptyLead}>
+                  結婚式の準備に寄り添うコラムや、<br />
+                  クリエイターの物語、会場レポートなど。<br />
+                  Wedding Journal は随時更新予定です。
+                </p>
+              </div>
+            </AnimateOnScroll>
+          ) : (
+            <div className={s.jGrid}>
+              {topArticles.map((a, i) => (
+                <AnimateOnScroll key={a.slug} animation="fadeUp" delay={80 + i * 80}>
+                  <Link href={`/journal/${a.slug}`} className={s.jCard}>
+                    <div className={s.jImg}>
+                      <div
+                        className={s.jImgInner}
+                        style={{
+                          background: a.thumbnailUrl
+                            ? `url(${a.thumbnailUrl}?w=600&h=400&fit=crop) center/cover no-repeat`
+                            : a.gradient,
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <div className={s.jCat}>{a.cat}</div>
+                      <div className={s.jTitle}>{a.title}</div>
+                      <div className={s.jDate}>{a.date}</div>
+                    </div>
+                  </Link>
+                </AnimateOnScroll>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -334,16 +355,24 @@ export default async function HomePage() {
           <AnimateOnScroll animation="fadeUp" delay={80}>
             <h2 className={s.secH2}>お知らせ</h2>
           </AnimateOnScroll>
-          <div className={s.newsList}>
-            {newsArticles.slice(0, 2).map((a) => (
-              <AnimateOnScroll key={a.slug} animation="fadeUp" delay={120}>
-                <Link href={`/journal/${a.slug}`} className={s.newsItem}>
-                  <span className={s.newsDate}>{a.date}</span>
-                  <span className={s.newsTitle}>{a.title}</span>
-                </Link>
-              </AnimateOnScroll>
-            ))}
-          </div>
+          {newsArticles.length === 0 ? (
+            <AnimateOnScroll animation="fadeUp" delay={80}>
+              <p className={s.newsEmpty}>
+                お知らせは随時更新予定です。最新情報は<a href="https://www.instagram.com/hitokara_wedding?igsh=dDNueWZxdnQ0bDZ3" target="_blank" rel="noopener noreferrer">Instagram</a>でもお届けしています。
+              </p>
+            </AnimateOnScroll>
+          ) : (
+            <div className={s.newsList}>
+              {newsArticles.slice(0, 2).map((a) => (
+                <AnimateOnScroll key={a.slug} animation="fadeUp" delay={120}>
+                  <Link href={`/journal/${a.slug}`} className={s.newsItem}>
+                    <span className={s.newsDate}>{a.date}</span>
+                    <span className={s.newsTitle}>{a.title}</span>
+                  </Link>
+                </AnimateOnScroll>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
