@@ -3,12 +3,13 @@
 set -e
 HERE="$(cd "$(dirname "$0")" && pwd)"
 HTML="$HERE/template.html"
-OUT_PNG="$HERE/og-default.png"
+RAW_PNG="$HERE/og-raw.png"
+CROP_PNG="$HERE/og-default.png"
 OUT_JPG="$HERE/../../public/og-default.jpg"
 URL="file://$HTML"
 CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
-echo "▶ Rendering $HTML → $OUT_PNG"
+echo "▶ Rendering $HTML"
 
 "$CHROME" \
   --headless=new \
@@ -16,18 +17,26 @@ echo "▶ Rendering $HTML → $OUT_PNG"
   --no-sandbox \
   --hide-scrollbars \
   --force-device-scale-factor=1 \
-  --window-size=1200,700 \
+  --window-size=1200,720 \
   --virtual-time-budget=8000 \
-  --screenshot="$OUT_PNG" \
+  --screenshot="$RAW_PNG" \
   "$URL" 2>/dev/null
 
-if [ ! -f "$OUT_PNG" ]; then
+if [ ! -f "$RAW_PNG" ]; then
   echo "❌ Render failed"; exit 1
 fi
 
-# Crop to exactly 1200x630 (in case window-size produced extra rows) + convert to JPEG q88
-sips --cropToHeightWidth 630 1200 "$OUT_PNG" --out "$OUT_PNG" >/dev/null 2>&1 || true
-sips -s format jpeg -s formatOptions 88 "$OUT_PNG" --out "$OUT_JPG" >/dev/null
+# Top-left crop to 1200x630 using Python (sips --cropOffset is unreliable)
+python3 - <<PY
+from PIL import Image
+img = Image.open("$RAW_PNG")
+img.crop((0, 0, 1200, 630)).save("$CROP_PNG")
+PY
+
+# Convert to JPEG q88
+sips -s format jpeg -s formatOptions 88 "$CROP_PNG" --out "$OUT_JPG" >/dev/null
+
+rm -f "$RAW_PNG" "$CROP_PNG"
 
 SIZE=$(stat -f%z "$OUT_JPG")
 DIM=$(sips -g pixelWidth -g pixelHeight "$OUT_JPG" | tail -2 | tr '\n' ' ')
