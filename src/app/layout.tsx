@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { Shippori_Mincho, Cormorant_Garamond, Zen_Kaku_Gothic_New } from "next/font/google";
 import Script from "next/script";
+import { Suspense } from "react";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AnalyticsEnhancer from "@/components/AnalyticsEnhancer";
+import { GA_ID } from "@/lib/gtag";
 import {
   SITE_URL,
   AREA_LABEL_SHORT,
@@ -208,6 +210,8 @@ export default function RootLayout({
       className={`${shipporiMincho.variable} ${cormorantGaramond.variable} ${zenKakuGothicNew.variable}`}
     >
       <head>
+        {/* Google AdSense account (verification + default load hint) */}
+        <meta name="google-adsense-account" content="ca-pub-2674981129220291" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
@@ -222,12 +226,57 @@ export default function RootLayout({
         />
       </head>
       <body>
-        {/* Google Analytics 4 */}
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-QPV9CZRY9H" strategy="afterInteractive" />
-        <Script id="ga4-init" strategy="afterInteractive">
-          {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QPV9CZRY9H');`}
-        </Script>
-        <AnalyticsEnhancer />
+        {/* Google Analytics 4 — with Consent Mode v2 defaults */}
+        <Script
+          id="ga4-consent"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              window.gtag = gtag;
+              gtag('consent', 'default', {
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+                analytics_storage: 'granted',
+                functionality_storage: 'granted',
+                personalization_storage: 'granted',
+                security_storage: 'granted',
+                wait_for_update: 500
+              });
+              gtag('js', new Date());
+            `,
+          }}
+        />
+        <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
+        <Script
+          id="ga4-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              gtag('config', '${GA_ID}', {
+                anonymize_ip: true,
+                cookie_flags: 'SameSite=None;Secure',
+                allow_google_signals: true,
+                allow_ad_personalization_signals: false,
+                send_page_view: true
+              });
+            `,
+          }}
+        />
+        <Suspense fallback={null}>
+          <AnalyticsEnhancer />
+        </Suspense>
+
+        {/* Google AdSense */}
+        <Script
+          id="adsbygoogle-init"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2674981129220291"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+
         <Header />
         <main>{children}</main>
         <Footer />

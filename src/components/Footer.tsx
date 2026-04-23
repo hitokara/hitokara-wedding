@@ -40,7 +40,7 @@ export default function Footer() {
         </div>
         <div className={styles.social}>
           <a
-            href="https://www.instagram.com/hitokara_wedding/"
+            href="https://www.instagram.com/hitokara_wedding?igsh=dDNueWZxdnQ0bDZ3"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.socialLink}

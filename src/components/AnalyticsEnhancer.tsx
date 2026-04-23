@@ -1,19 +1,37 @@
 "use client";
 
-import { useEffect } from "react";
-import { trackEvent } from "@/lib/gtag";
+import { useEffect, useRef } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { trackEvent, trackPageview } from "@/lib/gtag";
 
 /**
  * Auto-tracks global analytics events:
+ *  - SPA page_view on route changes (App Router)
  *  - scroll depth (25/50/75/100%)
  *  - outbound link clicks
- *  - LINE CTA clicks (lin.ee / line.me domains)
+ *  - LINE / Instagram CTA clicks
  *
  * Mount once in the root layout.
  */
 export default function AnalyticsEnhancer() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const firstLoadRef = useRef(true);
+
+  // SPA page_view tracking
   useEffect(() => {
-    // Scroll depth tracking (fire once per threshold per page view)
+    if (firstLoadRef.current) {
+      // First load — already tracked by send_page_view in gtag config
+      firstLoadRef.current = false;
+      return;
+    }
+    const query = searchParams?.toString();
+    const full = query ? `${pathname}?${query}` : pathname;
+    trackPageview(full);
+  }, [pathname, searchParams]);
+
+  // Scroll depth + outbound click (reset thresholds on each route)
+  useEffect(() => {
     const fired = new Set<number>();
     const thresholds = [25, 50, 75, 100];
 
@@ -21,10 +39,7 @@ export default function AnalyticsEnhancer() {
       const h = document.documentElement;
       const scrollTop = window.scrollY || h.scrollTop || 0;
       const viewport = window.innerHeight || h.clientHeight || 0;
-      const full = Math.max(
-        h.scrollHeight,
-        document.body?.scrollHeight ?? 0
-      );
+      const full = Math.max(h.scrollHeight, document.body?.scrollHeight ?? 0);
       const denom = Math.max(full - viewport, 1);
       const pct = Math.min(100, Math.round((scrollTop / denom) * 100));
       for (const t of thresholds) {
@@ -46,9 +61,9 @@ export default function AnalyticsEnhancer() {
       }
     };
     window.addEventListener("scroll", handler, { passive: true });
-    onScroll(); // initial check (short pages)
+    onScroll();
 
-    // Outbound link + LINE / Instagram click tracking
+    // Outbound + LINE / Instagram click tracking
     const clickHandler = (ev: Event) => {
       const target = ev.target as HTMLElement | null;
       if (!target) return;
@@ -65,19 +80,18 @@ export default function AnalyticsEnhancer() {
       const isInternal =
         host === location.host || host === "" || host.endsWith(".hitokarawedding.com");
 
-      // LINE CTAs
       if (host === "lin.ee" || host.endsWith("line.me")) {
         trackEvent("line_click", { href: a.href, path: location.pathname });
         return;
       }
-
-      // Instagram
       if (host.includes("instagram.com")) {
         trackEvent("instagram_click", { href: a.href, path: location.pathname });
         return;
       }
-
-      // Generic outbound
+      if (host.includes("calendar.google.com") || host.includes("calendar.app.google")) {
+        trackEvent("booking_click", { href: a.href, path: location.pathname });
+        return;
+      }
       if (!isInternal) {
         trackEvent("outbound_click", { host, href: a.href, path: location.pathname });
       }
@@ -88,7 +102,7 @@ export default function AnalyticsEnhancer() {
       window.removeEventListener("scroll", handler);
       document.removeEventListener("click", clickHandler, { capture: true });
     };
-  }, []);
+  }, [pathname]);
 
   return null;
 }
