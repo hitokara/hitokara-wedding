@@ -47,10 +47,11 @@ const VALUES = [
 ];
 
 const HERO_SLIDES = [
-  "url(/hero-portrait-1.jpg) center/cover no-repeat",
-  "url(/hero-portrait-2.jpg) center/cover no-repeat",
-  "url(/hero-portrait-3.jpg) center/cover no-repeat",
-  "url(/hero-portrait-4.jpg) center/cover no-repeat",
+  "/hero-portrait-1.jpg",
+  "/hero-portrait-2.jpg",
+  "/hero-portrait-3.jpg",
+  "/hero-portrait-4.jpg",
+  "/hero-portrait-5.jpg",
 ];
 
 const STEPS = [
@@ -143,11 +144,14 @@ export default async function HomePage() {
       {/* Hero (slideshow) */}
       <section className={s.hero} aria-label="ヒトカラウェディング - 横浜・鎌倉のウェディングプロデュース">
         <div className={s.heroImgArea}>
-          {HERO_SLIDES.map((bg, i) => (
+          {HERO_SLIDES.map((src, i) => (
             <div
               key={i}
               className={s.heroSlide}
-              style={{ background: bg, animationDelay: `${i * 5}s` }}
+              style={{
+                backgroundImage: `url(${src})`,
+                animationDelay: `${i * 3}s`,
+              }}
             />
           ))}
           <div className={s.heroOverlay} />

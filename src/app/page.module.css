@@ -3,12 +3,13 @@
   0% { transform: scale(1); }
   100% { transform: scale(1.08) translate(-1%, 1%); }
 }
+/* 5 slides × 3s each = 15s total cycle. Each slide visible 20% (3s) with short fades. */
 @keyframes heroSlide {
-  0%      { opacity: 0; }
-  6%      { opacity: 1; }
-  33.33%  { opacity: 1; }
-  39.33%  { opacity: 0; }
-  100%    { opacity: 0; }
+  0%    { opacity: 0; }
+  3%    { opacity: 1; }
+  20%   { opacity: 1; }
+  23%   { opacity: 0; }
+  100%  { opacity: 0; }
 }
 @keyframes shimmer {
   0% { background-position: -200% center; }
@@ -66,8 +67,9 @@
   position: absolute;
   inset: -4%;
   background-size: cover;
-  background-position: center 30%;
-  animation: kenburns 18s ease-in-out infinite alternate, heroSlide 15s infinite;
+  background-position: center 18%;
+  background-repeat: no-repeat;
+  animation: kenburns 10s ease-in-out infinite alternate, heroSlide 15s infinite;
   opacity: 0;
 }
 .heroSlide:first-child { opacity: 1; }
