@@ -118,16 +118,19 @@
 }
 .heroH1 {
   font-family: var(--mincho);
-  font-size: clamp(22px, 6.2vw, 38px);
+  font-size: clamp(20px, 5.6vw, 38px);
   font-weight: 400;
   line-height: 1.5;
-  letter-spacing: .03em;
+  letter-spacing: .02em;
   color: #fff;
   text-shadow: 0 1px 20px rgba(0,0,0,.18);
-  /* Japanese-aware wrapping: keep phrase intact, break at punctuation */
-  word-break: keep-all;
-  overflow-wrap: break-word;
+  /* CJK-aware typography: natural char-by-char wrap + strict line-break rules
+     prevent orphan punctuation (。、) from sitting alone at line-start */
+  word-break: normal;
   line-break: strict;
+  overflow-wrap: anywhere;
+  /* Hanging punctuation lets 。 hang outside the line box (Safari/iOS) */
+  hanging-punctuation: allow-end last;
 }
 .heroH1 em {
   font-style: normal;
@@ -135,8 +138,6 @@
 }
 .heroLine {
   display: block;
-  /* 各行が単独で長すぎる時は単語境界で折り返す */
-  white-space: normal;
 }
 .heroSub {
   font-size: 13.5px;
