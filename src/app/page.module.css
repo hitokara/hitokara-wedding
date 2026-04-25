@@ -227,12 +227,12 @@
   }
   /* Left text area — darker text on bg for PC (since photo moved) */
   .heroLeft {
-    width: 60%; max-width: 760px;
+    width: 64%; max-width: 860px;
     padding: 0 56px 0;
     align-items: flex-start;
   }
-  /* Each phrase on one line; smaller font so 14 chars fit comfortably */
-  .heroH1 { font-size: clamp(28px, 2.9vw, 38px); line-height: 1.55; }
+  /* PC: bigger headline; still fits 14 chars per line */
+  .heroH1 { font-size: clamp(32px, 3.4vw, 48px); line-height: 1.5; }
   .heroEye { color: var(--sea); }
   .heroH1 { color: var(--t1); }
   .heroH1 em { color: var(--sead); }

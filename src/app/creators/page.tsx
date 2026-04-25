@@ -1,11 +1,24 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { CREATORS_LIST } from "@/lib/creators";
+import { CREATORS_LIST, FILTER_CATS } from "@/lib/creators";
+import type { Creator } from "@/lib/creators";
 import { getCreators, mapCMSCreator } from "@/lib/microcms";
 import { AREA_LABEL_SHORT, AREA_LABEL_FULL, SITE_URL } from "@/lib/areas";
 import CreatorsClient from "./CreatorsClient";
 
 export const revalidate = 60;
+
+/** Sort creators in FILTER_CATS order; within same category, keep original order */
+const CAT_ORDER: Record<string, number> = Object.fromEntries(
+  FILTER_CATS.filter((c) => c.key !== "all").map((c, i) => [c.key, i])
+);
+function sortByCategory(creators: Creator[]): Creator[] {
+  return [...creators].sort((a, b) => {
+    const ai = CAT_ORDER[a.cat] ?? 999;
+    const bi = CAT_ORDER[b.cat] ?? 999;
+    return ai - bi;
+  });
+}
 
 export const metadata: Metadata = {
   title: `クリエイター一覧 - ${AREA_LABEL_SHORT}のウェディングクリエイター`,
@@ -23,7 +36,7 @@ const EXTRA_BY_NAME = new Map(
 
 export default async function CreatorsPage() {
   const cmsResult = await getCreators();
-  const creators =
+  const raw =
     cmsResult.contents.length > 0
       ? cmsResult.contents.map((c) => {
           const mapped = mapCMSCreator(c);
@@ -36,6 +49,9 @@ export default async function CreatorsPage() {
           };
         })
       : CREATORS_LIST;
+
+  // Sort by category order (planner first, then photo/movie/hair/dress/...)
+  const creators = sortByCategory(raw);
 
   return (
     <Suspense>
