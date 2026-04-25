@@ -118,16 +118,23 @@
 }
 .heroH1 {
   font-family: var(--mincho);
-  font-size: clamp(28px, 6vw, 52px);
+  font-size: clamp(24px, 6.4vw, 52px);
   font-weight: 400;
   line-height: 1.5;
-  letter-spacing: .06em;
+  letter-spacing: .04em;
   color: #fff;
   text-shadow: 0 1px 20px rgba(0,0,0,.18);
+  /* Japanese-aware wrapping: break at punctuation, keep phrase intact */
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  line-break: strict;
 }
 .heroH1 em {
   font-style: normal;
   color: rgba(255,255,255,.92);
+}
+.heroLine {
+  display: block;
 }
 .heroSub {
   font-size: 13.5px;

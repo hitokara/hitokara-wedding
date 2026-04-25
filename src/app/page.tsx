@@ -160,10 +160,10 @@ export default async function HomePage() {
           </AnimateOnScroll>
           <AnimateOnScroll animation="fadeUp" delay={80}>
             <h1 className={s.heroH1}>
-              <span style={{display:'inline-block', whiteSpace:'nowrap'}}>結婚する相手は、大好きな人。</span><br />
-              <span style={{display:'inline-block', whiteSpace:'nowrap'}}>招くのも、大好きな人たち。</span><br />
-              <span style={{display:'inline-block', whiteSpace:'nowrap'}}>だからこそ、</span><br />
-              <span style={{display:'inline-block', whiteSpace:'nowrap'}}>結婚式も<em>&ldquo;人&rdquo;で選びたい</em></span>
+              <span className={s.heroLine}>結婚する相手は、大好きな人。</span>
+              <span className={s.heroLine}>招くのも、大好きな人たち。</span>
+              <span className={s.heroLine}>だからこそ、</span>
+              <span className={s.heroLine}>結婚式も<em>&ldquo;人&rdquo;で選びたい</em></span>
             </h1>
           </AnimateOnScroll>
           <AnimateOnScroll animation="fadeUp" delay={160}>
