@@ -118,13 +118,13 @@
 }
 .heroH1 {
   font-family: var(--mincho);
-  font-size: clamp(24px, 6.4vw, 52px);
+  font-size: clamp(22px, 6.2vw, 38px);
   font-weight: 400;
   line-height: 1.5;
-  letter-spacing: .04em;
+  letter-spacing: .03em;
   color: #fff;
   text-shadow: 0 1px 20px rgba(0,0,0,.18);
-  /* Japanese-aware wrapping: break at punctuation, keep phrase intact */
+  /* Japanese-aware wrapping: keep phrase intact, break at punctuation */
   word-break: keep-all;
   overflow-wrap: break-word;
   line-break: strict;
@@ -135,6 +135,8 @@
 }
 .heroLine {
   display: block;
+  /* 各行が単独で長すぎる時は単語境界で折り返す */
+  white-space: normal;
 }
 .heroSub {
   font-size: 13.5px;
@@ -225,10 +227,12 @@
   }
   /* Left text area — darker text on bg for PC (since photo moved) */
   .heroLeft {
-    width: 56%; max-width: 620px;
-    padding: 0 48px 0;
+    width: 60%; max-width: 760px;
+    padding: 0 56px 0;
     align-items: flex-start;
   }
+  /* Each phrase on one line; smaller font so 14 chars fit comfortably */
+  .heroH1 { font-size: clamp(28px, 2.9vw, 38px); line-height: 1.55; }
   .heroEye { color: var(--sea); }
   .heroH1 { color: var(--t1); }
   .heroH1 em { color: var(--sead); }
