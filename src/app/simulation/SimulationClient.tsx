@@ -730,7 +730,19 @@ export default function SimulationClient({
     });
   }, [accData, selections, guests, creatorNoms, crSource, menuSels, venues, selectedVenue]);
 
-  const total = useMemo(() => breakdown.reduce((sum, b) => sum + b.price, 0), [breakdown]);
+  /** Subtotal of all selected items */
+  const subtotal = useMemo(() => breakdown.reduce((sum, b) => sum + b.price, 0), [breakdown]);
+  /** サービス料 10%（料理・ドリンク に対して） */
+  const serviceFee = useMemo(() => {
+    const food = breakdown.find((b) => b.id === "food");
+    return food ? Math.round(food.price * 0.10) : 0;
+  }, [breakdown]);
+  /** 税抜き合計 */
+  const subtotalWithService = subtotal + serviceFee;
+  /** 消費税 10% */
+  const tax = Math.round(subtotalWithService * 0.10);
+  /** 税込み合計 */
+  const total = subtotalWithService + tax;
   const maxBudget = 5000000;
   const barWidth = Math.min((total / maxBudget) * 100, 100);
 
@@ -876,6 +888,26 @@ export default function SimulationClient({
               </div>
             );
           })}
+          {serviceFee > 0 && (
+            <div className={`${s.printItem} ${s.printItemSurcharge}`}>
+              <div className={s.printItemIdx}>{"\u2014"}</div>
+              <div className={s.printItemBody}>
+                <div className={s.printItemTitle}>{"\u30B5\u30FC\u30D3\u30B9\u6599"}</div>
+                <div className={s.printItemLabel}>{"\u6599\u7406\u30FB\u30C9\u30EA\u30F3\u30AF\u306E 10%"}</div>
+              </div>
+              <div className={s.printItemPrice}>&yen;{fmtP(serviceFee)}</div>
+            </div>
+          )}
+          {tax > 0 && (
+            <div className={`${s.printItem} ${s.printItemSurcharge}`}>
+              <div className={s.printItemIdx}>{"\u2014"}</div>
+              <div className={s.printItemBody}>
+                <div className={s.printItemTitle}>{"\u6D88\u8CBB\u7A0E"}</div>
+                <div className={s.printItemLabel}>{"\u5408\u8A08\u306E 10%"}</div>
+              </div>
+              <div className={s.printItemPrice}>&yen;{fmtP(tax)}</div>
+            </div>
+          )}
         </div>
 
         <div className={s.printTotalSection}>
@@ -883,7 +915,7 @@ export default function SimulationClient({
             <span>{"\u6982\u7B97\u5408\u8A08"}</span>
             <span className={s.printTotalAmount}>&yen;{total.toLocaleString()}</span>
           </div>
-          <div className={s.printTotalUnit}>{"\u5186\uFF08\u7A0E\u5225\uFF09"}</div>
+          <div className={s.printTotalUnit}>{"\u5186\uFF08\u7A0E\u8FBC\uFF09"}</div>
         </div>
 
         <div className={s.printFooter}>
@@ -936,6 +968,18 @@ export default function SimulationClient({
               </span>
             </div>
           ))}
+          {serviceFee > 0 && (
+            <div className={`${s.bkItem} ${s.bkItemSurcharge}`}>
+              <span className={s.bkLabel}>{"\u30B5\u30FC\u30D3\u30B9\u6599 (10%)"}</span>
+              <span className={s.bkPrice}>&yen;{fmtP(serviceFee)}</span>
+            </div>
+          )}
+          {tax > 0 && (
+            <div className={`${s.bkItem} ${s.bkItemSurcharge}`}>
+              <span className={s.bkLabel}>{"\u6D88\u8CBB\u7A0E (10%)"}</span>
+              <span className={s.bkPrice}>&yen;{fmtP(tax)}</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -1029,6 +1073,18 @@ export default function SimulationClient({
               </span>
             </div>
           ))}
+          {serviceFee > 0 && (
+            <div className={`${s.rbItem} ${s.rbItemSurcharge}`}>
+              <span className={s.rbLabel}>{"\u30B5\u30FC\u30D3\u30B9\u6599 (10%)"}</span>
+              <span className={s.rbPrice}>&yen;{fmtP(serviceFee)}</span>
+            </div>
+          )}
+          {tax > 0 && (
+            <div className={`${s.rbItem} ${s.rbItemSurcharge}`}>
+              <span className={s.rbLabel}>{"\u6D88\u8CBB\u7A0E (10%)"}</span>
+              <span className={s.rbPrice}>&yen;{fmtP(tax)}</span>
+            </div>
+          )}
         </div>
         <div className={s.rightCtas}>
           <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.rCtaLine} onClick={() => trackEvent("cta_line", { location: "simulation_pc" })}>

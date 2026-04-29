@@ -454,7 +454,13 @@ export default function CreatorsClient({ creators }: CreatorsClientProps) {
                   <div className={s.crCardBody}>
                     <div className={s.crCardRole}>{cr.role}</div>
                     <div className={s.crCardName}>{cr.name}</div>
-                    <div className={s.crCardPrice}>料金 &yen;{cr.price.toLocaleString()}〜</div>
+                    {(() => {
+                      const intro = (cr.weddingThought || cr.profile || "")
+                        .replace(/\s+/g, " ")
+                        .trim();
+                      const short = intro.length > 48 ? intro.slice(0, 47) + "…" : intro;
+                      return short ? <p className={s.crCardIntro}>{short}</p> : null;
+                    })()}
                     <div className={s.crCardTags}>
                       {cr.tags.map((t) => <span key={t} className={s.crCardTag}>{t}</span>)}
                     </div>

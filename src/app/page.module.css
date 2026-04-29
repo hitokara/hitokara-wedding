@@ -228,12 +228,13 @@
   }
   /* Left text area — darker text on bg for PC (since photo moved) */
   .heroLeft {
-    width: 64%; max-width: 860px;
+    width: 62%; max-width: 880px;
     padding: 0 56px 0;
     align-items: flex-start;
   }
-  /* PC: bigger headline; still fits 14 chars per line */
-  .heroH1 { font-size: clamp(32px, 3.4vw, 48px); line-height: 1.5; }
+  /* PC: each phrase forced to single line (no auto-wrap) */
+  .heroH1 { font-size: clamp(30px, 2.8vw, 44px); line-height: 1.55; }
+  .heroH1 .heroLine { white-space: nowrap; }
   .heroEye { color: var(--sea); }
   .heroH1 { color: var(--t1); }
   .heroH1 em { color: var(--sead); }
@@ -252,7 +253,8 @@
   .heroSimLink { text-align: left; }
 }
 @media (min-width: 1024px) {
-  .heroLeft { width: 52%; padding: 0 64px 0; }
+  .heroLeft { width: 62%; padding: 0 64px 0; }
+  .heroH1 { font-size: clamp(34px, 2.6vw, 44px); }
 }
 
 /* ===== Section Common ===== */

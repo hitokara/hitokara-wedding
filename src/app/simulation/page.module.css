@@ -387,3 +387,12 @@
 }
 .printFooterNote { font-size: 9px; color: #999; line-height: 1.7; }
 .printFooterBrand { font-size: 9px; color: #6a6560; text-align: right; line-height: 1.7; }
+
+/* ===== Surcharge rows (service fee, tax) ===== */
+.bkItemSurcharge { color: var(--t2); font-style: normal; }
+.bkItemSurcharge .bkLabel { font-size: 12px; opacity: .85; }
+.rbItemSurcharge { color: var(--t2); }
+.rbItemSurcharge .rbLabel { font-size: 12px; opacity: .85; }
+.printItemSurcharge { background: rgba(58,143,191,.04); border-radius: 6px; }
+.printItemSurcharge .printItemTitle { color: #6a6560; font-weight: 400; }
+.printItemSurcharge .printItemLabel { color: #999; }

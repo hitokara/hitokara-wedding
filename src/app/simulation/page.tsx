@@ -37,6 +37,14 @@ function buildLocalCategories(): CMSCategoryGroup[] {
       ],
     },
     {
+      id: "ceremony",
+      title: "挙式料",
+      items: [
+        { id: "ceremony-std", label: "挙式料", price: 200000, note: "牧師・神官・進行スタッフ含む" },
+        { id: "ceremony-none", label: "挙式なし（披露宴のみ）", price: 0 },
+      ],
+    },
+    {
       id: "food",
       title: "料理・ドリンク",
       items: [
@@ -61,8 +69,8 @@ function buildLocalCategories(): CMSCategoryGroup[] {
       id: "flower",
       title: "装花",
       items: [
-        { id: "flower-set", label: "一式（メイン・ゲスト・ブーケ）", price: 0, unit: "flower_set", note: "メインテーブル ¥100,000 + ゲストテーブル ¥10,000/卓（ゲスト人数から自動算出） + ブーケ ¥50,000" },
-        { id: "flower-bouquet", label: "ブーケのみ", price: 50000, note: "ブーケ単品" },
+        { id: "flower-set", label: "一式（メイン・ゲスト・ブーケ・ブートニア）", price: 0, unit: "flower_set", note: "メインテーブル ¥100,000 + ゲストテーブル ¥10,000/卓（ゲスト人数から自動算出） + ブーケ・ブートニア ¥50,000" },
+        { id: "flower-bouquet", label: "ブーケ・ブートニアのみ", price: 50000, note: "ブーケ・ブートニア単品" },
         { id: "flower-nom", label: "クリエイター指名", price: 210000, nom: 1, ck: "flower", note: "フラワーデザイナーを直接指名。指名した場合はクリエイター料金を適用。" },
       ],
     },
