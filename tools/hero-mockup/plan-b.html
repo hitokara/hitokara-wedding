@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hero Plan B — Glass Card</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500&family=Zen+Kaku+Gothic+New:wght@400;500&family=Cormorant+Garamond:ital,wght@1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f4ef;
+      --ink: #1c1c1a;
+      --muted: #6a6560;
+      --sea: #3a8fbf;
+      --sead: #2a6e94;
+      --mincho: 'Shippori Mincho', serif;
+      --gothic: 'Zen Kaku Gothic New', sans-serif;
+      --num: 'Cormorant Garamond', serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 414px; height: 900px;
+      font-family: var(--gothic); color: var(--ink);
+      -webkit-font-smoothing: antialiased; overflow: hidden;
+    }
+
+    /* SP nav (transparent on photo) */
+    .nav {
+      position: absolute; top: 0; left: 0; right: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px;
+      background: linear-gradient(to bottom, rgba(0,0,0,.25) 0%, rgba(0,0,0,0) 100%);
+    }
+    .nav-logo { height: 22px; filter: invert(100%) brightness(2); }
+    .nav-burger {
+      width: 28px; height: 28px; display: flex; flex-direction: column;
+      justify-content: center; gap: 5px;
+    }
+    .nav-burger span { display: block; height: 1.5px; background: #fff; border-radius: 2px; }
+
+    .hero { position: relative; width: 100%; height: 900px; overflow: hidden; }
+
+    /* Full bleed photo */
+    .photo {
+      position: absolute; inset: 0;
+      background: url("hero.jpg") center 18% / cover no-repeat;
+    }
+    /* Subtle vignette so the card pops */
+    .photo::after {
+      content: ""; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,.08) 60%, rgba(0,0,0,.18) 100%),
+        linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,.15) 100%);
+    }
+
+    /* English eyebrow on top */
+    .photo-eyebrow {
+      position: absolute; top: 78px; left: 50%; transform: translateX(-50%);
+      z-index: 2;
+      font-family: var(--num); font-style: italic;
+      font-size: 13px; letter-spacing: .26em;
+      color: rgba(255,255,255,.95);
+      text-transform: uppercase;
+      text-shadow: 0 1px 8px rgba(0,0,0,.3);
+      white-space: nowrap;
+    }
+
+    /* Glass card */
+    .card {
+      position: absolute; left: 18px; right: 18px; bottom: 28px;
+      background: rgba(255,255,255,.78);
+      -webkit-backdrop-filter: blur(18px) saturate(1.05);
+      backdrop-filter: blur(18px) saturate(1.05);
+      border: 0.5px solid rgba(255,255,255,.6);
+      border-radius: 20px;
+      padding: 24px 22px 22px;
+      display: flex; flex-direction: column; gap: 12px;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,.5) inset,
+        0 12px 36px rgba(15,33,48,.18);
+      z-index: 3;
+    }
+    h1 {
+      font-family: var(--mincho); font-size: 22px; font-weight: 500;
+      line-height: 1.55; letter-spacing: .03em; color: var(--ink);
+    }
+    h1 em { font-style: normal; color: var(--sead); }
+    h1 .line { display: block; }
+    .sub {
+      font-size: 12px; line-height: 1.85; color: var(--muted);
+      letter-spacing: .03em;
+    }
+    .btns { display: flex; flex-direction: column; gap: 9px; margin-top: 4px; }
+    .btn {
+      height: 46px; border-radius: 23px; font-size: 13px;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      font-weight: 500; text-decoration: none;
+    }
+    .btn-line { background: var(--sea); color: #fff; }
+    .btn-sub  { background: rgba(255,255,255,.9); border: 1px solid rgba(0,0,0,.08); color: var(--ink); }
+    .pip { width: 7px; height: 7px; border-radius: 50%; background: #7ee8a2; }
+    .sim-link {
+      display: inline-block; margin-top: 4px;
+      font-size: 11.5px; color: var(--sead); text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <img class="nav-logo" src="logo.png" alt="ヒトカラウェディング" />
+    <div class="nav-burger"><span></span><span></span><span></span></div>
+  </nav>
+  <section class="hero">
+    <div class="photo"></div>
+    <span class="photo-eyebrow">Yokohama &amp; Kamakura</span>
+
+    <div class="card">
+      <h1>
+        <span class="line">結婚する相手は、大好きな人。</span>
+        <span class="line">招くのも、大好きな人たち。</span>
+        <span class="line">だからこそ、</span>
+        <span class="line">結婚式も<em>"人"で選びたい</em></span>
+      </h1>
+      <p class="sub">
+        持ち込み自由・適正価格の<br>
+        ウェディングプロデュース。
+      </p>
+      <div class="btns">
+        <a class="btn btn-line"><span class="pip"></span>LINEで無料相談</a>
+        <a class="btn btn-sub">クリエイターを見る</a>
+      </div>
+      <a class="sim-link">見積もりシミュレーターを試す →</a>
+    </div>
+  </section>
+</body>
+</html>

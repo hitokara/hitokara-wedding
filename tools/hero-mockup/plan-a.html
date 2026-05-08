@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hero Plan A — Split</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500&family=Zen+Kaku+Gothic+New:wght@400;500&family=Cormorant+Garamond:ital,wght@1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f4ef;
+      --ink: #1c1c1a;
+      --muted: #6a6560;
+      --sea: #3a8fbf;
+      --sead: #2a6e94;
+      --sand: #ede7db;
+      --mincho: 'Shippori Mincho', serif;
+      --gothic: 'Zen Kaku Gothic New', sans-serif;
+      --num: 'Cormorant Garamond', serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 414px; height: 900px; background: var(--bg);
+      font-family: var(--gothic); color: var(--ink);
+      -webkit-font-smoothing: antialiased; overflow: hidden;
+    }
+
+    /* SP header bar */
+    .nav {
+      position: absolute; top: 0; left: 0; right: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; background: rgba(255,255,255,.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 0.5px solid rgba(0,0,0,.06);
+    }
+    .nav-logo { height: 22px; }
+    .nav-burger {
+      width: 28px; height: 28px; display: flex; flex-direction: column;
+      justify-content: center; gap: 5px;
+    }
+    .nav-burger span { display: block; height: 1.5px; background: var(--ink); border-radius: 2px; }
+
+    .hero { position: relative; width: 100%; height: 900px; }
+
+    /* Photo area: 60vh */
+    .photo {
+      position: absolute; top: 0; left: 0; right: 0; height: 540px;
+      background: url("hero.jpg") center 18% / cover no-repeat;
+    }
+    .photo::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(to bottom,
+        rgba(0,0,0,0) 0%,
+        rgba(0,0,0,0) 70%,
+        rgba(247,244,239,.4) 90%,
+        var(--bg) 100%);
+    }
+
+    /* Wave divider */
+    .wave {
+      position: absolute; top: 540px; left: 0; right: 0; height: 28px;
+      overflow: hidden; z-index: 2; pointer-events: none;
+    }
+    .wave svg { width: 100%; height: 100%; display: block; }
+
+    /* Text area below photo */
+    .text-area {
+      position: absolute; top: 540px; left: 0; right: 0; bottom: 0;
+      background: var(--bg); padding: 56px 22px 28px;
+      display: flex; flex-direction: column; gap: 14px;
+      z-index: 1;
+    }
+    .eyebrow {
+      font-family: var(--num); font-style: italic;
+      font-size: 12px; letter-spacing: .22em;
+      color: var(--sea); text-transform: uppercase;
+    }
+    h1 {
+      font-family: var(--mincho); font-size: 24px; font-weight: 500;
+      line-height: 1.55; letter-spacing: .03em; color: var(--ink);
+    }
+    h1 em { font-style: normal; color: var(--sead); }
+    h1 .line { display: block; }
+    .sub {
+      font-size: 12.5px; line-height: 1.85; color: var(--muted);
+      letter-spacing: .03em;
+    }
+    .btns { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+    .btn {
+      height: 46px; border-radius: 23px; font-size: 13px;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      font-weight: 500; text-decoration: none;
+    }
+    .btn-line { background: var(--sea); color: #fff; }
+    .btn-sub  { background: #fff; border: 1px solid rgba(0,0,0,.12); color: var(--ink); }
+    .pip { width: 7px; height: 7px; border-radius: 50%; background: #7ee8a2; }
+    .sim-link {
+      display: inline-block; margin-top: 6px;
+      font-size: 12px; color: var(--sead); text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <img class="nav-logo" src="logo.png" alt="ヒトカラウェディング" />
+    <div class="nav-burger"><span></span><span></span><span></span></div>
+  </nav>
+  <section class="hero">
+    <div class="photo"></div>
+    <div class="wave">
+      <svg viewBox="0 0 800 24" preserveAspectRatio="none">
+        <path d="M0 12 C 100 0 200 24 300 12 C 400 0 500 24 600 12 C 700 0 800 24 800 12 V 24 H 0 Z" fill="#f7f4ef"/>
+      </svg>
+    </div>
+    <div class="text-area">
+      <span class="eyebrow">Yokohama &amp; Kamakura</span>
+      <h1>
+        <span class="line">結婚する相手は、大好きな人。</span>
+        <span class="line">招くのも、大好きな人たち。</span>
+        <span class="line">だからこそ、</span>
+        <span class="line">結婚式も<em>"人"で選びたい</em></span>
+      </h1>
+      <p class="sub">
+        ウェディングプランナー・カメラマン・ヘアメイク…<br>
+        持ち込み自由・適正価格のウェディングプロデュース。
+      </p>
+      <div class="btns">
+        <a class="btn btn-line"><span class="pip"></span>LINEで無料相談</a>
+        <a class="btn btn-sub">クリエイターを見る</a>
+      </div>
+      <a class="sim-link">見積もりシミュレーターを試す →</a>
+    </div>
+  </section>
+</body>
+</html>

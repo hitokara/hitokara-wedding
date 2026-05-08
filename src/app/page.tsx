@@ -155,10 +155,10 @@ export default async function HomePage() {
         </div>
         <div className={s.heroWave}><WaveSvg /></div>
         <div className={s.heroLeft}>
-          <AnimateOnScroll animation="slideRight">
+          <AnimateOnScroll animation="fadeUp" delay={700}>
             <span className={s.heroEye}>Yokohama &amp; Kamakura</span>
           </AnimateOnScroll>
-          <AnimateOnScroll animation="fadeUp" delay={80}>
+          <AnimateOnScroll animation="fadeUp" delay={900}>
             <h1 className={s.heroH1}>
               <span className={s.heroLine}>結婚する相手は、大好きな人。</span>
               <span className={s.heroLine}>招くのも、大好きな人たち。</span>
@@ -166,14 +166,14 @@ export default async function HomePage() {
               <span className={s.heroLine}>結婚式も<em>&ldquo;人&rdquo;で選びたい</em></span>
             </h1>
           </AnimateOnScroll>
-          <AnimateOnScroll animation="fadeUp" delay={160}>
+          <AnimateOnScroll animation="fadeUp" delay={1200}>
             <p className={s.heroSub}>
               ウェディングプランナー・カメラマン・ヘアメイク&hellip;<br />
               すべてのクリエイターを顔と実績で選べる。<br />
               持ち込み自由・適正価格のウェディングプロデュース。
             </p>
           </AnimateOnScroll>
-          <AnimateOnScroll animation="fadeUp" delay={240}>
+          <AnimateOnScroll animation="fadeUp" delay={1500}>
             <div className={s.heroBtns}>
               <a href="https://lin.ee/tRn0iPk" target="_blank" rel="noopener noreferrer" className={s.btnMain}>
                 <span className={s.pip} />LINEで無料相談
@@ -181,7 +181,7 @@ export default async function HomePage() {
               <Link href="/creators" className={s.btnSub}>クリエイターを見る</Link>
             </div>
           </AnimateOnScroll>
-          <AnimateOnScroll animation="fadeUp" delay={320}>
+          <AnimateOnScroll animation="fadeUp" delay={1800}>
             <Link href="/simulation" className={s.heroSimLink}>
               見積もりシミュレーターを試す &rarr;
             </Link>
