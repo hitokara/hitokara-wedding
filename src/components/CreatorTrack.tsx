@@ -28,58 +28,63 @@ export default function CreatorTrack({ creators, gradients, styles: s }: Creator
     const wrap = wrapRef.current;
     if (!wrap) return;
 
+    // Wait until layout is stable before starting (images, font loading)
     let raf = 0;
-    let last = performance.now();
+    let last = 0;
     let paused = false;
+    let userInteracting = false;
     let resumeTimer: number | null = null;
-    const SPEED = 30; // px / second
+    const SPEED = 0.6; // px / frame at 60fps ≈ 36 px/sec
 
-    const pause = () => {
-      paused = true;
+    const startResumeTimer = (delay: number) => {
+      if (resumeTimer) window.clearTimeout(resumeTimer);
+      resumeTimer = window.setTimeout(() => {
+        userInteracting = false;
+        paused = false;
+        resumeTimer = null;
+      }, delay);
+    };
+
+    // Use setInterval for stable cadence (rAF can be throttled)
+    let stop = false;
+    const step = () => {
+      if (stop) return;
+      raf = requestAnimationFrame(() => {
+        if (!paused && !userInteracting && document.visibilityState === "visible") {
+          const half = wrap.scrollWidth / 2;
+          if (half > 0) {
+            const next = wrap.scrollLeft + SPEED;
+            if (next >= half) {
+              wrap.scrollLeft = next - half;
+            } else {
+              wrap.scrollLeft = next;
+            }
+          }
+        }
+        step();
+      });
+    };
+    // Defer start until after first paint so scrollWidth is reliable
+    const startId = window.setTimeout(() => {
+      step();
+    }, 200);
+
+    // User pause helpers
+    const pauseForInteraction = () => {
+      userInteracting = true;
       if (resumeTimer) {
         window.clearTimeout(resumeTimer);
         resumeTimer = null;
       }
     };
-    const scheduleResume = (delay: number) => {
-      if (resumeTimer) window.clearTimeout(resumeTimer);
-      resumeTimer = window.setTimeout(() => {
-        paused = false;
-        resumeTimer = null;
-        last = performance.now();
-      }, delay);
-    };
 
-    // Auto-scroll loop
-    const tick = (now: number) => {
-      const dt = (now - last) / 1000;
-      last = now;
-      if (!paused && document.visibilityState === "visible") {
-        // Seamless wrap-around: keep scroll within first half of the duplicated set
-        const half = wrap.scrollWidth / 2;
-        if (half > 0) {
-          let next = wrap.scrollLeft + SPEED * dt;
-          if (next >= half) next -= half;
-          wrap.scrollLeft = next;
-        }
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-
-    // User-initiated input: pause auto-scroll briefly so user can swipe/drag freely.
-    // We listen to pointer + wheel events directly (NOT to `scroll` event, which would
-    // also fire on programmatic scrollLeft changes and create a pause feedback loop).
-    const onPointerDown = () => pause();
-    const onPointerUp = () => scheduleResume(2500);
-    const onMouseEnter = () => pause();
-    const onMouseLeave = () => scheduleResume(800);
+    const onPointerDown = () => pauseForInteraction();
+    const onPointerUp = () => startResumeTimer(2500);
+    const onMouseEnter = () => pauseForInteraction();
+    const onMouseLeave = () => startResumeTimer(800);
     const onWheel = () => {
-      pause();
-      scheduleResume(1500);
-    };
-    const onVisibilityChange = () => {
-      last = performance.now();
+      pauseForInteraction();
+      startResumeTimer(1500);
     };
 
     wrap.addEventListener("pointerdown", onPointerDown);
@@ -88,10 +93,11 @@ export default function CreatorTrack({ creators, gradients, styles: s }: Creator
     wrap.addEventListener("mouseenter", onMouseEnter);
     wrap.addEventListener("mouseleave", onMouseLeave);
     wrap.addEventListener("wheel", onWheel, { passive: true });
-    document.addEventListener("visibilitychange", onVisibilityChange);
 
     return () => {
+      stop = true;
       cancelAnimationFrame(raf);
+      if (startId) window.clearTimeout(startId);
       if (resumeTimer) window.clearTimeout(resumeTimer);
       wrap.removeEventListener("pointerdown", onPointerDown);
       wrap.removeEventListener("pointerup", onPointerUp);
@@ -99,8 +105,9 @@ export default function CreatorTrack({ creators, gradients, styles: s }: Creator
       wrap.removeEventListener("mouseenter", onMouseEnter);
       wrap.removeEventListener("mouseleave", onMouseLeave);
       wrap.removeEventListener("wheel", onWheel);
-      document.removeEventListener("visibilitychange", onVisibilityChange);
     };
+    // last is referenced for type completeness
+    void last;
   }, []);
 
   return (

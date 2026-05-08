@@ -3,8 +3,21 @@ import Link from "next/link";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import CreatorTrack from "@/components/CreatorTrack";
 import VenueGrid from "@/components/VenueGrid";
-import { CREATORS_LIST } from "@/lib/creators";
+import { CREATORS_LIST, FILTER_CATS } from "@/lib/creators";
+import type { Creator } from "@/lib/creators";
 import { getCreators, getArticles, getVenues, mapCMSCreator, mapCMSArticle } from "@/lib/microcms";
+
+/** Sort creators in FILTER_CATS order to match /creators page display */
+const CAT_ORDER: Record<string, number> = Object.fromEntries(
+  FILTER_CATS.filter((c) => c.key !== "all").map((c, i) => [c.key, i])
+);
+function sortByCategory(creators: Creator[]): Creator[] {
+  return [...creators].sort((a, b) => {
+    const ai = CAT_ORDER[a.cat] ?? 999;
+    const bi = CAT_ORDER[b.cat] ?? 999;
+    return ai - bi;
+  });
+}
 import { AREA_LABEL_SHORT, AREA_LABEL_FULL, SITE_URL } from "@/lib/areas";
 import s from "./page.module.css";
 
@@ -90,16 +103,18 @@ function WaveSvg() {
 export default async function HomePage() {
   // Fetch from microCMS with local fallback
   const [cmsCreators, cmsArticles, cmsNews, cmsVenues] = await Promise.all([
-    getCreators({ limit: 8 }),
+    getCreators({ limit: 100 }),
     getArticles({ limit: 3, filters: "category[not_equals]66uw6z5fbn" }),
     getArticles({ limit: 3, filters: "category[equals]66uw6z5fbn" }),
     getVenues({ limit: 6 }),
   ]);
 
-  const creators =
+  // Sort by FILTER_CATS order so top page matches /creators display order
+  const creators = sortByCategory(
     cmsCreators.contents.length > 0
       ? cmsCreators.contents.map(mapCMSCreator)
-      : CREATORS_LIST;
+      : CREATORS_LIST
+  );
 
   // CMS-only: show empty state when CMS has no published articles.
   const topArticles = cmsArticles.contents.map((a, i) => mapCMSArticle(a, i));
