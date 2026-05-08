@@ -1,24 +1,26 @@
-@keyframes creatorScroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
+/* Horizontally scrollable creator track with JS-driven auto-scroll.
+   User can swipe / drag to override; auto-scroll resumes after a short pause. */
 
 .trackWrapper {
-  overflow: hidden;
   width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  scroll-behavior: auto;
+  /* Allow horizontal pan but block vertical so it doesn't fight page scroll */
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
+}
+
+.trackWrapper::-webkit-scrollbar {
+  display: none;
 }
 
 .trackInner {
   display: flex;
   gap: 12px;
   width: max-content;
-  animation: creatorScroll 20s linear infinite;
-}
-
-.trackWrapper:hover .trackInner {
-  animation-play-state: paused;
+  /* Ensure cards don't shrink so scrolling has content to scroll */
+  flex-shrink: 0;
 }
