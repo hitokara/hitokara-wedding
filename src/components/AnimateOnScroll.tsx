@@ -30,21 +30,30 @@ export default function AnimateOnScroll({
     const el = ref.current;
     if (!el) return;
 
+    // Safety fallback: ensure content becomes visible after 2s even if observer never fires
+    // (large elements, prefers-reduced-motion, edge browser quirks etc.)
+    const safety = setTimeout(() => {
+      el.classList.add("vis");
+    }, 2000);
+
+    // Use a low threshold (any intersection) so tall blocks always trigger when scrolled.
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
+          clearTimeout(safety);
           setTimeout(() => {
             el.classList.add("vis");
           }, delay);
           observer.unobserve(el);
         }
       },
-      { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
+      { threshold: 0, rootMargin: "0px 0px -40px 0px" }
     );
 
     observer.observe(el);
 
     return () => {
+      clearTimeout(safety);
       observer.disconnect();
     };
   }, [delay]);

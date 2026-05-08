@@ -195,13 +195,11 @@ export default async function JournalArticlePage({ params }: Props) {
 
         <article className={s.article}>
           {bodyHtml ? (
-            /* CMS rich-text body */
-            <AnimateOnScroll animation="fadeUp">
-              <div
-                className={s.abRichBody}
-                dangerouslySetInnerHTML={{ __html: bodyHtml }}
-              />
-            </AnimateOnScroll>
+            /* CMS rich-text body — render immediately (no scroll-fade for long bodies) */
+            <div
+              className={s.abRichBody}
+              dangerouslySetInnerHTML={{ __html: bodyHtml }}
+            />
           ) : (
             /* Fallback static content */
             <>
