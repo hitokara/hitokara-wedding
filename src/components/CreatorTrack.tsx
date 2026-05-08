@@ -34,23 +34,6 @@ export default function CreatorTrack({ creators, gradients, styles: s }: Creator
     let resumeTimer: number | null = null;
     const SPEED = 30; // px / second
 
-    // Auto-scroll loop
-    const tick = (now: number) => {
-      const dt = (now - last) / 1000;
-      last = now;
-      if (!paused && document.visibilityState === "visible") {
-        wrap.scrollLeft += SPEED * dt;
-        // Seamless wrap-around when reaching the duplicate boundary
-        const half = wrap.scrollWidth / 2;
-        if (wrap.scrollLeft >= half) {
-          wrap.scrollLeft -= half;
-        }
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-
-    // Pause / resume helpers
     const pause = () => {
       paused = true;
       if (resumeTimer) {
@@ -58,7 +41,7 @@ export default function CreatorTrack({ creators, gradients, styles: s }: Creator
         resumeTimer = null;
       }
     };
-    const scheduleResume = (delay = 2500) => {
+    const scheduleResume = (delay: number) => {
       if (resumeTimer) window.clearTimeout(resumeTimer);
       resumeTimer = window.setTimeout(() => {
         paused = false;
@@ -67,13 +50,31 @@ export default function CreatorTrack({ creators, gradients, styles: s }: Creator
       }, delay);
     };
 
-    // Desktop hover / mobile touch
-    const onPointerEnter = () => pause();
-    const onPointerLeave = () => scheduleResume(800);
-    const onTouchStart = () => pause();
-    const onTouchEnd = () => scheduleResume(2500);
-    const onScroll = () => {
-      // While the user is scrolling, keep paused; resume after no-scroll for 1.5s
+    // Auto-scroll loop
+    const tick = (now: number) => {
+      const dt = (now - last) / 1000;
+      last = now;
+      if (!paused && document.visibilityState === "visible") {
+        // Seamless wrap-around: keep scroll within first half of the duplicated set
+        const half = wrap.scrollWidth / 2;
+        if (half > 0) {
+          let next = wrap.scrollLeft + SPEED * dt;
+          if (next >= half) next -= half;
+          wrap.scrollLeft = next;
+        }
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+
+    // User-initiated input: pause auto-scroll briefly so user can swipe/drag freely.
+    // We listen to pointer + wheel events directly (NOT to `scroll` event, which would
+    // also fire on programmatic scrollLeft changes and create a pause feedback loop).
+    const onPointerDown = () => pause();
+    const onPointerUp = () => scheduleResume(2500);
+    const onMouseEnter = () => pause();
+    const onMouseLeave = () => scheduleResume(800);
+    const onWheel = () => {
       pause();
       scheduleResume(1500);
     };
@@ -81,21 +82,23 @@ export default function CreatorTrack({ creators, gradients, styles: s }: Creator
       last = performance.now();
     };
 
-    wrap.addEventListener("mouseenter", onPointerEnter);
-    wrap.addEventListener("mouseleave", onPointerLeave);
-    wrap.addEventListener("touchstart", onTouchStart, { passive: true });
-    wrap.addEventListener("touchend", onTouchEnd, { passive: true });
-    wrap.addEventListener("scroll", onScroll, { passive: true });
+    wrap.addEventListener("pointerdown", onPointerDown);
+    wrap.addEventListener("pointerup", onPointerUp);
+    wrap.addEventListener("pointercancel", onPointerUp);
+    wrap.addEventListener("mouseenter", onMouseEnter);
+    wrap.addEventListener("mouseleave", onMouseLeave);
+    wrap.addEventListener("wheel", onWheel, { passive: true });
     document.addEventListener("visibilitychange", onVisibilityChange);
 
     return () => {
       cancelAnimationFrame(raf);
       if (resumeTimer) window.clearTimeout(resumeTimer);
-      wrap.removeEventListener("mouseenter", onPointerEnter);
-      wrap.removeEventListener("mouseleave", onPointerLeave);
-      wrap.removeEventListener("touchstart", onTouchStart);
-      wrap.removeEventListener("touchend", onTouchEnd);
-      wrap.removeEventListener("scroll", onScroll);
+      wrap.removeEventListener("pointerdown", onPointerDown);
+      wrap.removeEventListener("pointerup", onPointerUp);
+      wrap.removeEventListener("pointercancel", onPointerUp);
+      wrap.removeEventListener("mouseenter", onMouseEnter);
+      wrap.removeEventListener("mouseleave", onMouseLeave);
+      wrap.removeEventListener("wheel", onWheel);
       document.removeEventListener("visibilitychange", onVisibilityChange);
     };
   }, []);
