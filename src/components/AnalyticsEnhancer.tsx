@@ -7,9 +7,8 @@ import { trackEvent, trackPageview } from "@/lib/gtag";
 /**
  * Auto-tracks global analytics events:
  *  - SPA page_view on route changes (App Router)
- *  - scroll depth (25/50/75/100%)
- *  - outbound link clicks
- *  - LINE / Instagram CTA clicks
+ *  - scroll depth (25/50/75/100%) — via IntersectionObserver markers (no layout reads)
+ *  - outbound link clicks (LINE / Instagram / Calendar / generic)
  *
  * Mount once in the root layout.
  */
@@ -30,40 +29,52 @@ export default function AnalyticsEnhancer() {
     trackPageview(full);
   }, [pathname, searchParams]);
 
-  // Scroll depth + outbound click (reset thresholds on each route)
+  // Scroll depth tracking using sentinel <div>s + IntersectionObserver.
+  // No scroll listener → zero layout-read overhead.
   useEffect(() => {
-    const fired = new Set<number>();
     const thresholds = [25, 50, 75, 100];
+    const sentinels: HTMLDivElement[] = [];
 
-    const onScroll = () => {
-      const h = document.documentElement;
-      const scrollTop = window.scrollY || h.scrollTop || 0;
-      const viewport = window.innerHeight || h.clientHeight || 0;
-      const full = Math.max(h.scrollHeight, document.body?.scrollHeight ?? 0);
-      const denom = Math.max(full - viewport, 1);
-      const pct = Math.min(100, Math.round((scrollTop / denom) * 100));
-      for (const t of thresholds) {
-        if (pct >= t && !fired.has(t)) {
-          fired.add(t);
-          trackEvent("scroll_depth", { percent: t, path: location.pathname });
-        }
-      }
+    // Defer setup to idle time so it doesn't compete with critical paint
+    const setup = () => {
+      thresholds.forEach((pct) => {
+        const el = document.createElement("div");
+        el.setAttribute("aria-hidden", "true");
+        el.style.cssText =
+          `position:absolute;left:0;width:1px;height:1px;pointer-events:none;opacity:0;top:${pct}%;`;
+        // Insert into body but position relative to document scroll
+        document.body.appendChild(el);
+        sentinels.push(el);
+      });
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const idx = sentinels.indexOf(entry.target as HTMLDivElement);
+            if (idx === -1) return;
+            const pct = thresholds[idx];
+            trackEvent("scroll_depth", { percent: pct, path: location.pathname });
+            observer.unobserve(entry.target);
+          });
+        },
+        { rootMargin: "0px" }
+      );
+      sentinels.forEach((s) => observer.observe(s));
     };
 
-    let ticking = false;
-    const handler = () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(() => {
-          onScroll();
-          ticking = false;
-        });
-      }
+    let idleId = 0;
+    const w = window as Window & {
+      requestIdleCallback?: (cb: () => void) => number;
+      cancelIdleCallback?: (id: number) => void;
     };
-    window.addEventListener("scroll", handler, { passive: true });
-    onScroll();
+    if (typeof w.requestIdleCallback === "function") {
+      idleId = w.requestIdleCallback(setup);
+    } else {
+      idleId = window.setTimeout(setup, 1500);
+    }
 
-    // Outbound + LINE / Instagram click tracking
+    // Outbound link / CTA click tracking (passive)
     const clickHandler = (ev: Event) => {
       const target = ev.target as HTMLElement | null;
       if (!target) return;
@@ -99,7 +110,12 @@ export default function AnalyticsEnhancer() {
     document.addEventListener("click", clickHandler, { capture: true });
 
     return () => {
-      window.removeEventListener("scroll", handler);
+      if (typeof w.cancelIdleCallback === "function" && idleId) {
+        w.cancelIdleCallback(idleId);
+      } else {
+        window.clearTimeout(idleId);
+      }
+      sentinels.forEach((s) => s.remove());
       document.removeEventListener("click", clickHandler, { capture: true });
     };
   }, [pathname]);

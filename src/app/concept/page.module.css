@@ -1,7 +1,4 @@
-@keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
+/* shimmer removed: background-position is not GPU-composited. */
 
 /* ===== Inner constraint ===== */
 .inner {
@@ -499,8 +496,6 @@
   font-size: 14px;
   font-family: var(--gothic);
   background: linear-gradient(90deg, var(--sea), #5ab5df, var(--sea));
-  background-size: 200%;
-  animation: shimmer 4s linear infinite;
   cursor: pointer;
 }
 .cpCtaSubBtn {

@@ -28,13 +28,59 @@ export default function CreatorTrack({ creators, gradients, styles: s }: Creator
     const wrap = wrapRef.current;
     if (!wrap) return;
 
-    // Wait until layout is stable before starting (images, font loading)
-    let raf = 0;
-    let last = 0;
+    // Performance: only run autoscroll when the track is actually on screen.
+    // Use setInterval at 30 Hz to keep TBT low (vs rAF which fires every frame).
+    let intervalId: number | null = null;
     let paused = false;
     let userInteracting = false;
+    let inView = false;
     let resumeTimer: number | null = null;
-    const SPEED = 0.6; // px / frame at 60fps ≈ 36 px/sec
+    let cachedHalf = 0;
+    const STEP_MS = 33; // ~30fps cadence — smooth enough, low main-thread cost
+    const SPEED_PX = 1; // px per tick → 30 px/sec
+
+    // Cache scrollWidth (expensive to read each frame). Refresh on resize only.
+    const refreshHalf = () => {
+      cachedHalf = wrap.scrollWidth / 2;
+    };
+
+    const startLoop = () => {
+      if (intervalId !== null) return;
+      refreshHalf();
+      intervalId = window.setInterval(() => {
+        if (paused || userInteracting) return;
+        if (document.visibilityState !== "visible") return;
+        if (cachedHalf <= 0) return;
+        const next = wrap.scrollLeft + SPEED_PX;
+        if (next >= cachedHalf) {
+          wrap.scrollLeft = next - cachedHalf;
+        } else {
+          wrap.scrollLeft = next;
+        }
+      }, STEP_MS);
+    };
+
+    const stopLoop = () => {
+      if (intervalId !== null) {
+        window.clearInterval(intervalId);
+        intervalId = null;
+      }
+    };
+
+    // Only run when track is in viewport — saves CPU when scrolled away
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+        if (inView) startLoop();
+        else stopLoop();
+      },
+      { threshold: 0.01 }
+    );
+    io.observe(wrap);
+
+    // Refresh cached width on resize
+    const onResize = () => refreshHalf();
+    window.addEventListener("resize", onResize, { passive: true });
 
     const startResumeTimer = (delay: number) => {
       if (resumeTimer) window.clearTimeout(resumeTimer);
@@ -44,32 +90,6 @@ export default function CreatorTrack({ creators, gradients, styles: s }: Creator
         resumeTimer = null;
       }, delay);
     };
-
-    // Use setInterval for stable cadence (rAF can be throttled)
-    let stop = false;
-    const step = () => {
-      if (stop) return;
-      raf = requestAnimationFrame(() => {
-        if (!paused && !userInteracting && document.visibilityState === "visible") {
-          const half = wrap.scrollWidth / 2;
-          if (half > 0) {
-            const next = wrap.scrollLeft + SPEED;
-            if (next >= half) {
-              wrap.scrollLeft = next - half;
-            } else {
-              wrap.scrollLeft = next;
-            }
-          }
-        }
-        step();
-      });
-    };
-    // Defer start until after first paint so scrollWidth is reliable
-    const startId = window.setTimeout(() => {
-      step();
-    }, 200);
-
-    // User pause helpers
     const pauseForInteraction = () => {
       userInteracting = true;
       if (resumeTimer) {
@@ -95,9 +115,9 @@ export default function CreatorTrack({ creators, gradients, styles: s }: Creator
     wrap.addEventListener("wheel", onWheel, { passive: true });
 
     return () => {
-      stop = true;
-      cancelAnimationFrame(raf);
-      if (startId) window.clearTimeout(startId);
+      stopLoop();
+      io.disconnect();
+      window.removeEventListener("resize", onResize);
       if (resumeTimer) window.clearTimeout(resumeTimer);
       wrap.removeEventListener("pointerdown", onPointerDown);
       wrap.removeEventListener("pointerup", onPointerUp);
@@ -106,8 +126,6 @@ export default function CreatorTrack({ creators, gradients, styles: s }: Creator
       wrap.removeEventListener("mouseleave", onMouseLeave);
       wrap.removeEventListener("wheel", onWheel);
     };
-    // last is referenced for type completeness
-    void last;
   }, []);
 
   return (

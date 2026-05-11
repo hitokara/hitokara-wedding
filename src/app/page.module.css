@@ -11,39 +11,31 @@
   23%   { opacity: 0; }
   100%  { opacity: 0; }
 }
-@keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
+/* shimmer removed: background-position is not GPU-composited.
+   Buttons now use a static gradient for the same visual look at zero cost. */
 @keyframes waveFlow {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
+/* GPU-friendly pulse: only transform/opacity are animated (composited).
+   Background/color are toggled via simpler state classes if needed. */
 @keyframes stepPulse {
-  /* Total 4 steps × 1s each = 4s cycle. Each step highlights 25% of cycle. */
+  /* Total 4 steps × 1s each = 4s cycle. */
   0%, 100% {
-    background: var(--seal);
-    color: var(--sead);
-    box-shadow: 0 0 0 0 rgba(58,143,191,0);
     transform: scale(1);
+    opacity: 0.9;
   }
   6% {
-    background: var(--sea);
-    color: #fff;
-    box-shadow: 0 0 0 0 rgba(58,143,191,.45);
     transform: scale(1.08);
+    opacity: 1;
   }
   18% {
-    background: var(--sea);
-    color: #fff;
-    box-shadow: 0 0 0 14px rgba(58,143,191,0);
     transform: scale(1.04);
+    opacity: 1;
   }
   25% {
-    background: var(--seal);
-    color: var(--sead);
-    box-shadow: 0 0 0 0 rgba(58,143,191,0);
     transform: scale(1);
+    opacity: 0.9;
   }
 }
 
@@ -185,8 +177,6 @@
   gap: 8px;
   color: #fff;
   background: linear-gradient(90deg, var(--sea), #5ab5df, var(--sea));
-  background-size: 200%;
-  animation: shimmer 4s linear infinite;
   cursor: pointer;
 }
 .btnSub {
@@ -929,8 +919,6 @@
   font-size: 14px;
   font-family: var(--gothic);
   background: linear-gradient(90deg, var(--sea), #5ab5df, var(--sea));
-  background-size: 200%;
-  animation: shimmer 4s linear infinite;
   cursor: pointer;
 }
 .ctaConsult {
