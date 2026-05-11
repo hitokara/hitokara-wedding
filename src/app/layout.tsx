@@ -18,7 +18,7 @@ import {
 // Shippori Mincho — main brand serif (Japanese). Heavy → preload disabled.
 // Only weights actually used in CSS: 400 (regular), 500 (medium).
 const shipporiMincho = Shippori_Mincho({
-  weight: ["400", "500"],
+  weight: ["400"],
   subsets: ["latin"],
   display: "swap",
   variable: "--font-mincho",
@@ -26,20 +26,21 @@ const shipporiMincho = Shippori_Mincho({
   adjustFontFallback: false,
 });
 
-// Cormorant Garamond — numeric/italic display only (light). Latin only.
-// Only italic 400 used. Subset further to reduce bytes.
+// Cormorant Garamond — numeric/italic display only. Latin only, italic 400 only.
 const cormorantGaramond = Cormorant_Garamond({
-  weight: ["300", "400"],
+  weight: ["400"],
   style: ["italic"],
   subsets: ["latin"],
   display: "swap",
   variable: "--font-num",
+  preload: false,
+  adjustFontFallback: false,
 });
 
-// Zen Kaku Gothic New — body text (Japanese). Most used.
-// Weights used in CSS: 400, 500, 600 (strong in rich text).
+// Zen Kaku Gothic New — body text (Japanese). Reduced to 400/500 only;
+// bold (700) emphasis falls back to synthetic bold to save font payload.
 const zenKakuGothicNew = Zen_Kaku_Gothic_New({
-  weight: ["400", "500", "700"],
+  weight: ["400", "500"],
   subsets: ["latin"],
   display: "swap",
   variable: "--font-gothic",
@@ -243,7 +244,7 @@ export default function RootLayout({
         {/* Google Analytics 4 — with Consent Mode v2 defaults */}
         <Script
           id="ga4-consent"
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
