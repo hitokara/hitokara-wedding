@@ -15,27 +15,36 @@ import {
   schemaAreaServedExtended,
 } from "@/lib/areas";
 
+// Shippori Mincho — main brand serif (Japanese). Heavy → preload disabled.
+// Only weights actually used in CSS: 400 (regular), 500 (medium).
 const shipporiMincho = Shippori_Mincho({
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500"],
   subsets: ["latin"],
   display: "swap",
   variable: "--font-mincho",
   preload: false,
+  adjustFontFallback: false,
 });
 
+// Cormorant Garamond — numeric/italic display only (light). Latin only.
+// Only italic 400 used. Subset further to reduce bytes.
 const cormorantGaramond = Cormorant_Garamond({
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400"],
+  style: ["italic"],
   subsets: ["latin"],
   display: "swap",
   variable: "--font-num",
 });
 
+// Zen Kaku Gothic New — body text (Japanese). Most used.
+// Weights used in CSS: 400, 500, 600 (strong in rich text).
 const zenKakuGothicNew = Zen_Kaku_Gothic_New({
   weight: ["400", "500", "700"],
   subsets: ["latin"],
   display: "swap",
   variable: "--font-gothic",
   preload: false,
+  adjustFontFallback: false,
 });
 
 export const viewport: Viewport = {
@@ -210,6 +219,11 @@ export default function RootLayout({
       className={`${shipporiMincho.variable} ${cormorantGaramond.variable} ${zenKakuGothicNew.variable}`}
     >
       <head>
+        {/* Performance: pre-connect to image / analytics origins to reduce LCP latency */}
+        <link rel="preconnect" href="https://images.microcms-assets.io" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://images.microcms-assets.io" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         {/* Google AdSense account (verification + default load hint) */}
         <meta name="google-adsense-account" content="ca-pub-2674981129220291" />
         <script
@@ -269,12 +283,12 @@ export default function RootLayout({
           <AnalyticsEnhancer />
         </Suspense>
 
-        {/* Google AdSense */}
+        {/* Google AdSense — lazy load to keep LCP fast */}
         <Script
           id="adsbygoogle-init"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2674981129220291"
           crossOrigin="anonymous"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
 
         <Header />

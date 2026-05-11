@@ -62,7 +62,18 @@
   overflow: hidden;
   background: #0f2130;
 }
-/* Single slide (stacked absolutely, crossfade via heroSlide keyframes) */
+/* LCP-priority first hero image rendered via <Image>. Always visible as base layer. */
+.heroFirstImg {
+  position: absolute !important;
+  inset: -4% !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: cover;
+  object-position: center 18%;
+  z-index: 0;
+  animation: kenburns 10s ease-in-out infinite alternate;
+}
+/* Subsequent slides (decorative; crossfade on top of the first image) */
 .heroSlide {
   position: absolute;
   inset: -4%;
@@ -71,12 +82,13 @@
   background-repeat: no-repeat;
   animation: kenburns 10s ease-in-out infinite alternate, heroSlide 15s infinite;
   opacity: 0;
+  z-index: 1;
 }
-.heroSlide:first-child { opacity: 1; }
 /* SP: vertical gradient for text readability */
 .heroOverlay {
   position: absolute;
   inset: 0;
+  z-index: 2;
   background: linear-gradient(
     to bottom,
     rgba(15,33,48,.25) 0%,

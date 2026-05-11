@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import CreatorTrack from "@/components/CreatorTrack";
 import VenueGrid from "@/components/VenueGrid";
@@ -156,13 +157,24 @@ export default async function HomePage() {
       {/* Hero (slideshow) */}
       <section className={s.hero} aria-label="ヒトカラウェディング - 横浜・鎌倉のウェディングプロデュース">
         <div className={s.heroImgArea}>
-          {HERO_SLIDES.map((src, i) => (
+          {/* LCP-priority first slide rendered as <img> for preload + sized-srcset */}
+          <Image
+            src={HERO_SLIDES[0]}
+            alt=""
+            fill
+            priority
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className={s.heroFirstImg}
+            quality={78}
+          />
+          {/* Remaining slides (decorative, animation only) — kept as CSS backgrounds */}
+          {HERO_SLIDES.slice(1).map((src, i) => (
             <div
-              key={i}
+              key={i + 1}
               className={s.heroSlide}
               style={{
                 backgroundImage: `url(${src})`,
-                animationDelay: `${i * 3}s`,
+                animationDelay: `${(i + 1) * 3}s`,
               }}
             />
           ))}
