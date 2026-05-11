@@ -62,12 +62,10 @@
   overflow: hidden;
   background: #0f2130;
 }
-/* LCP-priority first hero image rendered via <Image>. Always visible as base layer. */
+/* LCP-priority first hero image rendered via <Image fill>. Always visible as base layer.
+   next/image with fill already sets position:absolute + inset:0 + width/height:100%.
+   We only adjust object-fit/object-position and add the Ken Burns scale animation. */
 .heroFirstImg {
-  position: absolute !important;
-  inset: -4% !important;
-  width: auto !important;
-  height: auto !important;
   object-fit: cover;
   object-position: center 18%;
   z-index: 0;
