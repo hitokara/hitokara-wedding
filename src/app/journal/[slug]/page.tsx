@@ -105,14 +105,25 @@ export default async function JournalArticlePage({ params }: Props) {
       : ARTICLES;
   const recentArticles = allArticles.filter((a) => a.slug !== slug).slice(0, 5);
 
-  const SIDE_CATS = [
-    { name: "エリア情報", count: 8 },
-    { name: "クリエイター紹介", count: 12 },
-    { name: "ノウハウ", count: 7 },
-    { name: "費用・見積もり", count: 5 },
-    { name: "実例レポート", count: 4 },
-    { name: "和婚", count: 6 },
+  // Build sidebar categories with real counts from CMS articles
+  const SIDE_CAT_NAMES = [
+    "エリア情報",
+    "クリエイター紹介",
+    "ノウハウ",
+    "費用・見積もり",
+    "実例レポート",
+    "和婚",
+    "会場レポ",
+    "お知らせ",
   ];
+  const sideCounts = new Map<string, number>();
+  for (const a of allArticles) {
+    sideCounts.set(a.cat, (sideCounts.get(a.cat) ?? 0) + 1);
+  }
+  const SIDE_CATS = [
+    ...SIDE_CAT_NAMES.filter((n) => sideCounts.has(n)),
+    ...Array.from(sideCounts.keys()).filter((n) => !SIDE_CAT_NAMES.includes(n)),
+  ].map((name) => ({ name, count: sideCounts.get(name) ?? 0 }));
 
   const heroStyle = thumbnailUrl
     ? { backgroundImage: `url(${thumbnailUrl})` }
