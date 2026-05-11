@@ -30,20 +30,32 @@ export default function AnimateOnScroll({
     const el = ref.current;
     if (!el) return;
 
-    // Safety fallback: ensure content becomes visible after 2s even if observer never fires
-    // (large elements, prefers-reduced-motion, edge browser quirks etc.)
-    const safety = setTimeout(() => {
+    // If user prefers reduced motion, skip animation entirely and show content.
+    const reduceMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) {
       el.classList.add("vis");
-    }, 2000);
+      return;
+    }
 
     // Use a low threshold (any intersection) so tall blocks always trigger when scrolled.
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          clearTimeout(safety);
-          setTimeout(() => {
-            el.classList.add("vis");
-          }, delay);
+          // Double rAF guarantees the initial opacity:0 paint commits before
+          // we toggle to opacity:1, so the CSS transition is observable even
+          // when the observer fires synchronously on mount.
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              if (delay > 0) {
+                setTimeout(() => el.classList.add("vis"), delay);
+              } else {
+                el.classList.add("vis");
+              }
+            });
+          });
           observer.unobserve(el);
         }
       },
@@ -53,7 +65,6 @@ export default function AnimateOnScroll({
     observer.observe(el);
 
     return () => {
-      clearTimeout(safety);
       observer.disconnect();
     };
   }, [delay]);

@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import CreatorTrack from "@/components/CreatorTrack";
+import HeroDeferredSlides from "@/components/HeroDeferredSlides";
 import VenueGrid from "@/components/VenueGrid";
 import { CREATORS_LIST, FILTER_CATS } from "@/lib/creators";
 import type { Creator } from "@/lib/creators";
@@ -165,19 +166,12 @@ export default async function HomePage() {
             priority
             sizes="(min-width: 768px) 50vw, 100vw"
             className={s.heroFirstImg}
-            quality={78}
+            quality={70}
+            fetchPriority="high"
           />
-          {/* Remaining slides (decorative, animation only) — kept as CSS backgrounds */}
-          {HERO_SLIDES.slice(1).map((src, i) => (
-            <div
-              key={i + 1}
-              className={s.heroSlide}
-              style={{
-                backgroundImage: `url(${src})`,
-                animationDelay: `${(i + 1) * 3}s`,
-              }}
-            />
-          ))}
+          {/* Remaining slides (decorative). Deferred past LCP so their image
+              requests do not contend with the priority hero image. */}
+          <HeroDeferredSlides slides={HERO_SLIDES.slice(1)} className={s.heroSlide} />
           <div className={s.heroOverlay} />
         </div>
         <div className={s.heroWave}><WaveSvg /></div>
